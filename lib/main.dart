@@ -1,0 +1,44 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_native_splash/flutter_native_splash.dart';
+
+import 'styles/style.dart';
+import 'styles/widgets_style.dart';
+import 'data/restaurant.dart';
+import 'pages/detail_page.dart';
+import 'pages/home_page.dart';
+
+void main() {
+  WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
+  FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
+
+  runApp(const MyApp());
+}
+
+class MyApp extends StatelessWidget {
+  const MyApp({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: appName,
+      debugShowCheckedModeBanner: false,
+      theme: ThemeData(
+        primaryColor: primaryColor,
+        // scaffoldBackgroundColor: backgroundColor,
+        canvasColor: backgroundColor,
+        textTheme: textTheme,
+        appBarTheme: appBarTheme,
+        listTileTheme: listTileThemeData,
+        tabBarTheme: tabBarTheme,
+        elevatedButtonTheme: elevatedButtonThemeData,
+        iconTheme: iconThemeData,
+      ),
+      initialRoute: HomePage.routeName,
+      routes: {
+        HomePage.routeName: (context) => const HomePage(),
+        DetailPage.routeName: (context) => DetailPage(
+            ModalRoute.of(context)?.settings.arguments as Restaurant),
+      },
+    );
+  }
+}
