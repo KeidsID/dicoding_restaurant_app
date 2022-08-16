@@ -47,7 +47,7 @@ dev_dependencies:
   # rules and activating additional ones.
   flutter_lints: ^2.0.0
 
-# Run this command after updating splash screen data below:
+# Run these command after updating splash screen data below:
 # 1) flutter clean
 # 2) flutter pub get
 # 3) flutter pub run flutter_native_splash:create
@@ -56,7 +56,7 @@ dev_dependencies:
 
 flutter_native_splash:
   color: "#FFFBE6"
-  image: assets/for_splash_screen/meal.png
+  image: assets/images/meal.png
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
@@ -72,6 +72,7 @@ flutter:
   # To add assets to your application, add an assets section, like this:
   assets:
     - assets/restaurants.json
+    - assets/images/
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
 

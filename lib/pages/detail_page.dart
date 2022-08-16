@@ -105,7 +105,6 @@ class DetailPage extends StatelessWidget {
 class _DetailPagePortrait extends StatelessWidget {
   final Restaurant restaurant;
 
-  // ignore: unused_element
   _DetailPagePortrait(this.restaurant, {super.key});
 
   final ScrollController scrollController = ScrollController();
@@ -234,6 +233,12 @@ class _DetailPagePortrait extends StatelessWidget {
         child: Image.network(
           restaurant.pictureId,
           fit: BoxFit.fill,
+          errorBuilder: (_, __, ___) {
+            return Image.asset(
+              'assets/images/photo_error_icon.png',
+              fit: BoxFit.fill,
+            );
+          },
         ),
       );
     }
@@ -289,15 +294,27 @@ class _DetailPagePortrait extends StatelessWidget {
   }
 }
 
-class _DetailPageLandscape extends StatelessWidget {
+class _DetailPageLandscape extends StatefulWidget {
   final Restaurant restaurant;
 
-  // ignore: unused_element
-  _DetailPageLandscape(this.restaurant, {super.key});
+  const _DetailPageLandscape(this.restaurant, {super.key});
 
+  @override
+  State<_DetailPageLandscape> createState() => _DetailPageLandscapeState();
+}
+
+class _DetailPageLandscapeState extends State<_DetailPageLandscape> {
   final ScrollController detailScrollCtrler = ScrollController();
   final ScrollController foodsScrollCtrler = ScrollController();
   final ScrollController drinksScrollCtrler = ScrollController();
+
+  @override
+  void dispose() {
+    detailScrollCtrler.dispose();
+    foodsScrollCtrler.dispose();
+    drinksScrollCtrler.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -371,13 +388,13 @@ class _DetailPageLandscape extends StatelessWidget {
         return Column(
           children: [
             Text(
-              restaurant.description,
+              widget.restaurant.description,
               style: _txtThemeH6PColor(context),
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 8),
             Text(
-              'ID: ${restaurant.id.toUpperCase()}',
+              'ID: ${widget.restaurant.id.toUpperCase()}',
               style: _txtThemeOverlinePColor(context),
             ),
           ],
@@ -397,10 +414,16 @@ class _DetailPageLandscape extends StatelessWidget {
                 horizontal: mainHMargin,
               ),
               child: Hero(
-                tag: restaurant.id,
+                tag: widget.restaurant.id,
                 child: Image.network(
-                  restaurant.pictureId,
+                  widget.restaurant.pictureId,
                   fit: BoxFit.cover,
+                  errorBuilder: (_, __, ___) {
+                    return Image.asset(
+                      'assets/images/photo_error_icon.png',
+                      fit: BoxFit.cover,
+                    );
+                  },
                 ),
               ),
             ),
@@ -409,7 +432,7 @@ class _DetailPageLandscape extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 16),
               child: Text(
-                restaurant.name,
+                widget.restaurant.name,
                 style: _txtThemeH3SColor(context),
                 textAlign: TextAlign.center,
               ),
@@ -432,12 +455,12 @@ class _DetailPageLandscape extends StatelessWidget {
                     _iconWithText(
                       context,
                       icon: Icons.location_on,
-                      text: restaurant.city,
+                      text: widget.restaurant.city,
                     ),
                     _iconWithText(
                       context,
                       icon: Icons.star,
-                      text: '${restaurant.rating}',
+                      text: '${widget.restaurant.rating}',
                     ),
                   ],
                 ),
@@ -477,7 +500,7 @@ class _DetailPageLandscape extends StatelessWidget {
                           thumbVisibility: true,
                           child: ListView(
                             controller: foodsScrollCtrler,
-                            children: _foodWidgets(context, restaurant),
+                            children: _foodWidgets(context, widget.restaurant),
                           ),
                         ),
                         Scrollbar(
@@ -485,7 +508,7 @@ class _DetailPageLandscape extends StatelessWidget {
                           thumbVisibility: true,
                           child: ListView(
                             controller: drinksScrollCtrler,
-                            children: _drinkWidgets(context, restaurant),
+                            children: _drinkWidgets(context, widget.restaurant),
                           ),
                         )
                       ],

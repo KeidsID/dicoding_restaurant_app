@@ -48,8 +48,33 @@ class _HomePageState extends State<HomePage> {
       future:
           DefaultAssetBundle.of(context).loadString('assets/restaurants.json'),
       builder: (context, snapshot) {
+        /// future error handler
+        if (snapshot.connectionState != ConnectionState.done) {
+          // loading widget
+          return const Center(child: CircularProgressIndicator());
+        } else {
+          if (snapshot.hasData) {
+            // success widget
+          } else if (snapshot.hasError) {
+            // error widget
+            return Center(
+              child: Text(
+                '${snapshot.error}',
+                style: Theme.of(context)
+                    .textTheme
+                    .headline3
+                    ?.copyWith(color: secondaryColor),
+              ),
+            );
+          } else {
+            // loading widget
+            return const Center(child: CircularProgressIndicator());
+          }
+        }
+
         final List<Restaurant> restaurants = parseRestaurants(snapshot.data);
-        return LayoutBuilder(builder: (context, constraints) {
+
+        return LayoutBuilder(builder: (_, constraints) {
           if (constraints.maxWidth <= 600) {
             return _RestaurantsListView(restaurants);
           } else if (constraints.maxWidth <= 900) {
@@ -77,7 +102,6 @@ class _HomePageState extends State<HomePage> {
 class _RestaurantsListView extends StatelessWidget {
   final List<Restaurant> restaurants;
 
-  // ignore: unused_element
   const _RestaurantsListView(this.restaurants, {super.key});
 
   @override
@@ -98,6 +122,13 @@ class _RestaurantsListView extends StatelessWidget {
           restaurant.pictureId,
           width: 100,
           fit: BoxFit.fill,
+          errorBuilder: (_, __, ___) {
+            return Image.asset(
+              'assets/images/photo_error_icon.png',
+              width: 100,
+              fit: BoxFit.fill,
+            );
+          },
         ),
       );
     }
@@ -162,7 +193,6 @@ class _RestaurantsGridView extends StatelessWidget {
   final List<Restaurant> restaurants;
 
   const _RestaurantsGridView({
-    // ignore: unused_element
     super.key,
     required this.gridCount,
     required this.restaurants,
@@ -184,6 +214,12 @@ class _RestaurantsGridView extends StatelessWidget {
         child: Image.network(
           restaurant.pictureId,
           fit: BoxFit.fill,
+          errorBuilder: (_, __, ___) {
+            return Image.asset(
+              'assets/images/photo_error_icon.png',
+              fit: BoxFit.fill,
+            );
+          },
         ),
       );
     }
