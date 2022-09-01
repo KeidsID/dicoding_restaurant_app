@@ -72,7 +72,7 @@ class _HomePageState extends State<HomePage> {
           }
         }
 
-        final List<Restaurant> restaurants = parseRestaurants(snapshot.data);
+        final List<Restaurant> restaurants = restaurantsFromJson(snapshot.data);
 
         return LayoutBuilder(builder: (_, constraints) {
           if (constraints.maxWidth <= 600) {
