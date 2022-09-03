@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 
-import 'styles/style.dart';
-import 'styles/widgets_style.dart';
-import 'data/restaurant.dart';
+import 'common/styles/style.dart';
+import 'common/styles/widgets_style.dart';
+import 'data/model/from_assets/restaurant.dart';
 import 'pages/detail_page.dart';
 import 'pages/home_page.dart';
 

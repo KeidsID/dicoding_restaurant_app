@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 
-import '../styles/style.dart';
-import '../data/restaurant.dart';
+import '../common/styles/style.dart';
+import '../data/model/from_assets/restaurant.dart';
 import 'detail_page.dart';
 
 class HomePage extends StatefulWidget {

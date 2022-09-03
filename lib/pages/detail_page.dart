@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-import '../styles/style.dart';
-import '../data/restaurant.dart';
+import '../common/styles/style.dart';
+import '../data/model/from_assets/restaurant.dart';
 import '../widgets/fade_on_scroll.dart';
 
 Size _screenSize(BuildContext context) {
