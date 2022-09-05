@@ -6,11 +6,11 @@ import '../data/model/from_api/restaurant_detail.dart';
 enum ResultState { loading, noData, hasData, error }
 
 class RestaurantDetailProvider extends ChangeNotifier {
+  final String _id;
+
   RestaurantDetailProvider(this._id) {
     _fetchAllRestaurants();
   }
-
-  final String _id;
 
   late RestaurantDetail _restaurantDetail;
   late ResultState _state;

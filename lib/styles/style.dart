@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+import 'widgets_style.dart';
+
 String appName = 'RESTAURantS';
 
 const Color primaryColor = Color(0xFF356859); // Basil Green [800]
@@ -10,7 +12,18 @@ const Color primaryColorBrightest = Color(0xFFB9E4C9); // [100]
 const Color secondaryColor = Color(0xFFFD5523); // Basil Orange [800]
 const Color backgroundColor = Color(0xFFFFFBE6); // [50]
 
-final TextTheme textTheme = TextTheme(
+final myTheme = ThemeData(
+  primaryColor: primaryColor,
+  canvasColor: backgroundColor,
+  textTheme: textTheme,
+  appBarTheme: appBarTheme,
+  listTileTheme: listTileThemeData,
+  tabBarTheme: tabBarTheme,
+  elevatedButtonTheme: elevatedButtonThemeData,
+  iconTheme: iconThemeData,
+);
+
+final textTheme = TextTheme(
   headline1: GoogleFonts.montserrat(
     fontSize: 96,
     fontWeight: FontWeight.w600,

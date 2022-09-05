@@ -17,8 +17,7 @@ class FadeOnScroll extends StatefulWidget {
       this.fullOpacityOffset = 0});
 
   @override
-  // ignore: library_private_types_in_public_api
-  _FadeOnScrollState createState() => _FadeOnScrollState();
+  State<FadeOnScroll> createState() => _FadeOnScrollState();
 }
 
 class _FadeOnScrollState extends State<FadeOnScroll> {
