@@ -17,7 +17,7 @@ class SearchTextField extends StatelessWidget {
       ),
       onSubmitted: (value) {
         if (value != '') {
-          Navigator.pushReplacementNamed(
+          Navigator.pushNamed(
             context,
             SearchResultPage.routeName,
             arguments: value,

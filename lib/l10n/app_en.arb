@@ -1,0 +1,8 @@
+{
+  "detailPagePopNavigationButton": "Go Back",
+  "searchTextFieldHintText": "Search restaurant name",
+  "searchResultFounded": "{count, plural, 1={A restaurant found} other{{count} restaurants found}",
+  "foodsTab": "Foods",
+  "drinksTab": "Drinks",
+  "reviewHeading": "Reviews"
+}

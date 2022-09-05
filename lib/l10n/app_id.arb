@@ -1,0 +1,15 @@
+{
+  "detailPagePopNavigationButton": "Kembali",
+  "searchTextFieldHintText": "Cari nama restoran",
+  "searchResultFounded": "{count, plural, 1={Restoran ditemukan} other{{count} restoran ditemukan}",
+  "@searchResultFounded": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "foodsTab": "Makanan",
+  "drinksTab": "Minuman",
+  "reviewHeading": "Ulasan"
+}

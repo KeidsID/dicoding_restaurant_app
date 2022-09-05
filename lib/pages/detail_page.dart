@@ -162,12 +162,29 @@ class DetailPage extends StatelessWidget {
   }
 }
 
-class _DetailPagePortrait extends StatelessWidget {
+class _DetailPagePortrait extends StatefulWidget {
   final Restaurant restaurant;
 
   _DetailPagePortrait(this.restaurant, {Key? key}) : super(key: key);
 
-  final ScrollController scrollController = ScrollController();
+  @override
+  State<_DetailPagePortrait> createState() => _DetailPagePortraitState();
+}
+
+class _DetailPagePortraitState extends State<_DetailPagePortrait> {
+  late ScrollController scrollController;
+
+  @override
+  void initState() {
+    scrollController = ScrollController();
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    scrollController.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -177,13 +194,13 @@ class _DetailPagePortrait extends StatelessWidget {
       return Column(
         children: [
           Text(
-            restaurant.description,
+            widget.restaurant.description,
             style: _txtThemeH6PColor(context),
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: 8),
           Text(
-            'ID: ${restaurant.id.toUpperCase()}',
+            'ID: ${widget.restaurant.id.toUpperCase()}',
             style: _txtThemeOverlinePColor(context),
           ),
         ],
@@ -204,7 +221,7 @@ class _DetailPagePortrait extends StatelessWidget {
                 Container(
                   padding: const EdgeInsets.symmetric(vertical: 16),
                   child: Text(
-                    restaurant.name,
+                    widget.restaurant.name,
                     style: _txtThemeH3SColor(context),
                     textAlign: TextAlign.center,
                   ),
@@ -227,12 +244,12 @@ class _DetailPagePortrait extends StatelessWidget {
                         _iconWithText(
                           context,
                           icon: Icons.location_on,
-                          text: restaurant.city,
+                          text: widget.restaurant.city,
                         ),
                         _iconWithText(
                           context,
                           icon: Icons.star,
-                          text: '${restaurant.rating}',
+                          text: '${widget.restaurant.rating}',
                         ),
                       ],
                     ),
@@ -279,7 +296,7 @@ class _DetailPagePortrait extends StatelessWidget {
     Widget title() {
       return FadeOnScroll(
         scrollController: scrollController,
-        fullOpacityOffset: 180,
+        fullOpacityOffset: 250,
         child: Text(
           appName,
           style: _txtThemeH6PColor(context),
@@ -289,9 +306,9 @@ class _DetailPagePortrait extends StatelessWidget {
 
     Widget flexibleSpaceBackground() {
       return Hero(
-        tag: restaurant.id,
+        tag: widget.restaurant.id,
         child: Image.network(
-          ApiService.imageMedium(restaurant.pictureId),
+          ApiService.imageMedium(widget.restaurant.pictureId),
           fit: BoxFit.fill,
           errorBuilder: (_, __, ___) {
             return Image.asset(
@@ -339,10 +356,10 @@ class _DetailPagePortrait extends StatelessWidget {
               child: TabBarView(
                 children: [
                   ListView(
-                    children: _foodWidgets(context, restaurant),
+                    children: _foodWidgets(context, widget.restaurant),
                   ),
                   ListView(
-                    children: _drinkWidgets(context, restaurant),
+                    children: _drinkWidgets(context, widget.restaurant),
                   )
                 ],
               ),

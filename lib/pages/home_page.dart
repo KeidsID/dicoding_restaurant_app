@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:provider/provider.dart';
 
+import 'detail_page.dart';
+import 'search_result_page.dart';
 import '../styles/style.dart';
 import '../data/api/api_service.dart';
 import '../data/model/from_api/restaurant_list.dart';
 import '../providers/restaurant_list_provider.dart';
-import 'detail_page.dart';
-import 'search_result_page.dart';
 import '../widgets/restaurant_grid_view_container.dart';
 import '../widgets/restaurant_list_tile.dart';
 import '../widgets/search_text_field.dart';
@@ -131,7 +131,7 @@ class _HomePageState extends State<HomePage> {
         child: IconButton(
           onPressed: () {
             if (searchTextFieldController.text != '') {
-              Navigator.pushReplacementNamed(
+              Navigator.pushNamed(
                 context,
                 SearchResultPage.routeName,
                 arguments: searchTextFieldController.text,
@@ -194,35 +194,37 @@ class _HomePageState extends State<HomePage> {
         final List<Restaurant> restaurants =
             restaurantListProvider.result.restaurants;
 
-        return LayoutBuilder(builder: (_, constraints) {
-          if (constraints.maxWidth <= 600) {
-            return RestaurantsListView(restaurants);
-          } else if (constraints.maxWidth <= 900) {
-            return RestaurantsGridView(
-              gridCount: 2,
-              restaurants: restaurants,
-            );
-          } else if (constraints.maxWidth <= 1200) {
-            return RestaurantsGridView(
-              gridCount: 3,
-              restaurants: restaurants,
-            );
-          } else {
-            return RestaurantsGridView(
-              gridCount: 4,
-              restaurants: restaurants,
-            );
-          }
-        });
+        return LayoutBuilder(
+          builder: (_, constraints) {
+            if (constraints.maxWidth <= 600) {
+              return _RestaurantsListView(restaurants);
+            } else if (constraints.maxWidth <= 900) {
+              return _RestaurantsGridView(
+                gridCount: 2,
+                restaurants: restaurants,
+              );
+            } else if (constraints.maxWidth <= 1200) {
+              return _RestaurantsGridView(
+                gridCount: 3,
+                restaurants: restaurants,
+              );
+            } else {
+              return _RestaurantsGridView(
+                gridCount: 4,
+                restaurants: restaurants,
+              );
+            }
+          },
+        );
       },
     );
   }
 }
 
-class RestaurantsListView extends StatelessWidget {
+class _RestaurantsListView extends StatelessWidget {
   final List<Restaurant> restaurants;
 
-  const RestaurantsListView(this.restaurants, {Key? key}) : super(key: key);
+  const _RestaurantsListView(this.restaurants, {Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -306,11 +308,11 @@ class RestaurantsListView extends StatelessWidget {
   }
 }
 
-class RestaurantsGridView extends StatelessWidget {
+class _RestaurantsGridView extends StatelessWidget {
   final int gridCount;
   final List<Restaurant> restaurants;
 
-  const RestaurantsGridView({
+  const _RestaurantsGridView({
     Key? key,
     required this.gridCount,
     required this.restaurants,

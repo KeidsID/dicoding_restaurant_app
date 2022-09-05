@@ -1,22 +1,22 @@
 import 'package:flutter/material.dart';
 
 import '../data/api/api_service.dart';
-import '../data/model/from_api/restaurant_detail.dart';
+import '../data/model/from_api/search_restaurant.dart';
 
 enum ResultState { loading, noData, hasData, error }
 
-class RestaurantDetailProvider extends ChangeNotifier {
-  final String _id;
+class SearchResultProvider extends ChangeNotifier {
+  final String _query;
 
-  RestaurantDetailProvider(this._id) {
+  SearchResultProvider(this._query) {
     _fetchAllRestaurants();
   }
 
-  late RestaurantDetail _restaurantDetail;
+  late SearchRestaurant _searchRestaurant;
   late ResultState _state;
   String _message = '';
 
-  RestaurantDetail get result => _restaurantDetail;
+  SearchRestaurant get result => _searchRestaurant;
   ResultState get state => _state;
   String get message => _message;
 
@@ -24,15 +24,15 @@ class RestaurantDetailProvider extends ChangeNotifier {
     try {
       _state = ResultState.loading;
       notifyListeners();
-      final restaurantDetail = await ApiService.getRestaurantDetail(_id);
-      if (restaurantDetail.error == true) {
+      final searchRestaurant = await ApiService.getSearchRestaurant(_query);
+      if (searchRestaurant.error == true) {
         _state = ResultState.noData;
         notifyListeners();
-        return _message = restaurantDetail.message;
+        return _message = 'No Data';
       } else {
         _state = ResultState.hasData;
         notifyListeners();
-        return _restaurantDetail = restaurantDetail;
+        return _searchRestaurant = searchRestaurant;
       }
     } catch (e) {
       _state = ResultState.error;
