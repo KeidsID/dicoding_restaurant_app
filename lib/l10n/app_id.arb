@@ -1,15 +1,12 @@
 {
-  "detailPagePopNavigationButton": "Kembali",
+  "detailPagePopNavigationButton": "KEMBALI",
   "searchTextFieldHintText": "Cari nama restoran",
-  "searchResultFounded": "{count, plural, 1={Restoran ditemukan} other{{count} restoran ditemukan}",
-  "@searchResultFounded": {
-    "placeholders": {
-      "count": {
-        "type": "int"
-      }
-    }
-  },
-  "foodsTab": "Makanan",
-  "drinksTab": "Minuman",
-  "reviewHeading": "Ulasan"
+  "searchResultFounded": "{count, plural, =0{Tidak ada restoran yang ditemukan} =1{Restoran ditemukan} other{{count} restoran ditemukan}",
+  "foodsTab": "MAKANAN",
+  "drinksTab": "MINUMAN",
+  "reviewHeading": "{count, plural, other{Ulasan}}",
+  "reviewsCheck": "Cek lebih banyak ulasan",
+  "reviewDate": "{date}",
+  "noInternetAccess": "Tidak ada akses internet",
+  "noApiData": "Tidak ada data restoran yang diterima"
 }

@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../styles/style.dart';
+import 'reviews_page.dart';
+import '../common.dart';
 import '../data/api/api_service.dart';
 import '../data/model/from_api/restaurant_detail.dart';
 import '../providers/restaurant_detail_provider.dart';
 import '../widgets/fade_on_scroll.dart';
+import '../widgets/review_container.dart';
 
 Size _screenSize(BuildContext context) {
   return MediaQuery.of(context).size;
@@ -71,7 +73,7 @@ Widget _foodAndDrinkWidget(String e, TextStyle? textStyle) {
   );
 }
 
-List<Widget> _foodWidgets(BuildContext context, Restaurant restaurant) {
+List<Widget> _foodWidgets(BuildContext context, DetailedRestaurant restaurant) {
   return restaurant.menus.foods.map(
     (e) {
       return _foodAndDrinkWidget(
@@ -80,7 +82,8 @@ List<Widget> _foodWidgets(BuildContext context, Restaurant restaurant) {
   ).toList();
 }
 
-List<Widget> _drinkWidgets(BuildContext context, Restaurant restaurant) {
+List<Widget> _drinkWidgets(
+    BuildContext context, DetailedRestaurant restaurant) {
   return restaurant.menus.drinks.map(
     (e) {
       return _foodAndDrinkWidget(
@@ -90,7 +93,7 @@ List<Widget> _drinkWidgets(BuildContext context, Restaurant restaurant) {
 }
 
 class DetailPage extends StatelessWidget {
-  static String routeName = '/detail_page';
+  static const routeName = '/detail_page';
   final String pictureId;
 
   const DetailPage({super.key, required this.pictureId});
@@ -103,7 +106,15 @@ class DetailPage extends StatelessWidget {
         builder: (_, restaurantDetailProvider, __) {
           if (restaurantDetailProvider.state == ResultState.loading) {
             // loading widget
-            return const Center(child: CircularProgressIndicator());
+            return Container(
+              color: backgroundColor,
+              child: const Center(
+                child: CircularProgressIndicator(
+                  backgroundColor: primaryColorBrightest,
+                  color: primaryColor,
+                ),
+              ),
+            );
           } else {
             if (restaurantDetailProvider.state == ResultState.hasData) {
               // success widget
@@ -111,7 +122,7 @@ class DetailPage extends StatelessWidget {
               // no data
               return Center(
                 child: Text(
-                  restaurantDetailProvider.message,
+                  AppLocalizations.of(context)!.noApiData,
                   style: Theme.of(context)
                       .textTheme
                       .headline4
@@ -123,7 +134,7 @@ class DetailPage extends StatelessWidget {
               // error widget
               return Center(
                 child: Text(
-                  restaurantDetailProvider.message,
+                  AppLocalizations.of(context)!.noInternetAccess,
                   style: Theme.of(context)
                       .textTheme
                       .headline4
@@ -163,9 +174,9 @@ class DetailPage extends StatelessWidget {
 }
 
 class _DetailPagePortrait extends StatefulWidget {
-  final Restaurant restaurant;
+  final DetailedRestaurant restaurant;
 
-  _DetailPagePortrait(this.restaurant, {Key? key}) : super(key: key);
+  const _DetailPagePortrait(this.restaurant, {Key? key}) : super(key: key);
 
   @override
   State<_DetailPagePortrait> createState() => _DetailPagePortraitState();
@@ -233,26 +244,73 @@ class _DetailPagePortraitState extends State<_DetailPagePortrait> {
                   child: description(),
                 ),
 
-                // location & rating
+                // location, rating, and categories
                 Container(
                   padding: const EdgeInsets.symmetric(vertical: 8),
                   margin: mainHMargin,
-                  child: Center(
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        _iconWithText(
-                          context,
-                          icon: Icons.location_on,
-                          text: widget.restaurant.city,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      _iconWithText(
+                        context,
+                        icon: Icons.location_on,
+                        text: widget.restaurant.city,
+                      ),
+                      _iconWithText(
+                        context,
+                        icon: Icons.star,
+                        text: '${widget.restaurant.rating}',
+                      ),
+                    ],
+                  ),
+                ),
+                Wrap(
+                  spacing: 8,
+                  runSpacing: 8,
+                  children: widget.restaurant.categories
+                      .map(
+                        (e) => Chip(
+                          label: Text('# ${e.name}'),
                         ),
-                        _iconWithText(
-                          context,
-                          icon: Icons.star,
-                          text: '${widget.restaurant.rating}',
+                      )
+                      .toList(),
+                ),
+
+                // reviews
+                // header
+                Container(
+                  padding: const EdgeInsets.symmetric(vertical: 16),
+                  child: Text(
+                    AppLocalizations.of(context)!.reviewHeading(1),
+                    style: Theme.of(context)
+                        .textTheme
+                        .headline4
+                        ?.copyWith(color: secondaryColor),
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+                // review, and ReviewPage button
+                Container(
+                  margin: mainHMargin,
+                  child: ReviewContainer(
+                    customerReviews: widget.restaurant.customerReviews[0],
+                    maxLinesReview: 2,
+                  ),
+                ),
+                TextButton(
+                  onPressed: () {
+                    Navigator.pushNamed(
+                      context,
+                      ReviewsPage.routeName,
+                      arguments: widget.restaurant,
+                    );
+                  },
+                  child: Text(
+                    AppLocalizations.of(context)!.reviewsCheck.toUpperCase(),
+                    style: Theme.of(context).textTheme.button?.copyWith(
+                          color: primaryColorBrighter,
+                          decoration: TextDecoration.underline,
                         ),
-                      ],
-                    ),
                   ),
                 ),
 
@@ -274,7 +332,8 @@ class _DetailPagePortraitState extends State<_DetailPagePortrait> {
                           Navigator.pop(context);
                         },
                         child: Text(
-                          'GO BACK',
+                          AppLocalizations.of(context)!
+                              .detailPagePopNavigationButton,
                           style: Theme.of(context)
                               .textTheme
                               .button
@@ -344,10 +403,10 @@ class _DetailPagePortraitState extends State<_DetailPagePortrait> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const TabBar(
+            TabBar(
               tabs: [
-                Tab(text: 'FOODS'),
-                Tab(text: 'DRINKS'),
+                Tab(text: AppLocalizations.of(context)!.foodsTab),
+                Tab(text: AppLocalizations.of(context)!.drinksTab),
               ],
             ),
             SizedBox(
@@ -372,7 +431,7 @@ class _DetailPagePortraitState extends State<_DetailPagePortrait> {
 }
 
 class _DetailPageLandscape extends StatefulWidget {
-  final Restaurant restaurant;
+  final DetailedRestaurant restaurant;
 
   const _DetailPageLandscape(
     this.restaurant, {
@@ -455,11 +514,11 @@ class _DetailPageLandscapeState extends State<_DetailPageLandscape> {
           ),
 
           // TabBar
-          const Expanded(
+          Expanded(
             child: TabBar(
               tabs: [
-                Tab(text: 'FOODS'),
-                Tab(text: 'DRINKS'),
+                Tab(text: AppLocalizations.of(context)!.foodsTab),
+                Tab(text: AppLocalizations.of(context)!.drinksTab),
               ],
             ),
           ),
@@ -534,7 +593,7 @@ class _DetailPageLandscapeState extends State<_DetailPageLandscape> {
               child: description(),
             ),
 
-            // location & rating
+            // location, rating, and categories
             Container(
               padding: const EdgeInsets.symmetric(vertical: 8),
               margin: EdgeInsets.symmetric(horizontal: mainHMargin),
@@ -554,6 +613,56 @@ class _DetailPageLandscapeState extends State<_DetailPageLandscape> {
                     ),
                   ],
                 ),
+              ),
+            ),
+            Wrap(
+              alignment: WrapAlignment.center,
+              spacing: 8,
+              runSpacing: 8,
+              children: widget.restaurant.categories
+                  .map(
+                    (e) => Chip(
+                      label: Text('# ${e.name}'),
+                    ),
+                  )
+                  .toList(),
+            ),
+
+            // reviews
+            // heading
+            Container(
+              padding: const EdgeInsets.symmetric(vertical: 16),
+              child: Text(
+                AppLocalizations.of(context)!.reviewHeading(1),
+                style: Theme.of(context)
+                    .textTheme
+                    .headline4
+                    ?.copyWith(color: secondaryColor),
+                textAlign: TextAlign.center,
+              ),
+            ),
+            // review, and ReviewPage button
+            Container(
+              margin: EdgeInsets.symmetric(horizontal: mainHMargin),
+              child: ReviewContainer(
+                customerReviews: widget.restaurant.customerReviews[0],
+                maxLinesReview: 2,
+              ),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.pushNamed(
+                  context,
+                  ReviewsPage.routeName,
+                  arguments: widget.restaurant,
+                );
+              },
+              child: Text(
+                AppLocalizations.of(context)!.reviewsCheck.toUpperCase(),
+                style: Theme.of(context).textTheme.button?.copyWith(
+                      color: primaryColorBrighter,
+                      decoration: TextDecoration.underline,
+                    ),
               ),
             ),
           ],
@@ -613,7 +722,8 @@ class _DetailPageLandscapeState extends State<_DetailPageLandscape> {
                           Navigator.pop(context);
                         },
                         child: Text(
-                          'GO BACK',
+                          AppLocalizations.of(context)!
+                              .detailPagePopNavigationButton,
                           style: Theme.of(context)
                               .textTheme
                               .button

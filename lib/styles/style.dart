@@ -21,6 +21,7 @@ final myTheme = ThemeData(
   tabBarTheme: tabBarTheme,
   elevatedButtonTheme: elevatedButtonThemeData,
   iconTheme: iconThemeData,
+  chipTheme: chipThemeData,
 );
 
 final textTheme = TextTheme(

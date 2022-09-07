@@ -1,18 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:restaurant_app_project/providers/search_result_provider.dart';
 
-import 'home_page.dart';
 import 'detail_page.dart';
-import '../styles/style.dart';
+import '../common.dart';
 import '../data/api/api_service.dart';
 import '../data/model/from_api/search_restaurant.dart';
+import '../providers/search_result_provider.dart';
 import '../widgets/fade_on_scroll.dart';
 import '../widgets/restaurant_list_tile.dart';
 import '../widgets/restaurant_grid_view_container.dart';
 
 class SearchResultPage extends StatefulWidget {
-  static String routeName = '/search_result_page';
+  static const routeName = '/search_result_page';
   final String query;
 
   const SearchResultPage({Key? key, required this.query}) : super(key: key);
@@ -45,7 +44,15 @@ class _SearchResultPageState extends State<SearchResultPage> {
           builder: (context, searchResultProvider, _) {
             if (searchResultProvider.state == ResultState.loading) {
               // loading widget
-              return const Center(child: CircularProgressIndicator());
+              return Container(
+                color: backgroundColor,
+                child: const Center(
+                  child: CircularProgressIndicator(
+                    backgroundColor: primaryColorBrightest,
+                    color: primaryColor,
+                  ),
+                ),
+              );
             } else {
               if (searchResultProvider.state == ResultState.hasData) {
                 // success widget
@@ -53,7 +60,7 @@ class _SearchResultPageState extends State<SearchResultPage> {
                 // no data
                 return Center(
                   child: Text(
-                    searchResultProvider.message,
+                    AppLocalizations.of(context)!.noApiData,
                     style: Theme.of(context)
                         .textTheme
                         .headline4
@@ -65,7 +72,7 @@ class _SearchResultPageState extends State<SearchResultPage> {
                 // error widget
                 return Center(
                   child: Text(
-                    searchResultProvider.message,
+                    AppLocalizations.of(context)!.noInternetAccess,
                     style: Theme.of(context)
                         .textTheme
                         .headline4
@@ -123,14 +130,14 @@ class _SearchResultPageState extends State<SearchResultPage> {
     Widget flexibleSpaceBackground() {
       return Center(
         child: Container(
-          padding: EdgeInsets.all(8),
-          decoration: BoxDecoration(
+          padding: const EdgeInsets.all(8),
+          decoration: const BoxDecoration(
             border: Border(
               bottom: BorderSide(color: primaryColorBrighter),
             ),
           ),
           child: Text(
-            '$resultCount restaurants found',
+            AppLocalizations.of(context)!.searchResultFounded(resultCount),
             style: Theme.of(context)
                 .textTheme
                 .subtitle1

@@ -4,7 +4,7 @@ import 'package:provider/provider.dart';
 
 import 'detail_page.dart';
 import 'search_result_page.dart';
-import '../styles/style.dart';
+import '../common.dart';
 import '../data/api/api_service.dart';
 import '../data/model/from_api/restaurant_list.dart';
 import '../providers/restaurant_list_provider.dart';
@@ -13,7 +13,7 @@ import '../widgets/restaurant_list_tile.dart';
 import '../widgets/search_text_field.dart';
 
 class HomePage extends StatefulWidget {
-  static String routeName = '/';
+  static const routeName = '/';
 
   const HomePage({super.key});
 
@@ -105,9 +105,8 @@ class _HomePageState extends State<HomePage> {
             padding: const EdgeInsets.only(left: 8),
             child: Text(
               appName,
-              style: Theme.of(context)
-                  .textTheme
-                  .titleLarge
+              style: AppBarTheme.of(context)
+                  .titleTextStyle
                   ?.copyWith(color: primaryColor),
             ),
           ),
@@ -149,7 +148,15 @@ class _HomePageState extends State<HomePage> {
       builder: (context, restaurantListProvider, _) {
         if (restaurantListProvider.state == ResultState.loading) {
           // loading widget
-          return const Center(child: CircularProgressIndicator());
+          return Container(
+            color: backgroundColor,
+            child: const Center(
+              child: CircularProgressIndicator(
+                backgroundColor: primaryColorBrightest,
+                color: primaryColor,
+              ),
+            ),
+          );
         } else {
           if (restaurantListProvider.state == ResultState.hasData) {
             // success widget
@@ -157,7 +164,7 @@ class _HomePageState extends State<HomePage> {
             // no data
             return Center(
               child: Text(
-                restaurantListProvider.message,
+                AppLocalizations.of(context)!.noApiData,
                 style: Theme.of(context)
                     .textTheme
                     .headline4
@@ -169,7 +176,7 @@ class _HomePageState extends State<HomePage> {
             // error widget
             return Center(
               child: Text(
-                restaurantListProvider.message,
+                AppLocalizations.of(context)!.noInternetAccess,
                 style: Theme.of(context)
                     .textTheme
                     .headline4
@@ -388,6 +395,8 @@ class _RestaurantsGridView extends StatelessWidget {
             // name
             Text(
               restaurant.name,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
               style: Theme.of(context)
                   .textTheme
                   .headline5

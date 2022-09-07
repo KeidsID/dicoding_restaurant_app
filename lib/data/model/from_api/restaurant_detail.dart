@@ -19,13 +19,13 @@ class RestaurantDetail {
 
   final bool error;
   final String message;
-  final Restaurant restaurant;
+  final DetailedRestaurant restaurant;
 
   factory RestaurantDetail.fromJson(Map<String, dynamic> json) =>
       RestaurantDetail(
         error: json["error"],
         message: json["message"],
-        restaurant: Restaurant.fromJson(json["restaurant"]),
+        restaurant: DetailedRestaurant.fromJson(json["restaurant"]),
       );
 
   Map<String, dynamic> toJson() => {
@@ -35,8 +35,8 @@ class RestaurantDetail {
       };
 }
 
-class Restaurant {
-  Restaurant({
+class DetailedRestaurant {
+  DetailedRestaurant({
     required this.id,
     required this.name,
     required this.description,
@@ -60,8 +60,8 @@ class Restaurant {
   final Menus menus;
   final List<CustomerReview> customerReviews;
 
-  factory Restaurant.fromJson(Map<String, dynamic> json) {
-    return Restaurant(
+  factory DetailedRestaurant.fromJson(Map<String, dynamic> json) {
+    return DetailedRestaurant(
       id: json["id"],
       name: json["name"],
       description: json["description"],
@@ -117,13 +117,65 @@ class CustomerReview {
 
   final String name;
   final String review;
-  final String date;
+  final DateTime date;
 
   factory CustomerReview.fromJson(Map<String, dynamic> json) {
+    String dateString = json['date'];
+    List<String> splittedDateString = dateString.split(' ');
+
+    String getDate = splittedDateString[0].length == 1
+        ? splittedDateString[0].padLeft(2, '0')
+        : splittedDateString[0];
+    late String getMonth;
+    switch (splittedDateString[1]) {
+      case 'Januari':
+        getMonth = '01';
+        break;
+      case 'Febuari':
+        getMonth = '02';
+        break;
+      case 'Maret':
+        getMonth = '3';
+        break;
+      case 'April':
+        getMonth = '04';
+        break;
+      case 'Mei':
+        getMonth = '05';
+        break;
+      case 'Juni':
+        getMonth = '06';
+        break;
+      case 'Juli':
+        getMonth = '07';
+        break;
+      case 'Agustus':
+        getMonth = '08';
+        break;
+      case 'September':
+        getMonth = '09';
+        break;
+
+      case 'Oktober':
+        getMonth = '10';
+        break;
+      case 'November':
+        getMonth = '11';
+        break;
+      case 'Desember':
+        getMonth = '12';
+        break;
+      default:
+        getMonth = '12';
+    }
+    String getYear = splittedDateString[2];
+
+    String formattedString = '$getYear-$getMonth-$getDate';
+
     return CustomerReview(
       name: json["name"],
       review: json["review"],
-      date: json["date"],
+      date: DateTime.parse(formattedString),
     );
   }
 

@@ -4,7 +4,7 @@ import '../model/from_api/restaurant_list.dart';
 import '../model/from_api/restaurant_detail.dart';
 import '../model/from_api/search_restaurant.dart';
 
-class ApiService {
+abstract class ApiService {
   static const _baseUrl = 'https://restaurant-api.dicoding.dev';
 
   static Future<RestaurantList> getRestaurantList() async {

@@ -26,7 +26,7 @@ class RestaurantListProvider extends ChangeNotifier {
       if (restaurants.restaurants.isEmpty) {
         _state = ResultState.noData;
         notifyListeners();
-        return _message = 'No Restaurant Data';
+        return _message = restaurants.message;
       } else {
         _state = ResultState.hasData;
         notifyListeners();
@@ -35,7 +35,7 @@ class RestaurantListProvider extends ChangeNotifier {
     } catch (e) {
       _state = ResultState.error;
       notifyListeners();
-      return _message = 'No Internet Connection';
+      return _message = '$e';
     }
   }
 }

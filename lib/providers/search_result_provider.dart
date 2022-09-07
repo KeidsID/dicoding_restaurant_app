@@ -28,7 +28,7 @@ class SearchResultProvider extends ChangeNotifier {
       if (searchRestaurant.error == true) {
         _state = ResultState.noData;
         notifyListeners();
-        return _message = 'No Data';
+        return _message = 'Error: No restaurant data';
       } else {
         _state = ResultState.hasData;
         notifyListeners();
@@ -37,7 +37,7 @@ class SearchResultProvider extends ChangeNotifier {
     } catch (e) {
       _state = ResultState.error;
       notifyListeners();
-      return _message = 'No Internet Connection';
+      return _message = '$e';
     }
   }
 }

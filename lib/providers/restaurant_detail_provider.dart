@@ -37,7 +37,7 @@ class RestaurantDetailProvider extends ChangeNotifier {
     } catch (e) {
       _state = ResultState.error;
       notifyListeners();
-      return _message = 'No Internet Connection';
+      return _message = '$e';
     }
   }
 }
