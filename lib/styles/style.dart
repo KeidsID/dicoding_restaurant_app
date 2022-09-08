@@ -20,6 +20,7 @@ final myTheme = ThemeData(
   listTileTheme: listTileThemeData,
   tabBarTheme: tabBarTheme,
   elevatedButtonTheme: elevatedButtonThemeData,
+  textButtonTheme: textButtonThemeData,
   iconTheme: iconThemeData,
   chipTheme: chipThemeData,
 );

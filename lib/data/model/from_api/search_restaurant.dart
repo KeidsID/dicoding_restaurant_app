@@ -1,16 +1,8 @@
-// To parse this JSON data, do
-//
-//     final searchRestaurant = searchRestaurantFromJson(jsonString);
-
 import 'dart:convert';
 
-SearchRestaurant searchRestaurantFromJson(String str) {
-  return SearchRestaurant.fromJson(json.decode(str));
-}
+SearchRestaurant searchRestaurantFromJson(String str) => SearchRestaurant.fromJson(json.decode(str));
 
-String searchRestaurantToJson(SearchRestaurant data) {
-  return json.encode(data.toJson());
-}
+String searchRestaurantToJson(SearchRestaurant data) => json.encode(data.toJson());
 
 class SearchRestaurant {
   SearchRestaurant({

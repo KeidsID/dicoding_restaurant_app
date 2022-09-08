@@ -33,6 +33,16 @@ final elevatedButtonThemeData = ElevatedButtonThemeData(
   ),
 );
 
+final textButtonThemeData = TextButtonThemeData(
+  style: TextButton.styleFrom(
+    primary: primaryColorBrighter,
+    textStyle: textTheme.button?.copyWith(
+      color: primaryColorBrighter,
+      decoration: TextDecoration.underline,
+    ),
+  ),
+);
+
 const iconThemeData = IconThemeData(color: primaryColor);
 
 final chipThemeData = ChipThemeData(

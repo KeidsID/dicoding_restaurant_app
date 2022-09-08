@@ -50,10 +50,8 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    var screenSize = MediaQuery.of(context).size;
-
     return Scaffold(
-      appBar: _appBar(screenSize: screenSize, appName: appName),
+      appBar: _appBar(screenSize: screenSize(context), appName: appName),
       body: ChangeNotifierProvider(
         create: (context) => RestaurantListProvider(),
         child: _buildList(context),
@@ -165,10 +163,7 @@ class _HomePageState extends State<HomePage> {
             return Center(
               child: Text(
                 AppLocalizations.of(context)!.noApiData,
-                style: Theme.of(context)
-                    .textTheme
-                    .headline4
-                    ?.copyWith(color: secondaryColor),
+                style: txtThemeH4(context, color: secondaryColor),
                 textAlign: TextAlign.center,
               ),
             );
@@ -177,10 +172,7 @@ class _HomePageState extends State<HomePage> {
             return Center(
               child: Text(
                 AppLocalizations.of(context)!.noInternetAccess,
-                style: Theme.of(context)
-                    .textTheme
-                    .headline4
-                    ?.copyWith(color: secondaryColor),
+                style: txtThemeH4(context, color: secondaryColor),
                 textAlign: TextAlign.center,
               ),
             );
@@ -188,10 +180,7 @@ class _HomePageState extends State<HomePage> {
             return Center(
               child: Text(
                 restaurantListProvider.message,
-                style: Theme.of(context)
-                    .textTheme
-                    .headline4
-                    ?.copyWith(color: secondaryColor),
+                style: txtThemeH4(context, color: secondaryColor),
                 textAlign: TextAlign.center,
               ),
             );
@@ -265,10 +254,7 @@ class _RestaurantsListView extends StatelessWidget {
     Text title(Restaurant restaurant, BuildContext context) {
       return Text(
         restaurant.name,
-        style: Theme.of(context)
-            .textTheme
-            .headline6
-            ?.copyWith(color: secondaryColor),
+        style: txtThemeH6(context, color: secondaryColor),
       );
     }
 
@@ -361,10 +347,7 @@ class _RestaurantsGridView extends StatelessWidget {
           ),
           Text(
             text,
-            style: Theme.of(context)
-                .textTheme
-                .subtitle1
-                ?.copyWith(color: primaryColor),
+            style: txtThemeSub1(context, color: primaryColor),
           ),
         ],
       );
@@ -397,10 +380,7 @@ class _RestaurantsGridView extends StatelessWidget {
               restaurant.name,
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
-              style: Theme.of(context)
-                  .textTheme
-                  .headline5
-                  ?.copyWith(color: secondaryColor),
+              style: txtThemeH5(context, color: secondaryColor),
             ),
 
             // location and rating

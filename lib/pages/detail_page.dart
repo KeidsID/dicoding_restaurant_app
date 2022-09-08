@@ -9,22 +9,6 @@ import '../providers/restaurant_detail_provider.dart';
 import '../widgets/fade_on_scroll.dart';
 import '../widgets/review_container.dart';
 
-Size _screenSize(BuildContext context) {
-  return MediaQuery.of(context).size;
-}
-
-TextStyle? _txtThemeH3SColor(BuildContext context) {
-  return Theme.of(context).textTheme.headline3?.copyWith(color: secondaryColor);
-}
-
-TextStyle? _txtThemeH6PColor(BuildContext context) {
-  return Theme.of(context).textTheme.headline6?.copyWith(color: primaryColor);
-}
-
-TextStyle? _txtThemeOverlinePColor(BuildContext context) {
-  return Theme.of(context).textTheme.overline?.copyWith(color: primaryColor);
-}
-
 Widget _descriptionContainer({EdgeInsetsGeometry? margin, Widget? child}) {
   return Container(
     padding: const EdgeInsets.all(24),
@@ -54,10 +38,7 @@ Widget _iconWithText(
       ),
       Text(
         text,
-        style: Theme.of(context)
-            .textTheme
-            .subtitle1
-            ?.copyWith(color: primaryColor),
+        style: txtThemeSub1(context, color: primaryColor),
       )
     ],
   );
@@ -73,21 +54,28 @@ Widget _foodAndDrinkWidget(String e, TextStyle? textStyle) {
   );
 }
 
-List<Widget> _foodWidgets(BuildContext context, DetailedRestaurant restaurant) {
+List<Widget> _foodWidgets(BuildContext context, Restaurant restaurant) {
   return restaurant.menus.foods.map(
     (e) {
       return _foodAndDrinkWidget(
-          '\u003E ${e.name}', _txtThemeH6PColor(context));
+          '\u003E ${e.name}',
+          txtThemeH6(
+            context,
+            color: primaryColor,
+          ));
     },
   ).toList();
 }
 
-List<Widget> _drinkWidgets(
-    BuildContext context, DetailedRestaurant restaurant) {
+List<Widget> _drinkWidgets(BuildContext context, Restaurant restaurant) {
   return restaurant.menus.drinks.map(
     (e) {
       return _foodAndDrinkWidget(
-          '\u003E ${e.name}', _txtThemeH6PColor(context));
+          '\u003E ${e.name}',
+          txtThemeH6(
+            context,
+            color: primaryColor,
+          ));
     },
   ).toList();
 }
@@ -123,10 +111,7 @@ class DetailPage extends StatelessWidget {
               return Center(
                 child: Text(
                   AppLocalizations.of(context)!.noApiData,
-                  style: Theme.of(context)
-                      .textTheme
-                      .headline4
-                      ?.copyWith(color: secondaryColor),
+                  style: txtThemeH4(context, color: secondaryColor),
                   textAlign: TextAlign.center,
                 ),
               );
@@ -135,10 +120,7 @@ class DetailPage extends StatelessWidget {
               return Center(
                 child: Text(
                   AppLocalizations.of(context)!.noInternetAccess,
-                  style: Theme.of(context)
-                      .textTheme
-                      .headline4
-                      ?.copyWith(color: secondaryColor),
+                  style: txtThemeH4(context, color: secondaryColor),
                   textAlign: TextAlign.center,
                 ),
               );
@@ -146,10 +128,7 @@ class DetailPage extends StatelessWidget {
               return Center(
                 child: Text(
                   restaurantDetailProvider.message,
-                  style: Theme.of(context)
-                      .textTheme
-                      .headline4
-                      ?.copyWith(color: secondaryColor),
+                  style: txtThemeH4(context, color: secondaryColor),
                   textAlign: TextAlign.center,
                 ),
               );
@@ -174,7 +153,7 @@ class DetailPage extends StatelessWidget {
 }
 
 class _DetailPagePortrait extends StatefulWidget {
-  final DetailedRestaurant restaurant;
+  final Restaurant restaurant;
 
   const _DetailPagePortrait(this.restaurant, {Key? key}) : super(key: key);
 
@@ -206,13 +185,19 @@ class _DetailPagePortraitState extends State<_DetailPagePortrait> {
         children: [
           Text(
             widget.restaurant.description,
-            style: _txtThemeH6PColor(context),
+            style: txtThemeH6(
+              context,
+              color: primaryColor,
+            ),
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: 8),
           Text(
             'ID: ${widget.restaurant.id.toUpperCase()}',
-            style: _txtThemeOverlinePColor(context),
+            style: txtThemeOverline(
+              context,
+              color: primaryColor,
+            ),
           ),
         ],
       );
@@ -233,7 +218,10 @@ class _DetailPagePortraitState extends State<_DetailPagePortrait> {
                   padding: const EdgeInsets.symmetric(vertical: 16),
                   child: Text(
                     widget.restaurant.name,
-                    style: _txtThemeH3SColor(context),
+                    style: txtThemeH3(
+                      context,
+                      color: secondaryColor,
+                    ),
                     textAlign: TextAlign.center,
                   ),
                 ),
@@ -282,10 +270,7 @@ class _DetailPagePortraitState extends State<_DetailPagePortrait> {
                   padding: const EdgeInsets.symmetric(vertical: 16),
                   child: Text(
                     AppLocalizations.of(context)!.reviewHeading(1),
-                    style: Theme.of(context)
-                        .textTheme
-                        .headline4
-                        ?.copyWith(color: secondaryColor),
+                    style: txtThemeH4(context, color: secondaryColor),
                     textAlign: TextAlign.center,
                   ),
                 ),
@@ -297,6 +282,7 @@ class _DetailPagePortraitState extends State<_DetailPagePortrait> {
                     maxLinesReview: 2,
                   ),
                 ),
+                SizedBox(height: 8),
                 TextButton(
                   onPressed: () {
                     Navigator.pushNamed(
@@ -307,17 +293,13 @@ class _DetailPagePortraitState extends State<_DetailPagePortrait> {
                   },
                   child: Text(
                     AppLocalizations.of(context)!.reviewsCheck.toUpperCase(),
-                    style: Theme.of(context).textTheme.button?.copyWith(
-                          color: primaryColorBrighter,
-                          decoration: TextDecoration.underline,
-                        ),
                   ),
                 ),
 
                 // Menu and Go Back Button
                 Container(
                   margin: const EdgeInsets.only(top: 8, bottom: 16),
-                  width: _screenSize(context).width,
+                  width: screenSize(context).width,
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
@@ -334,10 +316,7 @@ class _DetailPagePortraitState extends State<_DetailPagePortrait> {
                         child: Text(
                           AppLocalizations.of(context)!
                               .detailPagePopNavigationButton,
-                          style: Theme.of(context)
-                              .textTheme
-                              .button
-                              ?.copyWith(color: secondaryColor),
+                          style: txtThemeButton(context, color: secondaryColor),
                         ),
                       ),
                     ],
@@ -358,7 +337,10 @@ class _DetailPagePortraitState extends State<_DetailPagePortrait> {
         fullOpacityOffset: 250,
         child: Text(
           appName,
-          style: _txtThemeH6PColor(context),
+          style: txtThemeH6(
+            context,
+            color: primaryColor,
+          ),
         ),
       );
     }
@@ -411,7 +393,7 @@ class _DetailPagePortraitState extends State<_DetailPagePortrait> {
             ),
             SizedBox(
               height:
-                  _screenSize(context).height - _screenSize(context).height / 2,
+                  screenSize(context).height - screenSize(context).height / 2,
               child: TabBarView(
                 children: [
                   ListView(
@@ -431,7 +413,7 @@ class _DetailPagePortraitState extends State<_DetailPagePortrait> {
 }
 
 class _DetailPageLandscape extends StatefulWidget {
-  final DetailedRestaurant restaurant;
+  final Restaurant restaurant;
 
   const _DetailPageLandscape(
     this.restaurant, {
@@ -465,11 +447,11 @@ class _DetailPageLandscapeState extends State<_DetailPageLandscape> {
 
   @override
   Widget build(BuildContext context) {
-    EdgeInsets appBarHMargin = (_screenSize(context).width <= 1200)
+    EdgeInsets appBarHMargin = (screenSize(context).width <= 1200)
         ? const EdgeInsets.symmetric(horizontal: 16)
         : const EdgeInsets.symmetric(horizontal: 32);
 
-    EdgeInsets bodyHMargin = (_screenSize(context).width <= 1200)
+    EdgeInsets bodyHMargin = (screenSize(context).width <= 1200)
         ? const EdgeInsets.symmetric(horizontal: 32)
         : const EdgeInsets.symmetric(horizontal: 48);
 
@@ -501,7 +483,7 @@ class _DetailPageLandscapeState extends State<_DetailPageLandscape> {
           ),
         ),
       ),
-      width: _screenSize(context).width,
+      width: screenSize(context).width,
       margin: mainHMargin,
       child: Row(
         children: [
@@ -509,7 +491,7 @@ class _DetailPageLandscapeState extends State<_DetailPageLandscape> {
           Expanded(
             child: Text(
               appName,
-              style: _txtThemeH6PColor(context),
+              style: txtThemeH6(context, color: primaryColor),
             ),
           ),
 
@@ -536,13 +518,19 @@ class _DetailPageLandscapeState extends State<_DetailPageLandscape> {
           children: [
             Text(
               widget.restaurant.description,
-              style: _txtThemeH6PColor(context),
+              style: txtThemeH6(
+                context,
+                color: primaryColor,
+              ),
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 8),
             Text(
               'ID: ${widget.restaurant.id.toUpperCase()}',
-              style: _txtThemeOverlinePColor(context),
+              style: txtThemeOverline(
+                context,
+                color: primaryColor,
+              ),
             ),
           ],
         );
@@ -582,7 +570,10 @@ class _DetailPageLandscapeState extends State<_DetailPageLandscape> {
               padding: const EdgeInsets.symmetric(vertical: 16),
               child: Text(
                 widget.restaurant.name,
-                style: _txtThemeH3SColor(context),
+                style: txtThemeH3(
+                  context,
+                  color: secondaryColor,
+                ),
                 textAlign: TextAlign.center,
               ),
             ),
@@ -634,10 +625,7 @@ class _DetailPageLandscapeState extends State<_DetailPageLandscape> {
               padding: const EdgeInsets.symmetric(vertical: 16),
               child: Text(
                 AppLocalizations.of(context)!.reviewHeading(1),
-                style: Theme.of(context)
-                    .textTheme
-                    .headline4
-                    ?.copyWith(color: secondaryColor),
+                style: txtThemeH4(context, color: secondaryColor),
                 textAlign: TextAlign.center,
               ),
             ),
@@ -649,6 +637,7 @@ class _DetailPageLandscapeState extends State<_DetailPageLandscape> {
                 maxLinesReview: 2,
               ),
             ),
+            SizedBox(height: 8),
             TextButton(
               onPressed: () {
                 Navigator.pushNamed(
@@ -659,10 +648,6 @@ class _DetailPageLandscapeState extends State<_DetailPageLandscape> {
               },
               child: Text(
                 AppLocalizations.of(context)!.reviewsCheck.toUpperCase(),
-                style: Theme.of(context).textTheme.button?.copyWith(
-                      color: primaryColorBrighter,
-                      decoration: TextDecoration.underline,
-                    ),
               ),
             ),
           ],
@@ -678,7 +663,7 @@ class _DetailPageLandscapeState extends State<_DetailPageLandscape> {
           // Restaurant detail
           Expanded(
             child: SizedBox(
-              height: _screenSize(context).height - 100,
+              height: screenSize(context).height - 100,
               child: restaurantDetail(context),
             ),
           ),
@@ -686,7 +671,7 @@ class _DetailPageLandscapeState extends State<_DetailPageLandscape> {
           // TabBarView + Button
           Expanded(
             child: SizedBox(
-              height: _screenSize(context).height - 100,
+              height: screenSize(context).height - 100,
               child: Column(
                 children: [
                   // TabBar
@@ -724,10 +709,7 @@ class _DetailPageLandscapeState extends State<_DetailPageLandscape> {
                         child: Text(
                           AppLocalizations.of(context)!
                               .detailPagePopNavigationButton,
-                          style: Theme.of(context)
-                              .textTheme
-                              .button
-                              ?.copyWith(color: secondaryColor),
+                          style: txtThemeButton(context, color: secondaryColor),
                         ),
                       ),
                     ),

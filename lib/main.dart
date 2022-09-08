@@ -49,7 +49,7 @@ class MyApp extends StatelessWidget {
       ReviewsPage.routeName: (context) {
         return ReviewsPage(
           restaurant:
-              ModalRoute.of(context)?.settings.arguments as DetailedRestaurant,
+              ModalRoute.of(context)?.settings.arguments as Restaurant,
         );
       }
     };

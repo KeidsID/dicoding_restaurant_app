@@ -4,13 +4,18 @@ import '../common.dart';
 import '../data/model/from_api/restaurant_detail.dart';
 
 class ReviewContainer extends StatelessWidget {
+  /// [CustomerReview] object
   final CustomerReview customerReviews;
-  final int maxLinesReview;
+
+  /// Review max lines.
+  ///
+  /// If this null, then [DefaultTextStyle.maxLines] is used.
+  final int? maxLinesReview;
 
   const ReviewContainer({
     Key? key,
     required this.customerReviews,
-    required this.maxLinesReview,
+    this.maxLinesReview,
   }) : super(key: key);
 
   @override
@@ -41,18 +46,15 @@ class ReviewContainer extends StatelessWidget {
                 children: [
                   Text(
                     customerReviews.name,
-                    style: Theme.of(context)
-                        .textTheme
-                        .headline6
-                        ?.copyWith(color: secondaryColor),
+                    style: txtThemeH6(context, color: secondaryColor),
                   ),
                   Text(
                     AppLocalizations.of(context)!
                         .reviewDate(customerReviews.date),
-                    style: Theme.of(context)
-                        .textTheme
-                        .caption
-                        ?.copyWith(color: primaryColorBrighter),
+                    style: txtThemeCaption(
+                      context,
+                      color: primaryColorBrighter,
+                    ),
                   ),
                 ],
               ),
@@ -61,12 +63,9 @@ class ReviewContainer extends StatelessWidget {
           const SizedBox(height: 8),
           Text(
             customerReviews.review,
-            maxLines: maxLinesReview,
+            maxLines: maxLinesReview ?? DefaultTextStyle.of(context).maxLines,
             overflow: TextOverflow.ellipsis,
-            style: Theme.of(context)
-                .textTheme
-                .headline6
-                ?.copyWith(color: primaryColor),
+            style: txtThemeH6(context, color: primaryColor),
           ),
         ],
       ),

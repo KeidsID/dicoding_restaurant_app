@@ -7,7 +7,7 @@ import '../widgets/review_container.dart';
 
 class ReviewsPage extends StatelessWidget {
   static const routeName = '/reviews_page';
-  final DetailedRestaurant restaurant;
+  final Restaurant restaurant;
 
   const ReviewsPage({Key? key, required this.restaurant}) : super(key: key);
 
@@ -29,7 +29,6 @@ class ReviewsPage extends StatelessWidget {
                       ),
                       child: ReviewContainer(
                         customerReviews: e,
-                        maxLinesReview: 10,
                       ),
                     ))
                 .toList(),
@@ -67,10 +66,10 @@ class ReviewsPage extends StatelessWidget {
                   Text(
                     AppLocalizations.of(context)!
                         .reviewHeading(restaurant.customerReviews.length),
-                    style: Theme.of(context)
-                        .textTheme
-                        .caption
-                        ?.copyWith(color: primaryColorBrighter),
+                    style: txtThemeCaption(
+                      context,
+                      color: primaryColorBrighter,
+                    ),
                   ),
                 ],
               ),

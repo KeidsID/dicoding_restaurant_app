@@ -1,7 +1,3 @@
-// To parse this JSON data, do
-//
-//     final restaurantDetail = restaurantDetailFromJson(jsonString);
-
 import 'dart:convert';
 
 RestaurantDetail restaurantDetailFromJson(String str) =>
@@ -19,24 +15,27 @@ class RestaurantDetail {
 
   final bool error;
   final String message;
-  final DetailedRestaurant restaurant;
+  final Restaurant restaurant;
 
-  factory RestaurantDetail.fromJson(Map<String, dynamic> json) =>
-      RestaurantDetail(
-        error: json["error"],
-        message: json["message"],
-        restaurant: DetailedRestaurant.fromJson(json["restaurant"]),
-      );
+  factory RestaurantDetail.fromJson(Map<String, dynamic> json) {
+    return RestaurantDetail(
+      error: json["error"],
+      message: json["message"],
+      restaurant: Restaurant.fromJson(json["restaurant"]),
+    );
+  }
 
-  Map<String, dynamic> toJson() => {
-        "error": error,
-        "message": message,
-        "restaurant": restaurant.toJson(),
-      };
+  Map<String, dynamic> toJson() {
+    return {
+      "error": error,
+      "message": message,
+      "restaurant": restaurant.toJson(),
+    };
+  }
 }
 
-class DetailedRestaurant {
-  DetailedRestaurant({
+class Restaurant {
+  Restaurant({
     required this.id,
     required this.name,
     required this.description,
@@ -60,8 +59,8 @@ class DetailedRestaurant {
   final Menus menus;
   final List<CustomerReview> customerReviews;
 
-  factory DetailedRestaurant.fromJson(Map<String, dynamic> json) {
-    return DetailedRestaurant(
+  factory Restaurant.fromJson(Map<String, dynamic> json) {
+    return Restaurant(
       id: json["id"],
       name: json["name"],
       description: json["description"],
@@ -90,8 +89,9 @@ class DetailedRestaurant {
       "rating": rating,
       "categories": List<dynamic>.from(categories.map((x) => x.toJson())),
       "menus": menus.toJson(),
-      "customerReviews":
-          List<dynamic>.from(customerReviews.map((x) => x.toJson())),
+      "customerReviews": List<dynamic>.from(
+        customerReviews.map((x) => x.toJson()),
+      ),
     };
   }
 }
@@ -120,57 +120,7 @@ class CustomerReview {
   final DateTime date;
 
   factory CustomerReview.fromJson(Map<String, dynamic> json) {
-    String dateString = json['date'];
-    List<String> splittedDateString = dateString.split(' ');
-
-    String getDate = splittedDateString[0].length == 1
-        ? splittedDateString[0].padLeft(2, '0')
-        : splittedDateString[0];
-    late String getMonth;
-    switch (splittedDateString[1]) {
-      case 'Januari':
-        getMonth = '01';
-        break;
-      case 'Febuari':
-        getMonth = '02';
-        break;
-      case 'Maret':
-        getMonth = '3';
-        break;
-      case 'April':
-        getMonth = '04';
-        break;
-      case 'Mei':
-        getMonth = '05';
-        break;
-      case 'Juni':
-        getMonth = '06';
-        break;
-      case 'Juli':
-        getMonth = '07';
-        break;
-      case 'Agustus':
-        getMonth = '08';
-        break;
-      case 'September':
-        getMonth = '09';
-        break;
-
-      case 'Oktober':
-        getMonth = '10';
-        break;
-      case 'November':
-        getMonth = '11';
-        break;
-      case 'Desember':
-        getMonth = '12';
-        break;
-      default:
-        getMonth = '12';
-    }
-    String getYear = splittedDateString[2];
-
-    String formattedString = '$getYear-$getMonth-$getDate';
+    String formattedString = _dateStringFormatter(json['date']);
 
     return CustomerReview(
       name: json["name"],
@@ -183,9 +133,59 @@ class CustomerReview {
     return {
       "name": name,
       "review": review,
-      "date": date,
+      "date": date.toIso8601String(),
     };
   }
+}
+
+String _dateStringFormatter(String dateString) {
+  List<String> splittedDateString = dateString.split(' ');
+
+  String getDate = splittedDateString[0].length == 1
+      ? splittedDateString[0].padLeft(2, '0')
+      : splittedDateString[0];
+  late String getMonth;
+  switch (splittedDateString[1]) {
+    case 'Januari':
+      getMonth = '01';
+      break;
+    case 'Febuari':
+      getMonth = '02';
+      break;
+    case 'Maret':
+      getMonth = '03';
+      break;
+    case 'April':
+      getMonth = '04';
+      break;
+    case 'Mei':
+      getMonth = '05';
+      break;
+    case 'Juni':
+      getMonth = '06';
+      break;
+    case 'Juli':
+      getMonth = '07';
+      break;
+    case 'Agustus':
+      getMonth = '08';
+      break;
+    case 'September':
+      getMonth = '09';
+      break;
+    case 'Oktober':
+      getMonth = '10';
+      break;
+    case 'November':
+      getMonth = '11';
+      break;
+    case 'Desember':
+      getMonth = '12';
+      break;
+  }
+  String getYear = splittedDateString[2];
+
+  return '$getYear-$getMonth-$getDate';
 }
 
 class Menus {
