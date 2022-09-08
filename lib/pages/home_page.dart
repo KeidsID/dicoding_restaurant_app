@@ -1,12 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
+import 'package:provider/provider.dart';
 
-import '../styles/style.dart';
-import '../data/restaurant.dart';
 import 'detail_page.dart';
+import 'search_result_page.dart';
+import '../common.dart';
+import '../data/api/api_service.dart';
+import '../data/model/from_api/restaurant_list.dart';
+import '../providers/restaurant_list_provider.dart';
+import '../widgets/restaurant_grid_view_container.dart';
+import '../widgets/restaurant_list_tile.dart';
+import '../widgets/search_text_field.dart';
 
 class HomePage extends StatefulWidget {
-  static String routeName = '/';
+  static const routeName = '/';
 
   const HomePage({super.key});
 
@@ -15,10 +22,15 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  late bool isSearchActionButtonTap;
+  late TextEditingController searchTextFieldController;
+
   @override
   void initState() {
     super.initState();
     initialization();
+    isSearchActionButtonTap = false;
+    searchTextFieldController = TextEditingController();
   }
 
   void initialization() async {
@@ -31,69 +43,175 @@ class _HomePageState extends State<HomePage> {
   }
 
   @override
-  Widget build(BuildContext context) {
-    // var screenSize = MediaQuery.of(context).size;
+  void dispose() {
+    super.dispose();
+    searchTextFieldController.dispose();
+  }
 
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(appName),
-        centerTitle: true,
+      appBar: _appBar(screenSize: screenSize(context), appName: appName),
+      body: ChangeNotifierProvider(
+        create: (context) => RestaurantListProvider(),
+        child: _buildList(context),
       ),
-      body: _buildList(context),
     );
   }
 
+  AppBar _appBar({required Size screenSize, required String appName}) {
+    if (screenSize.width <= 600) {
+      if (isSearchActionButtonTap) {
+        return AppBar(
+          leading: IconButton(
+            onPressed: () => setState(() {
+              isSearchActionButtonTap = false;
+            }),
+            icon: const Icon(Icons.arrow_back),
+          ),
+          title: Row(
+            children: _appBarSearchTextField(10),
+          ),
+        );
+      } else {
+        return AppBar(
+          title: Text(appName),
+          centerTitle: true,
+          actions: [
+            IconButton(
+              onPressed: () => setState(() {
+                isSearchActionButtonTap = true;
+              }),
+              icon: const Icon(Icons.search),
+            ),
+          ],
+        );
+      }
+    } else {
+      isSearchActionButtonTap = false;
+      List<Widget> title = _appBarSearchTextField(5);
+      title.insert(
+        0,
+        const Expanded(
+          child: SizedBox(),
+        ),
+      );
+
+      return AppBar(
+        leading: Center(
+          child: Padding(
+            padding: const EdgeInsets.only(left: 8),
+            child: Text(
+              appName,
+              style: AppBarTheme.of(context)
+                  .titleTextStyle
+                  ?.copyWith(color: primaryColor),
+            ),
+          ),
+        ),
+        leadingWidth: 140,
+        title: Row(
+          children: title,
+        ),
+      );
+    }
+  }
+
+  List<Widget> _appBarSearchTextField([int flex = 1]) {
+    return [
+      Expanded(
+        flex: flex,
+        child: SearchTextField(controller: searchTextFieldController),
+      ),
+      const Flexible(child: SizedBox(width: 24)),
+      Flexible(
+        child: IconButton(
+          onPressed: () {
+            if (searchTextFieldController.text != '') {
+              Navigator.pushNamed(
+                context,
+                SearchResultPage.routeName,
+                arguments: searchTextFieldController.text,
+              );
+            }
+          },
+          icon: const Icon(Icons.search),
+        ),
+      ),
+    ];
+  }
+
   Widget _buildList(BuildContext context) {
-    return FutureBuilder<String>(
-      future:
-          DefaultAssetBundle.of(context).loadString('assets/restaurants.json'),
-      builder: (context, snapshot) {
-        /// future error handler
-        if (snapshot.connectionState != ConnectionState.done) {
+    return Consumer<RestaurantListProvider>(
+      builder: (context, restaurantListProvider, _) {
+        if (restaurantListProvider.state == ResultState.loading) {
           // loading widget
-          return const Center(child: CircularProgressIndicator());
+          return Container(
+            color: backgroundColor,
+            child: const Center(
+              child: CircularProgressIndicator(
+                backgroundColor: primaryColorBrightest,
+                color: primaryColor,
+              ),
+            ),
+          );
         } else {
-          if (snapshot.hasData) {
+          if (restaurantListProvider.state == ResultState.hasData) {
             // success widget
-          } else if (snapshot.hasError) {
+          } else if (restaurantListProvider.state == ResultState.noData) {
+            // no data
+            return Center(
+              child: Text(
+                AppLocalizations.of(context)!.noApiData,
+                style: txtThemeH4(context, color: secondaryColor),
+                textAlign: TextAlign.center,
+              ),
+            );
+          } else if (restaurantListProvider.state == ResultState.error) {
             // error widget
             return Center(
               child: Text(
-                '${snapshot.error}',
-                style: Theme.of(context)
-                    .textTheme
-                    .headline3
-                    ?.copyWith(color: secondaryColor),
+                AppLocalizations.of(context)!.noInternetAccess,
+                style: txtThemeH4(context, color: secondaryColor),
+                textAlign: TextAlign.center,
               ),
             );
           } else {
-            // loading widget
-            return const Center(child: CircularProgressIndicator());
+            return Center(
+              child: Text(
+                restaurantListProvider.message,
+                style: txtThemeH4(context, color: secondaryColor),
+                textAlign: TextAlign.center,
+              ),
+            );
           }
         }
 
-        final List<Restaurant> restaurants = restaurantsFromJson(snapshot.data);
+        final List<Restaurant> restaurants =
+            restaurantListProvider.result.restaurants;
 
-        return LayoutBuilder(builder: (_, constraints) {
-          if (constraints.maxWidth <= 600) {
-            return _RestaurantsListView(restaurants);
-          } else if (constraints.maxWidth <= 900) {
-            return _RestaurantsGridView(
-              gridCount: 2,
-              restaurants: restaurants,
-            );
-          } else if (constraints.maxWidth <= 1200) {
-            return _RestaurantsGridView(
-              gridCount: 3,
-              restaurants: restaurants,
-            );
-          } else {
-            return _RestaurantsGridView(
-              gridCount: 4,
-              restaurants: restaurants,
-            );
-          }
-        });
+        return LayoutBuilder(
+          builder: (_, constraints) {
+            if (constraints.maxWidth <= 600) {
+              return _RestaurantsListView(restaurants);
+            } else if (constraints.maxWidth <= 900) {
+              return _RestaurantsGridView(
+                gridCount: 2,
+                restaurants: restaurants,
+              );
+            } else if (constraints.maxWidth <= 1200) {
+              return _RestaurantsGridView(
+                gridCount: 3,
+                restaurants: restaurants,
+              );
+            } else {
+              return _RestaurantsGridView(
+                gridCount: 4,
+                restaurants: restaurants,
+              );
+            }
+          },
+        );
       },
     );
   }
@@ -102,7 +220,7 @@ class _HomePageState extends State<HomePage> {
 class _RestaurantsListView extends StatelessWidget {
   final List<Restaurant> restaurants;
 
-  const _RestaurantsListView(this.restaurants, {super.key});
+  const _RestaurantsListView(this.restaurants, {Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -119,7 +237,7 @@ class _RestaurantsListView extends StatelessWidget {
       return Hero(
         tag: restaurant.id,
         child: Image.network(
-          restaurant.pictureId,
+          ApiService.imageSmall(restaurant.pictureId),
           width: 100,
           fit: BoxFit.fill,
           errorBuilder: (_, __, ___) {
@@ -136,10 +254,7 @@ class _RestaurantsListView extends StatelessWidget {
     Text title(Restaurant restaurant, BuildContext context) {
       return Text(
         restaurant.name,
-        style: Theme.of(context)
-            .textTheme
-            .headline6
-            ?.copyWith(color: secondaryColor),
+        style: txtThemeH6(context, color: secondaryColor),
       );
     }
 
@@ -170,17 +285,15 @@ class _RestaurantsListView extends StatelessWidget {
     }
 
     return Material(
-      child: ListTile(
+      child: RestaurantListTile(
         leading: leading(restaurant),
         title: title(restaurant, context),
         subtitle: subtitle(restaurant),
-        isThreeLine: true,
-        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
         onTap: () {
           Navigator.pushNamed(
             context,
             DetailPage.routeName,
-            arguments: restaurant,
+            arguments: restaurant.id,
           );
         },
       ),
@@ -193,10 +306,10 @@ class _RestaurantsGridView extends StatelessWidget {
   final List<Restaurant> restaurants;
 
   const _RestaurantsGridView({
-    super.key,
+    Key? key,
     required this.gridCount,
     required this.restaurants,
-  });
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -212,7 +325,7 @@ class _RestaurantsGridView extends StatelessWidget {
       return Hero(
         tag: restaurant.id,
         child: Image.network(
-          restaurant.pictureId,
+          ApiService.imageMedium(restaurant.pictureId),
           fit: BoxFit.fill,
           errorBuilder: (_, __, ___) {
             return Image.asset(
@@ -234,60 +347,54 @@ class _RestaurantsGridView extends StatelessWidget {
           ),
           Text(
             text,
-            style: Theme.of(context)
-                .textTheme
-                .subtitle1
-                ?.copyWith(color: primaryColor),
+            style: txtThemeSub1(context, color: primaryColor),
           ),
         ],
       );
     }
 
-    return Material(
-      // decoration
+    return RestaurantGridViewContainer(
+      padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 8),
       color: backgroundColor,
-      child: InkWell(
-        onTap: () {
-          Navigator.pushNamed(
-            context,
-            DetailPage.routeName,
-            arguments: restaurant,
-          );
-        },
-        child: Padding(
-          // padding
-          padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 8),
-          // Container content
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // Image
-              Expanded(
-                child: image(restaurant),
-              ),
+      onTap: () {
+        Navigator.pushNamed(
+          context,
+          DetailPage.routeName,
+          arguments: restaurant.id,
+        );
+      },
+      child: Padding(
+        // padding
+        padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 8),
+        // Container content
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Image
+            Expanded(
+              child: image(restaurant),
+            ),
 
-              // name
-              Text(
-                restaurant.name,
-                style: Theme.of(context)
-                    .textTheme
-                    .headline5
-                    ?.copyWith(color: secondaryColor),
-              ),
+            // name
+            Text(
+              restaurant.name,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: txtThemeH5(context, color: secondaryColor),
+            ),
 
-              // location and rating
-              iconWithText(
-                context,
-                icon: Icons.location_on,
-                text: restaurant.city,
-              ),
-              iconWithText(
-                context,
-                icon: Icons.star,
-                text: '${restaurant.rating}',
-              ),
-            ],
-          ),
+            // location and rating
+            iconWithText(
+              context,
+              icon: Icons.location_on,
+              text: restaurant.city,
+            ),
+            iconWithText(
+              context,
+              icon: Icons.star,
+              text: '${restaurant.rating}',
+            ),
+          ],
         ),
       ),
     );

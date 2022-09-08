@@ -1,24 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
-import '../styles/style.dart';
-import '../data/restaurant.dart';
+import 'reviews_page.dart';
+import '../common.dart';
+import '../data/api/api_service.dart';
+import '../data/model/from_api/restaurant_detail.dart';
+import '../providers/restaurant_detail_provider.dart';
 import '../widgets/fade_on_scroll.dart';
-
-Size _screenSize(BuildContext context) {
-  return MediaQuery.of(context).size;
-}
-
-TextStyle? _txtThemeH3SColor(BuildContext context) {
-  return Theme.of(context).textTheme.headline3?.copyWith(color: secondaryColor);
-}
-
-TextStyle? _txtThemeH6PColor(BuildContext context) {
-  return Theme.of(context).textTheme.headline6?.copyWith(color: primaryColor);
-}
-
-TextStyle? _txtThemeOverlinePColor(BuildContext context) {
-  return Theme.of(context).textTheme.overline?.copyWith(color: primaryColor);
-}
+import '../widgets/review_container.dart';
 
 Widget _descriptionContainer({EdgeInsetsGeometry? margin, Widget? child}) {
   return Container(
@@ -36,8 +25,11 @@ Widget _descriptionContainer({EdgeInsetsGeometry? margin, Widget? child}) {
 }
 
 // For location & rating
-Widget _iconWithText(BuildContext context,
-    {IconData? icon, required String text}) {
+Widget _iconWithText(
+  BuildContext context, {
+  IconData? icon,
+  required String text,
+}) {
   return Row(
     children: [
       Icon(
@@ -46,10 +38,7 @@ Widget _iconWithText(BuildContext context,
       ),
       Text(
         text,
-        style: Theme.of(context)
-            .textTheme
-            .subtitle1
-            ?.copyWith(color: primaryColor),
+        style: txtThemeSub1(context, color: primaryColor),
       )
     ],
   );
@@ -68,7 +57,12 @@ Widget _foodAndDrinkWidget(String e, TextStyle? textStyle) {
 List<Widget> _foodWidgets(BuildContext context, Restaurant restaurant) {
   return restaurant.menus.foods.map(
     (e) {
-      return _foodAndDrinkWidget('\u003E $e', _txtThemeH6PColor(context));
+      return _foodAndDrinkWidget(
+          '\u003E ${e.name}',
+          txtThemeH6(
+            context,
+            color: primaryColor,
+          ));
     },
   ).toList();
 }
@@ -76,38 +70,111 @@ List<Widget> _foodWidgets(BuildContext context, Restaurant restaurant) {
 List<Widget> _drinkWidgets(BuildContext context, Restaurant restaurant) {
   return restaurant.menus.drinks.map(
     (e) {
-      return _foodAndDrinkWidget('\u003E $e', _txtThemeH6PColor(context));
+      return _foodAndDrinkWidget(
+          '\u003E ${e.name}',
+          txtThemeH6(
+            context,
+            color: primaryColor,
+          ));
     },
   ).toList();
 }
 
 class DetailPage extends StatelessWidget {
-  static String routeName = '/detail_page';
+  static const routeName = '/detail_page';
+  final String pictureId;
 
-  final Restaurant restaurant;
-
-  const DetailPage(this.restaurant, {super.key});
+  const DetailPage({super.key, required this.pictureId});
 
   @override
   Widget build(BuildContext context) {
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        if (constraints.maxWidth <= 600) {
-          return _DetailPagePortrait(restaurant);
-        } else {
-          return _DetailPageLandscape(restaurant);
-        }
-      },
+    return ChangeNotifierProvider(
+      create: (context) => RestaurantDetailProvider(pictureId),
+      child: Consumer<RestaurantDetailProvider>(
+        builder: (_, restaurantDetailProvider, __) {
+          if (restaurantDetailProvider.state == ResultState.loading) {
+            // loading widget
+            return Container(
+              color: backgroundColor,
+              child: const Center(
+                child: CircularProgressIndicator(
+                  backgroundColor: primaryColorBrightest,
+                  color: primaryColor,
+                ),
+              ),
+            );
+          } else {
+            if (restaurantDetailProvider.state == ResultState.hasData) {
+              // success widget
+            } else if (restaurantDetailProvider.state == ResultState.noData) {
+              // no data
+              return Center(
+                child: Text(
+                  AppLocalizations.of(context)!.noApiData,
+                  style: txtThemeH4(context, color: secondaryColor),
+                  textAlign: TextAlign.center,
+                ),
+              );
+            } else if (restaurantDetailProvider.state == ResultState.error) {
+              // error widget
+              return Center(
+                child: Text(
+                  AppLocalizations.of(context)!.noInternetAccess,
+                  style: txtThemeH4(context, color: secondaryColor),
+                  textAlign: TextAlign.center,
+                ),
+              );
+            } else {
+              return Center(
+                child: Text(
+                  restaurantDetailProvider.message,
+                  style: txtThemeH4(context, color: secondaryColor),
+                  textAlign: TextAlign.center,
+                ),
+              );
+            }
+          }
+
+          final restaurant = restaurantDetailProvider.result.restaurant;
+
+          return LayoutBuilder(
+            builder: (context, constraints) {
+              if (constraints.maxWidth <= 600) {
+                return _DetailPagePortrait(restaurant);
+              } else {
+                return _DetailPageLandscape(restaurant);
+              }
+            },
+          );
+        },
+      ),
     );
   }
 }
 
-class _DetailPagePortrait extends StatelessWidget {
+class _DetailPagePortrait extends StatefulWidget {
   final Restaurant restaurant;
 
-  _DetailPagePortrait(this.restaurant, {super.key});
+  const _DetailPagePortrait(this.restaurant, {Key? key}) : super(key: key);
 
-  final ScrollController scrollController = ScrollController();
+  @override
+  State<_DetailPagePortrait> createState() => _DetailPagePortraitState();
+}
+
+class _DetailPagePortraitState extends State<_DetailPagePortrait> {
+  late ScrollController scrollController;
+
+  @override
+  void initState() {
+    scrollController = ScrollController();
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    scrollController.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -117,14 +184,20 @@ class _DetailPagePortrait extends StatelessWidget {
       return Column(
         children: [
           Text(
-            restaurant.description,
-            style: _txtThemeH6PColor(context),
+            widget.restaurant.description,
+            style: txtThemeH6(
+              context,
+              color: primaryColor,
+            ),
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: 8),
           Text(
-            'ID: ${restaurant.id.toUpperCase()}',
-            style: _txtThemeOverlinePColor(context),
+            'ID: ${widget.restaurant.id.toUpperCase()}',
+            style: txtThemeOverline(
+              context,
+              color: primaryColor,
+            ),
           ),
         ],
       );
@@ -144,8 +217,11 @@ class _DetailPagePortrait extends StatelessWidget {
                 Container(
                   padding: const EdgeInsets.symmetric(vertical: 16),
                   child: Text(
-                    restaurant.name,
-                    style: _txtThemeH3SColor(context),
+                    widget.restaurant.name,
+                    style: txtThemeH3(
+                      context,
+                      color: secondaryColor,
+                    ),
                     textAlign: TextAlign.center,
                   ),
                 ),
@@ -156,33 +232,74 @@ class _DetailPagePortrait extends StatelessWidget {
                   child: description(),
                 ),
 
-                // location & rating
+                // location, rating, and categories
                 Container(
                   padding: const EdgeInsets.symmetric(vertical: 8),
                   margin: mainHMargin,
-                  child: Center(
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        _iconWithText(
-                          context,
-                          icon: Icons.location_on,
-                          text: restaurant.city,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      _iconWithText(
+                        context,
+                        icon: Icons.location_on,
+                        text: widget.restaurant.city,
+                      ),
+                      _iconWithText(
+                        context,
+                        icon: Icons.star,
+                        text: '${widget.restaurant.rating}',
+                      ),
+                    ],
+                  ),
+                ),
+                Wrap(
+                  spacing: 8,
+                  runSpacing: 8,
+                  children: widget.restaurant.categories
+                      .map(
+                        (e) => Chip(
+                          label: Text('# ${e.name}'),
                         ),
-                        _iconWithText(
-                          context,
-                          icon: Icons.star,
-                          text: '${restaurant.rating}',
-                        ),
-                      ],
-                    ),
+                      )
+                      .toList(),
+                ),
+
+                // reviews
+                // header
+                Container(
+                  padding: const EdgeInsets.symmetric(vertical: 16),
+                  child: Text(
+                    AppLocalizations.of(context)!.reviewHeading(1),
+                    style: txtThemeH4(context, color: secondaryColor),
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+                // review, and ReviewPage button
+                Container(
+                  margin: mainHMargin,
+                  child: ReviewContainer(
+                    customerReviews: widget.restaurant.customerReviews[0],
+                    maxLinesReview: 2,
+                  ),
+                ),
+                SizedBox(height: 8),
+                TextButton(
+                  onPressed: () {
+                    Navigator.pushNamed(
+                      context,
+                      ReviewsPage.routeName,
+                      arguments: widget.restaurant,
+                    );
+                  },
+                  child: Text(
+                    AppLocalizations.of(context)!.reviewsCheck.toUpperCase(),
                   ),
                 ),
 
                 // Menu and Go Back Button
                 Container(
                   margin: const EdgeInsets.only(top: 8, bottom: 16),
-                  width: _screenSize(context).width,
+                  width: screenSize(context).width,
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
@@ -197,11 +314,9 @@ class _DetailPagePortrait extends StatelessWidget {
                           Navigator.pop(context);
                         },
                         child: Text(
-                          'GO BACK',
-                          style: Theme.of(context)
-                              .textTheme
-                              .button
-                              ?.copyWith(color: secondaryColor),
+                          AppLocalizations.of(context)!
+                              .detailPagePopNavigationButton,
+                          style: txtThemeButton(context, color: secondaryColor),
                         ),
                       ),
                     ],
@@ -219,19 +334,22 @@ class _DetailPagePortrait extends StatelessWidget {
     Widget title() {
       return FadeOnScroll(
         scrollController: scrollController,
-        fullOpacityOffset: 180,
+        fullOpacityOffset: 250,
         child: Text(
           appName,
-          style: _txtThemeH6PColor(context),
+          style: txtThemeH6(
+            context,
+            color: primaryColor,
+          ),
         ),
       );
     }
 
-    Widget background() {
+    Widget flexibleSpaceBackground() {
       return Hero(
-        tag: restaurant.id,
+        tag: widget.restaurant.id,
         child: Image.network(
-          restaurant.pictureId,
+          ApiService.imageMedium(widget.restaurant.pictureId),
           fit: BoxFit.fill,
           errorBuilder: (_, __, ___) {
             return Image.asset(
@@ -251,7 +369,7 @@ class _DetailPagePortrait extends StatelessWidget {
         flexibleSpace: FlexibleSpaceBar(
           title: title(),
           centerTitle: true,
-          background: background(),
+          background: flexibleSpaceBackground(),
         ),
       ),
     ];
@@ -267,22 +385,22 @@ class _DetailPagePortrait extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const TabBar(
+            TabBar(
               tabs: [
-                Tab(text: 'FOODS'),
-                Tab(text: 'DRINKS'),
+                Tab(text: AppLocalizations.of(context)!.foodsTab),
+                Tab(text: AppLocalizations.of(context)!.drinksTab),
               ],
             ),
             SizedBox(
               height:
-                  _screenSize(context).height - _screenSize(context).height / 2,
+                  screenSize(context).height - screenSize(context).height / 2,
               child: TabBarView(
                 children: [
                   ListView(
-                    children: _foodWidgets(context, restaurant),
+                    children: _foodWidgets(context, widget.restaurant),
                   ),
                   ListView(
-                    children: _drinkWidgets(context, restaurant),
+                    children: _drinkWidgets(context, widget.restaurant),
                   )
                 ],
               ),
@@ -297,16 +415,27 @@ class _DetailPagePortrait extends StatelessWidget {
 class _DetailPageLandscape extends StatefulWidget {
   final Restaurant restaurant;
 
-  const _DetailPageLandscape(this.restaurant, {super.key});
+  const _DetailPageLandscape(
+    this.restaurant, {
+    Key? key,
+  }) : super(key: key);
 
   @override
   State<_DetailPageLandscape> createState() => _DetailPageLandscapeState();
 }
 
 class _DetailPageLandscapeState extends State<_DetailPageLandscape> {
-  final ScrollController detailScrollCtrler = ScrollController();
-  final ScrollController foodsScrollCtrler = ScrollController();
-  final ScrollController drinksScrollCtrler = ScrollController();
+  late ScrollController detailScrollCtrler;
+  late ScrollController foodsScrollCtrler;
+  late ScrollController drinksScrollCtrler;
+
+  @override
+  void initState() {
+    super.initState();
+    detailScrollCtrler = ScrollController();
+    foodsScrollCtrler = ScrollController();
+    drinksScrollCtrler = ScrollController();
+  }
 
   @override
   void dispose() {
@@ -318,11 +447,11 @@ class _DetailPageLandscapeState extends State<_DetailPageLandscape> {
 
   @override
   Widget build(BuildContext context) {
-    EdgeInsets appBarHMargin = (_screenSize(context).width <= 1200)
+    EdgeInsets appBarHMargin = (screenSize(context).width <= 1200)
         ? const EdgeInsets.symmetric(horizontal: 16)
         : const EdgeInsets.symmetric(horizontal: 32);
 
-    EdgeInsets bodyHMargin = (_screenSize(context).width <= 1200)
+    EdgeInsets bodyHMargin = (screenSize(context).width <= 1200)
         ? const EdgeInsets.symmetric(horizontal: 32)
         : const EdgeInsets.symmetric(horizontal: 48);
 
@@ -354,7 +483,7 @@ class _DetailPageLandscapeState extends State<_DetailPageLandscape> {
           ),
         ),
       ),
-      width: _screenSize(context).width,
+      width: screenSize(context).width,
       margin: mainHMargin,
       child: Row(
         children: [
@@ -362,16 +491,16 @@ class _DetailPageLandscapeState extends State<_DetailPageLandscape> {
           Expanded(
             child: Text(
               appName,
-              style: _txtThemeH6PColor(context),
+              style: txtThemeH6(context, color: primaryColor),
             ),
           ),
 
           // TabBar
-          const Expanded(
+          Expanded(
             child: TabBar(
               tabs: [
-                Tab(text: 'FOODS'),
-                Tab(text: 'DRINKS'),
+                Tab(text: AppLocalizations.of(context)!.foodsTab),
+                Tab(text: AppLocalizations.of(context)!.drinksTab),
               ],
             ),
           ),
@@ -389,13 +518,19 @@ class _DetailPageLandscapeState extends State<_DetailPageLandscape> {
           children: [
             Text(
               widget.restaurant.description,
-              style: _txtThemeH6PColor(context),
+              style: txtThemeH6(
+                context,
+                color: primaryColor,
+              ),
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 8),
             Text(
               'ID: ${widget.restaurant.id.toUpperCase()}',
-              style: _txtThemeOverlinePColor(context),
+              style: txtThemeOverline(
+                context,
+                color: primaryColor,
+              ),
             ),
           ],
         );
@@ -416,7 +551,9 @@ class _DetailPageLandscapeState extends State<_DetailPageLandscape> {
               child: Hero(
                 tag: widget.restaurant.id,
                 child: Image.network(
-                  widget.restaurant.pictureId,
+                  ApiService.imageMedium(
+                    widget.restaurant.pictureId,
+                  ),
                   fit: BoxFit.cover,
                   errorBuilder: (_, __, ___) {
                     return Image.asset(
@@ -433,7 +570,10 @@ class _DetailPageLandscapeState extends State<_DetailPageLandscape> {
               padding: const EdgeInsets.symmetric(vertical: 16),
               child: Text(
                 widget.restaurant.name,
-                style: _txtThemeH3SColor(context),
+                style: txtThemeH3(
+                  context,
+                  color: secondaryColor,
+                ),
                 textAlign: TextAlign.center,
               ),
             ),
@@ -444,7 +584,7 @@ class _DetailPageLandscapeState extends State<_DetailPageLandscape> {
               child: description(),
             ),
 
-            // location & rating
+            // location, rating, and categories
             Container(
               padding: const EdgeInsets.symmetric(vertical: 8),
               margin: EdgeInsets.symmetric(horizontal: mainHMargin),
@@ -466,6 +606,50 @@ class _DetailPageLandscapeState extends State<_DetailPageLandscape> {
                 ),
               ),
             ),
+            Wrap(
+              alignment: WrapAlignment.center,
+              spacing: 8,
+              runSpacing: 8,
+              children: widget.restaurant.categories
+                  .map(
+                    (e) => Chip(
+                      label: Text('# ${e.name}'),
+                    ),
+                  )
+                  .toList(),
+            ),
+
+            // reviews
+            // heading
+            Container(
+              padding: const EdgeInsets.symmetric(vertical: 16),
+              child: Text(
+                AppLocalizations.of(context)!.reviewHeading(1),
+                style: txtThemeH4(context, color: secondaryColor),
+                textAlign: TextAlign.center,
+              ),
+            ),
+            // review, and ReviewPage button
+            Container(
+              margin: EdgeInsets.symmetric(horizontal: mainHMargin),
+              child: ReviewContainer(
+                customerReviews: widget.restaurant.customerReviews[0],
+                maxLinesReview: 2,
+              ),
+            ),
+            SizedBox(height: 8),
+            TextButton(
+              onPressed: () {
+                Navigator.pushNamed(
+                  context,
+                  ReviewsPage.routeName,
+                  arguments: widget.restaurant,
+                );
+              },
+              child: Text(
+                AppLocalizations.of(context)!.reviewsCheck.toUpperCase(),
+              ),
+            ),
           ],
         ),
       );
@@ -479,7 +663,7 @@ class _DetailPageLandscapeState extends State<_DetailPageLandscape> {
           // Restaurant detail
           Expanded(
             child: SizedBox(
-              height: _screenSize(context).height - 100,
+              height: screenSize(context).height - 100,
               child: restaurantDetail(context),
             ),
           ),
@@ -487,7 +671,7 @@ class _DetailPageLandscapeState extends State<_DetailPageLandscape> {
           // TabBarView + Button
           Expanded(
             child: SizedBox(
-              height: _screenSize(context).height - 100,
+              height: screenSize(context).height - 100,
               child: Column(
                 children: [
                   // TabBar
@@ -523,11 +707,9 @@ class _DetailPageLandscapeState extends State<_DetailPageLandscape> {
                           Navigator.pop(context);
                         },
                         child: Text(
-                          'GO BACK',
-                          style: Theme.of(context)
-                              .textTheme
-                              .button
-                              ?.copyWith(color: secondaryColor),
+                          AppLocalizations.of(context)!
+                              .detailPagePopNavigationButton,
+                          style: txtThemeButton(context, color: secondaryColor),
                         ),
                       ),
                     ),

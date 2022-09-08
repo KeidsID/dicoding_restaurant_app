@@ -1,0 +1,34 @@
+{
+  "detailPagePopNavigationButton": "GO BACK",
+  "searchTextFieldHintText": "Search restaurant name",
+  "searchResultFounded": "{count, plural, =0{No restaurants found} =1{A restaurant found} other{{count} restaurants found}",
+  "@searchResultFounded": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "foodsTab": "FOODS",
+  "drinksTab": "DRINKS",
+  "reviewHeading": "{count, plural, =1{Review} other{Reviews}}",
+  "@reviewHeading": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "reviewsCheck": "Check more reviews",
+  "reviewDate": "{date}",
+  "@reviewDate": {
+    "placeholders": {
+      "date": {
+        "type": "DateTime",
+        "format": "yMMMMd"
+      }
+    }
+  },
+  "noInternetAccess": "No internet access",
+  "noApiData": "No restaurant data received"
+}
