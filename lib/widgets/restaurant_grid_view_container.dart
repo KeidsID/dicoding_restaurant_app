@@ -3,9 +3,9 @@ import 'package:flutter/material.dart';
 class RestaurantGridViewContainer extends StatelessWidget {
   const RestaurantGridViewContainer({
     Key? key,
-    this.padding = const EdgeInsets.all(0),
+    this.padding = EdgeInsets.zero,
     this.color,
-    this.margin = const EdgeInsets.all(0),
+    this.margin = EdgeInsets.zero,
     this.onTap,
     this.child,
   }) : super(key: key);

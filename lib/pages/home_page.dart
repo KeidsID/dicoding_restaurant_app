@@ -60,7 +60,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   AppBar _appBar({required Size screenSize, required String appName}) {
-    if (screenSize.width <= 600) {
+    if (screenSize.width <= 750) {
       if (isSearchActionButtonTap) {
         return AppBar(
           leading: IconButton(
@@ -163,7 +163,7 @@ class _HomePageState extends State<HomePage> {
             return Center(
               child: Text(
                 AppLocalizations.of(context)!.noApiData,
-                style: txtThemeH4(context, color: secondaryColor),
+                style: txtThemeH4?.copyWith(color: secondaryColor),
                 textAlign: TextAlign.center,
               ),
             );
@@ -172,7 +172,7 @@ class _HomePageState extends State<HomePage> {
             return Center(
               child: Text(
                 AppLocalizations.of(context)!.noInternetAccess,
-                style: txtThemeH4(context, color: secondaryColor),
+                style: txtThemeH4?.copyWith(color: secondaryColor),
                 textAlign: TextAlign.center,
               ),
             );
@@ -180,7 +180,7 @@ class _HomePageState extends State<HomePage> {
             return Center(
               child: Text(
                 restaurantListProvider.message,
-                style: txtThemeH4(context, color: secondaryColor),
+                style: txtThemeH4?.copyWith(color: secondaryColor),
                 textAlign: TextAlign.center,
               ),
             );
@@ -192,7 +192,7 @@ class _HomePageState extends State<HomePage> {
 
         return LayoutBuilder(
           builder: (_, constraints) {
-            if (constraints.maxWidth <= 600) {
+            if (constraints.maxWidth <= 750) {
               return _RestaurantsListView(restaurants);
             } else if (constraints.maxWidth <= 900) {
               return _RestaurantsGridView(
@@ -254,7 +254,7 @@ class _RestaurantsListView extends StatelessWidget {
     Text title(Restaurant restaurant, BuildContext context) {
       return Text(
         restaurant.name,
-        style: txtThemeH6(context, color: secondaryColor),
+        style: txtThemeH6?.copyWith(color: secondaryColor),
       );
     }
 
@@ -337,8 +337,7 @@ class _RestaurantsGridView extends StatelessWidget {
       );
     }
 
-    Row iconWithText(BuildContext context,
-        {IconData? icon, required String text}) {
+    Row iconWithText({IconData? icon, required String text}) {
       return Row(
         children: [
           Icon(
@@ -347,7 +346,7 @@ class _RestaurantsGridView extends StatelessWidget {
           ),
           Text(
             text,
-            style: txtThemeSub1(context, color: primaryColor),
+            style: txtThemeSub1?.copyWith(color: primaryColor),
           ),
         ],
       );
@@ -380,17 +379,15 @@ class _RestaurantsGridView extends StatelessWidget {
               restaurant.name,
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
-              style: txtThemeH5(context, color: secondaryColor),
+              style: txtThemeH5?.copyWith(color: secondaryColor),
             ),
 
             // location and rating
             iconWithText(
-              context,
               icon: Icons.location_on,
               text: restaurant.city,
             ),
             iconWithText(
-              context,
               icon: Icons.star,
               text: '${restaurant.rating}',
             ),

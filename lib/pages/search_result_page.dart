@@ -61,7 +61,7 @@ class _SearchResultPageState extends State<SearchResultPage> {
                 return Center(
                   child: Text(
                     AppLocalizations.of(context)!.noApiData,
-                    style: txtThemeH4(context, color: secondaryColor),
+                    style: txtThemeH4?.copyWith(color: secondaryColor),
                     textAlign: TextAlign.center,
                   ),
                 );
@@ -70,7 +70,7 @@ class _SearchResultPageState extends State<SearchResultPage> {
                 return Center(
                   child: Text(
                     AppLocalizations.of(context)!.noInternetAccess,
-                    style: txtThemeH4(context, color: secondaryColor),
+                    style: txtThemeH4?.copyWith(color: secondaryColor),
                     textAlign: TextAlign.center,
                   ),
                 );
@@ -78,7 +78,7 @@ class _SearchResultPageState extends State<SearchResultPage> {
                 return Center(
                   child: Text(
                     searchResultProvider.message,
-                    style: txtThemeH4(context, color: secondaryColor),
+                    style: txtThemeH4?.copyWith(color: secondaryColor),
                     textAlign: TextAlign.center,
                   ),
                 );
@@ -104,41 +104,37 @@ class _SearchResultPageState extends State<SearchResultPage> {
   }
 
   List<Widget> _sliverAppBar(BuildContext context, int resultCount) {
-    Widget title() {
-      return FadeOnScroll(
-        scrollController: scrollController,
-        fullOpacityOffset: 125,
-        child: Text(
-          appName,
-          style: txtThemeH6(context, color: primaryColor),
-        ),
-      );
-    }
+    Widget title = FadeOnScroll(
+      scrollController: scrollController,
+      fullOpacityOffset: 125,
+      child: Text(
+        appName,
+        style: txtThemeH6?.copyWith(color: primaryColor),
+      ),
+    );
 
-    Widget flexibleSpaceBackground() {
-      return Center(
-        child: Container(
-          padding: const EdgeInsets.all(8),
-          decoration: const BoxDecoration(
-            border: Border(
-              bottom: BorderSide(color: primaryColorBrighter),
-            ),
-          ),
-          child: Text(
-            AppLocalizations.of(context)!.searchResultFounded(resultCount),
-            style: txtThemeSub1(context, color: primaryColor),
+    Widget flexibleSpaceBackground = Center(
+      child: Container(
+        padding: const EdgeInsets.all(8),
+        decoration: const BoxDecoration(
+          border: Border(
+            bottom: BorderSide(color: primaryColorBrighter),
           ),
         ),
-      );
-    }
+        child: Text(
+          AppLocalizations.of(context)!.searchResultFounded(resultCount),
+          style: txtThemeSub1?.copyWith(color: primaryColor),
+        ),
+      ),
+    );
 
     return [
       SliverAppBar(
         pinned: true,
         expandedHeight: 125,
         flexibleSpace: FlexibleSpaceBar(
-          title: title(),
-          background: flexibleSpaceBackground(),
+          title: title,
+          background: flexibleSpaceBackground,
           centerTitle: true,
         ),
       ),
@@ -148,7 +144,7 @@ class _SearchResultPageState extends State<SearchResultPage> {
   LayoutBuilder _buildResultList(List<Restaurant> restaurants) {
     return LayoutBuilder(
       builder: (_, constraints) {
-        if (constraints.maxWidth <= 600) {
+        if (constraints.maxWidth <= 750) {
           return _RestaurantsListView(restaurants);
         } else if (constraints.maxWidth <= 900) {
           return _RestaurantsGridView(
@@ -208,7 +204,7 @@ class _RestaurantsListView extends StatelessWidget {
     Text title(Restaurant restaurant, BuildContext context) {
       return Text(
         restaurant.name,
-        style: txtThemeH6(context, color: secondaryColor),
+        style: txtThemeH6?.copyWith(color: secondaryColor),
       );
     }
 
@@ -301,7 +297,7 @@ class _RestaurantsGridView extends StatelessWidget {
           ),
           Text(
             text,
-            style: txtThemeSub1(context, color: primaryColor),
+            style: txtThemeSub1?.copyWith(color: primaryColor),
           ),
         ],
       );
@@ -332,7 +328,7 @@ class _RestaurantsGridView extends StatelessWidget {
             // name
             Text(
               restaurant.name,
-              style: txtThemeH5(context, color: secondaryColor),
+              style: txtThemeH5?.copyWith(color: secondaryColor),
             ),
 
             // location and rating

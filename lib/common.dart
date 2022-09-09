@@ -10,53 +10,49 @@ Size screenSize(BuildContext context) {
   return MediaQuery.of(context).size;
 }
 
-TextStyle? txtThemeH1(BuildContext context, {required Color color}) {
-  return Theme.of(context).textTheme.headline1?.copyWith(color: color);
-}
+/// Extremely large text
+TextStyle? txtThemeH1 = textTheme.headline1;
 
-TextStyle? txtThemeH2(BuildContext context, {required Color color}) {
-  return Theme.of(context).textTheme.headline2?.copyWith(color: color);
-}
+/// Very, very large text
+///
+/// Used for the date in the dialog shown by [showDatePicker].
+TextStyle? txtThemeH2 = textTheme.headline2;
 
-TextStyle? txtThemeH3(BuildContext context, {required Color color}) {
-  return Theme.of(context).textTheme.headline3?.copyWith(color: color);
-}
+/// Very large text
+TextStyle? txtThemeH3 = textTheme.headline3;
 
-TextStyle? txtThemeH4(BuildContext context, {required Color color}) {
-  return Theme.of(context).textTheme.headline4?.copyWith(color: color);
-}
+/// Large text
+TextStyle? txtThemeH4 = textTheme.headline4;
 
-TextStyle? txtThemeH5(BuildContext context, {required Color color}) {
-  return Theme.of(context).textTheme.headline5?.copyWith(color: color);
-}
+/// Used for large text in dialogs
+///
+/// (e.g., the month and year in the dialog shown by [showDatePicker]).
+TextStyle? txtThemeH5 = textTheme.headline5;
 
-TextStyle? txtThemeH6(BuildContext context, {required Color color}) {
-  return Theme.of(context).textTheme.headline6?.copyWith(color: color);
-}
+/// Used for the primary text in app bars and dialogs
+///
+/// (e.g., [AppBar.title] and [AlertDialog.title]).
+TextStyle? txtThemeH6 = textTheme.headline6;
 
-TextStyle? txtThemeSub1(BuildContext context, {required Color color}) {
-  return Theme.of(context).textTheme.subtitle1?.copyWith(color: color);
-}
+/// Used for the primary text in lists (e.g., [ListTile.title]).
+TextStyle? txtThemeSub1 = textTheme.subtitle1;
 
-TextStyle? txtThemeSub2(BuildContext context, {required Color color}) {
-  return Theme.of(context).textTheme.subtitle2?.copyWith(color: color);
-}
+/// For medium emphasis text that's a little smaller than [txtThemeSub1].
+TextStyle? txtThemeSub2 = textTheme.subtitle2;
 
-TextStyle? txtThemeButton(
-  BuildContext context, {
-  required Color color,
-  TextDecoration decoration = TextDecoration.none,
-}) {
-  return Theme.of(context)
-      .textTheme
-      .button
-      ?.copyWith(color: color, decoration: decoration);
-}
+/// Used for emphasizing text that would otherwise be [txtThemeBody2].
+TextStyle? txtThemeBody1 = textTheme.bodyText1;
 
-TextStyle? txtThemeCaption(BuildContext context, {required Color color}) {
-  return Theme.of(context).textTheme.caption?.copyWith(color: color);
-}
+/// The default text style for [Material].
+TextStyle? txtThemeBody2 = textTheme.bodyText2;
 
-TextStyle? txtThemeOverline(BuildContext context, {required Color color}) {
-  return Theme.of(context).textTheme.overline?.copyWith(color: color);
-}
+/// Used for text on [ElevatedButton], [TextButton] and [OutlinedButton].
+TextStyle? txtThemeButton = textTheme.button;
+
+/// Used for auxiliary text associated with images.
+TextStyle? txtThemeCaption = textTheme.caption;
+
+/// The smallest style.
+///
+/// Typically used for captions or to introduce a (larger) headline.
+TextStyle? txtThemeOverline = textTheme.overline;

@@ -8,14 +8,12 @@ class ReviewContainer extends StatelessWidget {
   final CustomerReview customerReviews;
 
   /// Review max lines.
-  ///
-  /// If this null, then [DefaultTextStyle.maxLines] is used.
   final int? maxLinesReview;
 
   const ReviewContainer({
     Key? key,
     required this.customerReviews,
-    this.maxLinesReview,
+    this.maxLinesReview = 10,
   }) : super(key: key);
 
   @override
@@ -46,13 +44,12 @@ class ReviewContainer extends StatelessWidget {
                 children: [
                   Text(
                     customerReviews.name,
-                    style: txtThemeH6(context, color: secondaryColor),
+                    style: txtThemeH6?.copyWith(color: secondaryColor),
                   ),
                   Text(
                     AppLocalizations.of(context)!
                         .reviewDate(customerReviews.date),
-                    style: txtThemeCaption(
-                      context,
+                    style: txtThemeCaption?.copyWith(
                       color: primaryColorBrighter,
                     ),
                   ),
@@ -63,9 +60,9 @@ class ReviewContainer extends StatelessWidget {
           const SizedBox(height: 8),
           Text(
             customerReviews.review,
-            maxLines: maxLinesReview ?? DefaultTextStyle.of(context).maxLines,
+            maxLines: maxLinesReview,
             overflow: TextOverflow.ellipsis,
-            style: txtThemeH6(context, color: primaryColor),
+            style: txtThemeH6?.copyWith(color: primaryColor),
           ),
         ],
       ),

@@ -66,8 +66,7 @@ class ReviewsPage extends StatelessWidget {
                   Text(
                     AppLocalizations.of(context)!
                         .reviewHeading(restaurant.customerReviews.length),
-                    style: txtThemeCaption(
-                      context,
+                    style: txtThemeCaption?.copyWith(
                       color: primaryColorBrighter,
                     ),
                   ),

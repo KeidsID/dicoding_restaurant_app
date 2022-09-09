@@ -6,7 +6,7 @@
 
 Submission project task from [dicoding.com Intermediate Flutter class][dicodingclass].
 
-Run these command before build:
+Run these commands before build:
 
 ```
 flutter pub get
