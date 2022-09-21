@@ -9,7 +9,7 @@ class RestaurantDetailProvider extends ChangeNotifier {
   final String _id;
 
   RestaurantDetailProvider(this._id) {
-    _fetchAllRestaurants();
+    _fetchRestaurantDetail();
   }
 
   late RestaurantDetail _restaurantDetail;
@@ -20,7 +20,7 @@ class RestaurantDetailProvider extends ChangeNotifier {
   ResultState get state => _state;
   String get message => _message;
 
-  Future<dynamic> _fetchAllRestaurants() async {
+  Future<dynamic> _fetchRestaurantDetail() async {
     try {
       _state = ResultState.loading;
       notifyListeners();

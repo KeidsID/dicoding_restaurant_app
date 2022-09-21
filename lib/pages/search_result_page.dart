@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import 'detail_page.dart';
-import '../common.dart';
+import '../common/common.dart';
 import '../data/api/api_service.dart';
 import '../data/model/from_api/search_restaurant.dart';
 import '../providers/search_result_provider.dart';

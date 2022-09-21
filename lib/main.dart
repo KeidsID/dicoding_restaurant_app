@@ -1,57 +1,32 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
+import 'package:android_alarm_manager_plus/android_alarm_manager_plus.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
-import 'common.dart';
-import 'data/model/from_api/restaurant_detail.dart';
-import 'pages/home_page.dart';
-import 'pages/detail_page.dart';
-import 'pages/search_result_page.dart';
-import 'pages/reviews_page.dart';
+import 'my_app.dart';
+import 'utils/background_service.dart';
+import 'utils/notification_helper.dart';
 
-void main() {
+final localNotifPlugin = FlutterLocalNotificationsPlugin();
+
+Future<void> main() async {
   WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
+
   FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
 
-  runApp(const MyApp());
-}
+  widgetsBinding;
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  final notifHelper = NotificationHelper();
+  final bgService = BackgroundService();
 
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: appName,
-      debugShowCheckedModeBanner: false,
-      theme: myTheme,
-      initialRoute: HomePage.routeName,
-      routes: routes,
-      localizationsDelegates: AppLocalizations.localizationsDelegates,
-      supportedLocales: AppLocalizations.supportedLocales,
-    );
+  bgService.initializeIsolate();
+  if (Platform.isAndroid) {
+    await AndroidAlarmManager.initialize();
   }
 
-  Map<String, WidgetBuilder> get routes {
-    return {
-      HomePage.routeName: (context) {
-        return const HomePage();
-      },
-      DetailPage.routeName: (context) {
-        return DetailPage(
-          pictureId: ModalRoute.of(context)?.settings.arguments as String,
-        );
-      },
-      SearchResultPage.routeName: (context) {
-        return SearchResultPage(
-          query: ModalRoute.of(context)?.settings.arguments as String,
-        );
-      },
-      ReviewsPage.routeName: (context) {
-        return ReviewsPage(
-          restaurant:
-              ModalRoute.of(context)?.settings.arguments as Restaurant,
-        );
-      }
-    };
-  }
+  await notifHelper.initNotifications(localNotifPlugin);
+
+  runApp(MyApp());
 }

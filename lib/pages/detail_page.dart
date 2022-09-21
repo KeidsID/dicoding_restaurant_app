@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import 'reviews_page.dart';
-import '../common.dart';
+import '../common/common.dart';
 import '../data/api/api_service.dart';
 import '../data/model/from_api/restaurant_detail.dart';
 import '../providers/restaurant_detail_provider.dart';
@@ -77,14 +77,14 @@ List<Widget> _drinkWidgets(Restaurant restaurant) {
 
 class DetailPage extends StatelessWidget {
   static const routeName = '/detail_page';
-  final String pictureId;
+  final String restaurantId;
 
-  const DetailPage({super.key, required this.pictureId});
+  const DetailPage({super.key, required this.restaurantId});
 
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
-      create: (context) => RestaurantDetailProvider(pictureId),
+      create: (context) => RestaurantDetailProvider(restaurantId),
       child: Consumer<RestaurantDetailProvider>(
         builder: (_, restaurantDetailProvider, __) {
           if (restaurantDetailProvider.state == ResultState.loading) {

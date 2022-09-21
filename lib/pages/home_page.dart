@@ -1,10 +1,15 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:provider/provider.dart';
+import 'package:restaurant_app_project/providers/notifications_provider.dart';
+import 'package:restaurant_app_project/utils/notification_helper.dart';
 
+import '../widgets/custom_dialog.dart';
 import 'detail_page.dart';
 import 'search_result_page.dart';
-import '../common.dart';
+import '../common/common.dart';
 import '../data/api/api_service.dart';
 import '../data/model/from_api/restaurant_list.dart';
 import '../providers/restaurant_list_provider.dart';
@@ -22,21 +27,24 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  late bool isSearchActionButtonTap;
-  late TextEditingController searchTextFieldController;
+  late bool _isSearchMode;
+  late TextEditingController _searchTextFieldCtrler;
+
+  final _notifHelper = NotificationHelper();
 
   @override
   void initState() {
     super.initState();
     initialization();
-    isSearchActionButtonTap = false;
-    searchTextFieldController = TextEditingController();
   }
 
   void initialization() async {
     // This is where you can initialize the resources needed by your app while
     // the splash screen is displayed.
 
+    _notifHelper.configureSelectNotificationSubject(DetailPage.routeName);
+    _isSearchMode = false;
+    _searchTextFieldCtrler = TextEditingController();
     await Future.delayed(const Duration(seconds: 1));
 
     FlutterNativeSplash.remove();
@@ -45,27 +53,64 @@ class _HomePageState extends State<HomePage> {
   @override
   void dispose() {
     super.dispose();
-    searchTextFieldController.dispose();
+    _searchTextFieldCtrler.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: _appBar(screenSize: screenSize(context), appName: appName),
-      body: ChangeNotifierProvider(
-        create: (context) => RestaurantListProvider(),
-        child: _buildList(context),
+      body: _buildList(context),
+      drawer: Drawer(
+        child: ListView(
+          children: [
+            ListTile(
+              title: const Text('Trending reminder'),
+              trailing: Consumer<NotificationsProvider>(
+                builder: (_, notificationsProv, __) {
+                  return Switch(
+                    value: notificationsProv.isScheduled,
+                    onChanged: (value) {
+                      if (!Platform.isAndroid) {
+                        customDialog(context);
+                      } else {
+                        notificationsProv.scheduled(value);
+                      }
+                    },
+                  );
+                },
+              ),
+            ),
+            ListTile(
+              title: const Text('Notifications Test'),
+              trailing: Consumer<NotificationsProvider>(
+                builder: (_, notificationsProv, __) {
+                  return Switch(
+                    value: notificationsProv.isScheduled2,
+                    onChanged: (value) {
+                      if (!Platform.isAndroid) {
+                        customDialog(context);
+                      } else {
+                        notificationsProv.afterTenSec(value);
+                      }
+                    },
+                  );
+                },
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
 
   AppBar _appBar({required Size screenSize, required String appName}) {
     if (screenSize.width <= 750) {
-      if (isSearchActionButtonTap) {
+      if (_isSearchMode) {
         return AppBar(
           leading: IconButton(
             onPressed: () => setState(() {
-              isSearchActionButtonTap = false;
+              _isSearchMode = false;
             }),
             icon: const Icon(Icons.arrow_back),
           ),
@@ -80,36 +125,34 @@ class _HomePageState extends State<HomePage> {
           actions: [
             IconButton(
               onPressed: () => setState(() {
-                isSearchActionButtonTap = true;
+                _isSearchMode = true;
               }),
               icon: const Icon(Icons.search),
+            ),
+            IconButton(
+              onPressed: () {},
+              icon: const Icon(Icons.bookmark_added_outlined),
             ),
           ],
         );
       }
     } else {
-      isSearchActionButtonTap = false;
+      _isSearchMode = false;
       List<Widget> title = _appBarSearchTextField(5);
       title.insert(
         0,
-        const Expanded(
-          child: SizedBox(),
+        Flexible(
+          child: Text(appName),
+        ),
+      );
+      title.insert(
+        1,
+        const Flexible(
+          child: SizedBox(width: 16),
         ),
       );
 
       return AppBar(
-        leading: Center(
-          child: Padding(
-            padding: const EdgeInsets.only(left: 8),
-            child: Text(
-              appName,
-              style: AppBarTheme.of(context)
-                  .titleTextStyle
-                  ?.copyWith(color: primaryColor),
-            ),
-          ),
-        ),
-        leadingWidth: 140,
         title: Row(
           children: title,
         ),
@@ -121,17 +164,17 @@ class _HomePageState extends State<HomePage> {
     return [
       Expanded(
         flex: flex,
-        child: SearchTextField(controller: searchTextFieldController),
+        child: SearchTextField(controller: _searchTextFieldCtrler),
       ),
-      const Flexible(child: SizedBox(width: 24)),
+      const Flexible(child: SizedBox(width: 16)),
       Flexible(
         child: IconButton(
           onPressed: () {
-            if (searchTextFieldController.text != '') {
+            if (_searchTextFieldCtrler.text != '') {
               Navigator.pushNamed(
                 context,
                 SearchResultPage.routeName,
-                arguments: searchTextFieldController.text,
+                arguments: _searchTextFieldCtrler.text,
               );
             }
           },

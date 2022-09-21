@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../common.dart';
+import '../common/common.dart';
 import '../data/api/api_service.dart';
 import '../data/model/from_api/restaurant_detail.dart';
 import '../widgets/review_container.dart';

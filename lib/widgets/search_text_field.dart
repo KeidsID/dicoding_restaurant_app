@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../common.dart';
+import '../common/common.dart';
 import '../pages/search_result_page.dart';
 
 class SearchTextField extends StatelessWidget {
