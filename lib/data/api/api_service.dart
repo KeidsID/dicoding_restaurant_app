@@ -5,10 +5,10 @@ import '../model/from_api/restaurant_detail.dart';
 import '../model/from_api/search_restaurant.dart';
 
 abstract class ApiService {
-  static const _baseUrl = 'https://restaurant-api.dicoding.dev';
+  static const baseUrl = 'https://restaurant-api.dicoding.dev';
 
   static Future<RestaurantList> getRestaurantList() async {
-    final response = await http.get(Uri.parse('$_baseUrl/list'));
+    final response = await http.get(Uri.parse('$baseUrl/list'));
     if (response.statusCode == 200) {
       return restaurantListFromJson(response.body);
     } else {
@@ -17,7 +17,7 @@ abstract class ApiService {
   }
 
   static Future<RestaurantDetail> getRestaurantDetail(String id) async {
-    final response = await http.get(Uri.parse('$_baseUrl/detail/$id'));
+    final response = await http.get(Uri.parse('$baseUrl/detail/$id'));
     if (response.statusCode == 200) {
       return restaurantDetailFromJson(response.body);
     } else {
@@ -26,7 +26,7 @@ abstract class ApiService {
   }
 
   static Future<SearchRestaurant> getSearchRestaurant(String query) async {
-    final response = await http.get(Uri.parse('$_baseUrl/search?q=$query'));
+    final response = await http.get(Uri.parse('$baseUrl/search?q=$query'));
     if (response.statusCode == 200) {
       return searchRestaurantFromJson(response.body);
     } else {
@@ -35,14 +35,14 @@ abstract class ApiService {
   }
 
   static String imageSmall(String pictureId) {
-    return '$_baseUrl/images/small/$pictureId';
+    return '$baseUrl/images/small/$pictureId';
   }
 
   static String imageMedium(String pictureId) {
-    return '$_baseUrl/images/medium/$pictureId';
+    return '$baseUrl/images/medium/$pictureId';
   }
 
   static String imageLarge(String pictureId) {
-    return '$_baseUrl/images/large/$pictureId';
+    return '$baseUrl/images/large/$pictureId';
   }
 }

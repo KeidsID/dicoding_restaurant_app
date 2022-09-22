@@ -13,6 +13,9 @@ flutter pub get
 flutter pub run flutter_native_splash:create
 ```
 
+Note:  
+**# Web build is not possible for now.**
+
 ## **App Preview**
 
 ![App Preview Gif](https://github.com/KeidsID/KeidsID/blob/main/app_preview/RESTAURantS_App_Preview.gif?raw=true)
@@ -61,3 +64,22 @@ Must have features in the app:
 ### 5. Displays error messages that are easily understood by the user when the application is accessed without an internet connection.
 
 ### 6. Using one of the state management libraries such as provider, block, redux, etc.
+
+## **3rd Submission Task**
+
+Must have feature in the app:
+
+### 1. Favorite Restaurant
+
+- Users can add and remove the restaurant from their favorite list.
+- The application must have a page to display a list of favorites.
+- Displays the detail page of the favorites list (when the favorite item pressed).
+
+### 2. Daily Reminder
+
+- There is a setting to turn the reminder on and off on the settings page.
+- Daily reminder to display restaurants randomly at 11.00 AM.
+
+### 3. Testing
+
+- Write at least one test scenario to verify the json parsing was successful.

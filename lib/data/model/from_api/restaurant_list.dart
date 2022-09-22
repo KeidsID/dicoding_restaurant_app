@@ -58,12 +58,12 @@ class Restaurant {
 
   factory Restaurant.fromJson(Map<String, dynamic> json) {
     return Restaurant(
-      id: json["id"],
-      name: json["name"],
-      description: json["description"],
-      pictureId: json["pictureId"],
-      city: json["city"],
-      rating: json["rating"].toDouble(),
+      id: json["id"] ?? 'null',
+      name: json["name"] ?? 'null',
+      description: json["description"] ?? 'null',
+      pictureId: json["pictureId"] ?? 'null',
+      city: json["city"] ?? 'null',
+      rating: double.tryParse('${json["rating"]}') ?? 0.0,
     );
   }
 
