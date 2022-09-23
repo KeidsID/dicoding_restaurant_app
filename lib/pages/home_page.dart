@@ -1,16 +1,23 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:provider/provider.dart';
 
+import '../common/common.dart';
+import '../data/model/from_api/restaurant.dart';
 import 'detail_page.dart';
 import 'search_result_page.dart';
-import '../common.dart';
-import '../data/api/api_service.dart';
-import '../data/model/from_api/restaurant_list.dart';
+import 'wishlist_page.dart';
+import '../providers/notifications_provider.dart';
+import '../providers/preferences_provider.dart';
 import '../providers/restaurant_list_provider.dart';
-import '../widgets/restaurant_grid_view_container.dart';
-import '../widgets/restaurant_list_tile.dart';
+import '../utils/background_service.dart';
+import '../utils/notification_helper.dart';
+import '../widgets/custom_dialog.dart';
 import '../widgets/search_text_field.dart';
+import '../widgets/for_restaurant_list_page/restaurant_grid_view.dart';
+import '../widgets/for_restaurant_list_page/restaurant_list_view.dart';
 
 class HomePage extends StatefulWidget {
   static const routeName = '/';
@@ -22,21 +29,24 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  late bool isSearchActionButtonTap;
-  late TextEditingController searchTextFieldController;
+  late bool _isSearchMode;
+  late TextEditingController _searchTextFieldCtrler;
+
+  final _notifHelper = NotificationHelper();
 
   @override
   void initState() {
     super.initState();
     initialization();
-    isSearchActionButtonTap = false;
-    searchTextFieldController = TextEditingController();
   }
 
   void initialization() async {
     // This is where you can initialize the resources needed by your app while
     // the splash screen is displayed.
 
+    _notifHelper.configureSelectNotificationSubject(DetailPage.routeName);
+    _isSearchMode = false;
+    _searchTextFieldCtrler = TextEditingController();
     await Future.delayed(const Duration(seconds: 1));
 
     FlutterNativeSplash.remove();
@@ -45,27 +55,98 @@ class _HomePageState extends State<HomePage> {
   @override
   void dispose() {
     super.dispose();
-    searchTextFieldController.dispose();
+    _searchTextFieldCtrler.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: _appBar(screenSize: screenSize(context), appName: appName),
-      body: ChangeNotifierProvider(
-        create: (context) => RestaurantListProvider(),
-        child: _buildList(context),
+      body: _buildList(context),
+      drawer: Drawer(
+        child: Consumer<PreferencesProvider>(
+          builder: (context, preferencesProv, _) {
+            return ListView(
+              children: [
+                Container(
+                  decoration: const BoxDecoration(
+                    border: Border(bottom: BorderSide(color: secondaryColor)),
+                  ),
+                  height: 55,
+                  child: Center(
+                    child: Text(
+                      appName,
+                      style: txtThemeH6?.copyWith(color: primaryColor),
+                    ),
+                  ),
+                ),
+                ListTile(
+                  title: Text(AppLocalizations.of(context)!.dailyReminder),
+                  trailing: Consumer<NotificationsProvider>(
+                    builder: (_, notificationsProv, __) {
+                      return Switch.adaptive(
+                        value: preferencesProv.isDailyReminderActive,
+                        onChanged: (value) {
+                          if (!Platform.isAndroid) {
+                            customDialog(context);
+                          } else {
+                            notificationsProv.scheduled(value);
+                            preferencesProv.enableDailyReminder(value);
+                          }
+                        },
+                        thumbColor: MaterialStateProperty.all(primaryColor),
+                        inactiveTrackColor: primaryColorBrightest,
+                        activeColor: secondaryColor,
+                      );
+                    },
+                  ),
+                ),
+                ListTile(
+                  title: Text(
+                    AppLocalizations.of(context)!.notificationsTest,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  onTap: () async {
+                    if (!Platform.isAndroid) {
+                      customDialog(context);
+                    } else {
+                      if (preferencesProv.isNotifTestInProgress) {
+                        // do nothing
+                      } else {
+                        preferencesProv.enableNotifTest(true);
+                        await Future.delayed(const Duration(seconds: 5));
+                        await BackgroundService.notifTestCallback();
+                        preferencesProv.enableNotifTest(false);
+                      }
+                    }
+                  },
+                  trailing: (preferencesProv.isNotifTestInProgress)
+                      ? Text(
+                          AppLocalizations.of(context)!.inProgress,
+                          style: txtThemeSub1?.copyWith(color: secondaryColor),
+                        )
+                      : Text(
+                          AppLocalizations.of(context)!.available,
+                          style: txtThemeSub1?.copyWith(
+                              color: primaryColorBrighter),
+                        ),
+                ),
+              ],
+            );
+          },
+        ),
       ),
     );
   }
 
   AppBar _appBar({required Size screenSize, required String appName}) {
     if (screenSize.width <= 750) {
-      if (isSearchActionButtonTap) {
+      if (_isSearchMode) {
         return AppBar(
           leading: IconButton(
             onPressed: () => setState(() {
-              isSearchActionButtonTap = false;
+              _isSearchMode = false;
             }),
             icon: const Icon(Icons.arrow_back),
           ),
@@ -80,38 +161,66 @@ class _HomePageState extends State<HomePage> {
           actions: [
             IconButton(
               onPressed: () => setState(() {
-                isSearchActionButtonTap = true;
+                _isSearchMode = true;
               }),
               icon: const Icon(Icons.search),
+            ),
+            IconButton(
+              onPressed: () {
+                Navigator.pushNamed(context, WishlistPage.routeName);
+              },
+              icon: const Icon(Icons.bookmark_added_outlined),
+              color: secondaryColor,
             ),
           ],
         );
       }
     } else {
-      isSearchActionButtonTap = false;
-      List<Widget> title = _appBarSearchTextField(5);
-      title.insert(
-        0,
-        const Expanded(
-          child: SizedBox(),
-        ),
-      );
+      _isSearchMode = false;
 
       return AppBar(
-        leading: Center(
-          child: Padding(
-            padding: const EdgeInsets.only(left: 8),
-            child: Text(
-              appName,
-              style: AppBarTheme.of(context)
-                  .titleTextStyle
-                  ?.copyWith(color: primaryColor),
-            ),
-          ),
-        ),
-        leadingWidth: 140,
         title: Row(
-          children: title,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(appName),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.pushNamed(context, WishlistPage.routeName);
+              },
+              child: Row(
+                children: const [
+                  Icon(Icons.bookmark_added_outlined),
+                  SizedBox(width: 8),
+                  Text('Wishlist'),
+                ],
+              ),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: primaryColorBrightest,
+                foregroundColor: secondaryColor,
+              ),
+            ),
+            Row(
+              children: [
+                SizedBox(
+                  width: 250,
+                  child: SearchTextField(controller: _searchTextFieldCtrler),
+                ),
+                const SizedBox(width: 16),
+                IconButton(
+                  onPressed: () {
+                    if (_searchTextFieldCtrler.text != '') {
+                      Navigator.pushNamed(
+                        context,
+                        SearchResultPage.routeName,
+                        arguments: _searchTextFieldCtrler.text,
+                      );
+                    }
+                  },
+                  icon: const Icon(Icons.search),
+                ),
+              ],
+            )
+          ],
         ),
       );
     }
@@ -121,17 +230,17 @@ class _HomePageState extends State<HomePage> {
     return [
       Expanded(
         flex: flex,
-        child: SearchTextField(controller: searchTextFieldController),
+        child: SearchTextField(controller: _searchTextFieldCtrler),
       ),
-      const Flexible(child: SizedBox(width: 24)),
+      const Flexible(child: SizedBox(width: 16)),
       Flexible(
         child: IconButton(
           onPressed: () {
-            if (searchTextFieldController.text != '') {
+            if (_searchTextFieldCtrler.text != '') {
               Navigator.pushNamed(
                 context,
                 SearchResultPage.routeName,
-                arguments: searchTextFieldController.text,
+                arguments: _searchTextFieldCtrler.text,
               );
             }
           },
@@ -193,207 +302,28 @@ class _HomePageState extends State<HomePage> {
         return LayoutBuilder(
           builder: (_, constraints) {
             if (constraints.maxWidth <= 750) {
-              return _RestaurantsListView(restaurants);
+              return RestaurantsListView(
+                listItem: restaurants,
+              );
             } else if (constraints.maxWidth <= 900) {
-              return _RestaurantsGridView(
+              return RestaurantsGridView(
                 gridCount: 2,
-                restaurants: restaurants,
+                listItem: restaurants,
               );
             } else if (constraints.maxWidth <= 1200) {
-              return _RestaurantsGridView(
+              return RestaurantsGridView(
                 gridCount: 3,
-                restaurants: restaurants,
+                listItem: restaurants,
               );
             } else {
-              return _RestaurantsGridView(
+              return RestaurantsGridView(
                 gridCount: 4,
-                restaurants: restaurants,
+                listItem: restaurants,
               );
             }
           },
         );
       },
-    );
-  }
-}
-
-class _RestaurantsListView extends StatelessWidget {
-  final List<Restaurant> restaurants;
-
-  const _RestaurantsListView(this.restaurants, {Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return ListView.builder(
-      itemCount: restaurants.length,
-      itemBuilder: (context, index) {
-        return _buildRestaurantItem(context, restaurants[index]);
-      },
-    );
-  }
-
-  Widget _buildRestaurantItem(BuildContext context, Restaurant restaurant) {
-    Hero leading(Restaurant restaurant) {
-      return Hero(
-        tag: restaurant.id,
-        child: Image.network(
-          ApiService.imageSmall(restaurant.pictureId),
-          width: 100,
-          fit: BoxFit.fill,
-          errorBuilder: (_, __, ___) {
-            return Image.asset(
-              'assets/images/photo_error_icon.png',
-              width: 100,
-              fit: BoxFit.fill,
-            );
-          },
-        ),
-      );
-    }
-
-    Text title(Restaurant restaurant, BuildContext context) {
-      return Text(
-        restaurant.name,
-        style: txtThemeH6?.copyWith(color: secondaryColor),
-      );
-    }
-
-    Column subtitle(Restaurant restaurant) {
-      return Column(
-        children: [
-          const SizedBox(height: 4),
-          Row(
-            children: [
-              const Icon(
-                Icons.location_on,
-                size: 23,
-              ),
-              Text(restaurant.city),
-            ],
-          ),
-          Row(
-            children: [
-              const Icon(
-                Icons.star,
-                size: 23,
-              ),
-              Text('${restaurant.rating}'),
-            ],
-          ),
-        ],
-      );
-    }
-
-    return Material(
-      child: RestaurantListTile(
-        leading: leading(restaurant),
-        title: title(restaurant, context),
-        subtitle: subtitle(restaurant),
-        onTap: () {
-          Navigator.pushNamed(
-            context,
-            DetailPage.routeName,
-            arguments: restaurant.id,
-          );
-        },
-      ),
-    );
-  }
-}
-
-class _RestaurantsGridView extends StatelessWidget {
-  final int gridCount;
-  final List<Restaurant> restaurants;
-
-  const _RestaurantsGridView({
-    Key? key,
-    required this.gridCount,
-    required this.restaurants,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return GridView.count(
-      crossAxisCount: gridCount,
-      children:
-          restaurants.map((e) => _buildRestaurantItem(context, e)).toList(),
-    );
-  }
-
-  Widget _buildRestaurantItem(BuildContext context, Restaurant restaurant) {
-    Hero image(Restaurant restaurant) {
-      return Hero(
-        tag: restaurant.id,
-        child: Image.network(
-          ApiService.imageMedium(restaurant.pictureId),
-          fit: BoxFit.fill,
-          errorBuilder: (_, __, ___) {
-            return Image.asset(
-              'assets/images/photo_error_icon.png',
-              fit: BoxFit.fill,
-            );
-          },
-        ),
-      );
-    }
-
-    Row iconWithText({IconData? icon, required String text}) {
-      return Row(
-        children: [
-          Icon(
-            icon,
-            size: 23,
-          ),
-          Text(
-            text,
-            style: txtThemeSub1?.copyWith(color: primaryColor),
-          ),
-        ],
-      );
-    }
-
-    return RestaurantGridViewContainer(
-      padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 8),
-      color: backgroundColor,
-      onTap: () {
-        Navigator.pushNamed(
-          context,
-          DetailPage.routeName,
-          arguments: restaurant.id,
-        );
-      },
-      child: Padding(
-        // padding
-        padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 8),
-        // Container content
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Image
-            Expanded(
-              child: image(restaurant),
-            ),
-
-            // name
-            Text(
-              restaurant.name,
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-              style: txtThemeH5?.copyWith(color: secondaryColor),
-            ),
-
-            // location and rating
-            iconWithText(
-              icon: Icons.location_on,
-              text: restaurant.city,
-            ),
-            iconWithText(
-              icon: Icons.star,
-              text: '${restaurant.rating}',
-            ),
-          ],
-        ),
-      ),
     );
   }
 }

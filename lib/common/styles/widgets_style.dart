@@ -27,15 +27,15 @@ final tabBarTheme = TabBarTheme(
 
 final elevatedButtonThemeData = ElevatedButtonThemeData(
   style: ElevatedButton.styleFrom(
-    primary: primaryColorBrightest,
-    onPrimary: primaryColor,
+    backgroundColor: primaryColorBrightest,
+    foregroundColor: primaryColor,
     textStyle: textTheme.button?.copyWith(color: primaryColor),
   ),
 );
 
 final textButtonThemeData = TextButtonThemeData(
   style: TextButton.styleFrom(
-    primary: primaryColorBrighter,
+    foregroundColor: primaryColorBrighter,
     textStyle: textTheme.button?.copyWith(
       color: primaryColorBrighter,
       decoration: TextDecoration.underline,

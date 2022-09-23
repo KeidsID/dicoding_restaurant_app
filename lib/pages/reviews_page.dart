@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 
-import '../common.dart';
+import '../common/common.dart';
 import '../data/api/api_service.dart';
 import '../data/model/from_api/restaurant_detail.dart';
 import '../widgets/review_container.dart';
 
 class ReviewsPage extends StatelessWidget {
   static const routeName = '/reviews_page';
-  final Restaurant restaurant;
+  final RestaurantDetailed restaurant;
 
   const ReviewsPage({Key? key, required this.restaurant}) : super(key: key);
 
@@ -17,24 +17,7 @@ class ReviewsPage extends StatelessWidget {
 
     return Scaffold(
       appBar: _appBar(context),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.only(top: 8),
-          child: Column(
-            children: restaurant.customerReviews
-                .map((e) => Padding(
-                      padding: EdgeInsets.symmetric(
-                        vertical: 8,
-                        horizontal: mainHMargin,
-                      ),
-                      child: ReviewContainer(
-                        customerReviews: e,
-                      ),
-                    ))
-                .toList(),
-          ),
-        ),
-      ),
+      body: _body(mainHMargin),
     );
   }
 
@@ -74,6 +57,29 @@ class ReviewsPage extends StatelessWidget {
               ),
             )
           ],
+        ),
+      ),
+    );
+  }
+
+  SingleChildScrollView _body(double mainHMargin) {
+    return SingleChildScrollView(
+      child: Padding(
+        padding: const EdgeInsets.only(top: 8),
+        child: Column(
+          children: restaurant.customerReviews
+              .map(
+                (e) => Padding(
+                  padding: EdgeInsets.symmetric(
+                    vertical: 8,
+                    horizontal: mainHMargin,
+                  ),
+                  child: ReviewContainer(
+                    customerReviews: e,
+                  ),
+                ),
+              )
+              .toList(),
         ),
       ),
     );

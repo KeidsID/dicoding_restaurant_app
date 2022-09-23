@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-class RestaurantGridViewContainer extends StatelessWidget {
-  const RestaurantGridViewContainer({
+class GridViewContainer extends StatelessWidget {
+  const GridViewContainer({
     Key? key,
     this.padding = EdgeInsets.zero,
     this.color,

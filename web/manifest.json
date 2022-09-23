@@ -1,6 +1,6 @@
 {
-    "name": "RESTAURantS",
-    "short_name": "RESTAURantS",
+    "name": "restaurant_app_project",
+    "short_name": "restaurant_app_project",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",

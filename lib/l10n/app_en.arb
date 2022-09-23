@@ -1,4 +1,8 @@
 {
+  "dailyReminder": "Daily reminder",
+  "notificationsTest": "Notifications test",
+  "available": "Available",
+  "inProgress": "In progress",
   "detailPagePopNavigationButton": "GO BACK",
   "searchTextFieldHintText": "Search restaurant name",
   "searchResultFounded": "{count, plural, =0{No restaurants found} =1{A restaurant found} other{{count} restaurants found}",
@@ -30,5 +34,6 @@
     }
   },
   "noInternetAccess": "No internet access",
-  "noApiData": "No restaurant data received"
+  "noApiData": "No restaurant data received",
+  "noDbData": "No wishlist. Try add to some."
 }

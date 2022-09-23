@@ -1,14 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import 'detail_page.dart';
-import '../common.dart';
-import '../data/api/api_service.dart';
-import '../data/model/from_api/search_restaurant.dart';
+import '../data/model/from_api/restaurant.dart';
+import '../widgets/for_restaurant_list_page/restaurant_grid_view.dart';
+import '../widgets/for_restaurant_list_page/restaurant_list_view.dart';
+import '../common/common.dart';
 import '../providers/search_result_provider.dart';
 import '../widgets/fade_on_scroll.dart';
-import '../widgets/restaurant_list_tile.dart';
-import '../widgets/restaurant_grid_view_container.dart';
 
 class SearchResultPage extends StatefulWidget {
   static const routeName = '/search_result_page';
@@ -115,10 +113,10 @@ class _SearchResultPageState extends State<SearchResultPage> {
 
     Widget flexibleSpaceBackground = Center(
       child: Container(
-        padding: const EdgeInsets.all(8),
+        padding: const EdgeInsets.all(4),
         decoration: const BoxDecoration(
           border: Border(
-            bottom: BorderSide(color: primaryColorBrighter),
+            bottom: BorderSide(color: secondaryColor),
           ),
         ),
         child: Text(
@@ -145,206 +143,30 @@ class _SearchResultPageState extends State<SearchResultPage> {
     return LayoutBuilder(
       builder: (_, constraints) {
         if (constraints.maxWidth <= 750) {
-          return _RestaurantsListView(restaurants);
+          return RestaurantsListView(
+            listItem: restaurants,
+            isPushReplacement: true,
+          );
         } else if (constraints.maxWidth <= 900) {
-          return _RestaurantsGridView(
+          return RestaurantsGridView(
             gridCount: 2,
-            restaurants: restaurants,
+            listItem: restaurants,
+            isPushReplacement: true,
           );
         } else if (constraints.maxWidth <= 1200) {
-          return _RestaurantsGridView(
+          return RestaurantsGridView(
             gridCount: 3,
-            restaurants: restaurants,
+            listItem: restaurants,
+            isPushReplacement: true,
           );
         } else {
-          return _RestaurantsGridView(
+          return RestaurantsGridView(
             gridCount: 4,
-            restaurants: restaurants,
+            listItem: restaurants,
+            isPushReplacement: true,
           );
         }
       },
-    );
-  }
-}
-
-class _RestaurantsListView extends StatelessWidget {
-  final List<Restaurant> restaurants;
-
-  const _RestaurantsListView(this.restaurants, {Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return ListView.builder(
-      itemCount: restaurants.length,
-      itemBuilder: (context, index) {
-        return _buildRestaurantItem(context, restaurants[index]);
-      },
-    );
-  }
-
-  Widget _buildRestaurantItem(BuildContext context, Restaurant restaurant) {
-    Hero leading(Restaurant restaurant) {
-      return Hero(
-        tag: restaurant.id,
-        child: Image.network(
-          ApiService.imageSmall(restaurant.pictureId),
-          width: 100,
-          fit: BoxFit.fill,
-          errorBuilder: (_, __, ___) {
-            return Image.asset(
-              'assets/images/photo_error_icon.png',
-              width: 100,
-              fit: BoxFit.fill,
-            );
-          },
-        ),
-      );
-    }
-
-    Text title(Restaurant restaurant, BuildContext context) {
-      return Text(
-        restaurant.name,
-        style: txtThemeH6?.copyWith(color: secondaryColor),
-      );
-    }
-
-    Column subtitle(Restaurant restaurant) {
-      return Column(
-        children: [
-          const SizedBox(height: 4),
-          Row(
-            children: [
-              const Icon(
-                Icons.location_on,
-                size: 23,
-              ),
-              Text(restaurant.city),
-            ],
-          ),
-          Row(
-            children: [
-              const Icon(
-                Icons.star,
-                size: 23,
-              ),
-              Text('${restaurant.rating}'),
-            ],
-          ),
-        ],
-      );
-    }
-
-    return Material(
-      child: RestaurantListTile(
-        leading: leading(restaurant),
-        title: title(restaurant, context),
-        subtitle: subtitle(restaurant),
-        onTap: () {
-          Navigator.pushReplacementNamed(
-            context,
-            DetailPage.routeName,
-            arguments: restaurant.id,
-          );
-        },
-      ),
-    );
-  }
-}
-
-class _RestaurantsGridView extends StatelessWidget {
-  final int gridCount;
-  final List<Restaurant> restaurants;
-
-  const _RestaurantsGridView({
-    Key? key,
-    required this.gridCount,
-    required this.restaurants,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return GridView.count(
-      crossAxisCount: gridCount,
-      children:
-          restaurants.map((e) => _buildRestaurantItem(context, e)).toList(),
-    );
-  }
-
-  Widget _buildRestaurantItem(BuildContext context, Restaurant restaurant) {
-    Hero image(Restaurant restaurant) {
-      return Hero(
-        tag: restaurant.id,
-        child: Image.network(
-          ApiService.imageMedium(restaurant.pictureId),
-          fit: BoxFit.fill,
-          errorBuilder: (_, __, ___) {
-            return Image.asset(
-              'assets/images/photo_error_icon.png',
-              fit: BoxFit.fill,
-            );
-          },
-        ),
-      );
-    }
-
-    Row iconWithText(BuildContext context,
-        {IconData? icon, required String text}) {
-      return Row(
-        children: [
-          Icon(
-            icon,
-            size: 23,
-          ),
-          Text(
-            text,
-            style: txtThemeSub1?.copyWith(color: primaryColor),
-          ),
-        ],
-      );
-    }
-
-    return RestaurantGridViewContainer(
-      padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 8),
-      color: backgroundColor,
-      onTap: () {
-        Navigator.pushReplacementNamed(
-          context,
-          DetailPage.routeName,
-          arguments: restaurant.id,
-        );
-      },
-      child: Padding(
-        // padding
-        padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 8),
-        // Container content
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Image
-            Expanded(
-              child: image(restaurant),
-            ),
-
-            // name
-            Text(
-              restaurant.name,
-              style: txtThemeH5?.copyWith(color: secondaryColor),
-            ),
-
-            // location and rating
-            iconWithText(
-              context,
-              icon: Icons.location_on,
-              text: restaurant.city,
-            ),
-            iconWithText(
-              context,
-              icon: Icons.star,
-              text: '${restaurant.rating}',
-            ),
-          ],
-        ),
-      ),
     );
   }
 }

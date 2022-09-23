@@ -15,13 +15,13 @@ class RestaurantDetail {
 
   final bool error;
   final String message;
-  final Restaurant restaurant;
+  final RestaurantDetailed restaurant;
 
   factory RestaurantDetail.fromJson(Map<String, dynamic> json) {
     return RestaurantDetail(
       error: json["error"],
       message: json["message"],
-      restaurant: Restaurant.fromJson(json["restaurant"]),
+      restaurant: RestaurantDetailed.fromJson(json["restaurant"]),
     );
   }
 
@@ -34,8 +34,8 @@ class RestaurantDetail {
   }
 }
 
-class Restaurant {
-  Restaurant({
+class RestaurantDetailed {
+  RestaurantDetailed({
     required this.id,
     required this.name,
     required this.description,
@@ -59,8 +59,8 @@ class Restaurant {
   final Menus menus;
   final List<CustomerReview> customerReviews;
 
-  factory Restaurant.fromJson(Map<String, dynamic> json) {
-    return Restaurant(
+  factory RestaurantDetailed.fromJson(Map<String, dynamic> json) {
+    return RestaurantDetailed(
       id: json["id"],
       name: json["name"],
       description: json["description"],
@@ -120,12 +120,12 @@ class CustomerReview {
   final DateTime date;
 
   factory CustomerReview.fromJson(Map<String, dynamic> json) {
-    String formattedString = _dateStringFormatter(json['date']);
+    String formattedDateString = _dateStringFormatter(json['date']);
 
     return CustomerReview(
       name: json["name"],
       review: json["review"],
-      date: DateTime.parse(formattedString),
+      date: DateTime.parse(formattedDateString),
     );
   }
 
@@ -138,12 +138,20 @@ class CustomerReview {
   }
 }
 
+/// Format the date string on the **CustomerReview** object in the JSON API,
+/// so that strings can be parsed to DateTime.
+///
+/// ```dart
+/// String formattedDateString = _dateStringFormatter("2 Mei 2002"); // "2002-05-02"
+/// DateTime reviewDate = DateTime.parse(formattedDateString); // Possible to do
+/// ```
 String _dateStringFormatter(String dateString) {
   List<String> splittedDateString = dateString.split(' ');
 
   String getDate = splittedDateString[0].length == 1
       ? splittedDateString[0].padLeft(2, '0')
       : splittedDateString[0];
+
   late String getMonth;
   switch (splittedDateString[1]) {
     case 'Januari':
@@ -183,6 +191,7 @@ String _dateStringFormatter(String dateString) {
       getMonth = '12';
       break;
   }
+
   String getYear = splittedDateString[2];
 
   return '$getYear-$getMonth-$getDate';

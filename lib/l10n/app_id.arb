@@ -1,4 +1,8 @@
 {
+  "dailyReminder": "Pengingat harian",
+  "notificationsTest": "Tes notifikasi",
+  "available": "Tersedia",
+  "inProgress": "Sedang berlangsung",
   "detailPagePopNavigationButton": "KEMBALI",
   "searchTextFieldHintText": "Cari nama restoran",
   "searchResultFounded": "{count, plural, =0{Tidak ada restoran yang ditemukan} =1{Restoran ditemukan} other{{count} restoran ditemukan}",
@@ -8,5 +12,6 @@
   "reviewsCheck": "Cek lebih banyak ulasan",
   "reviewDate": "{date}",
   "noInternetAccess": "Tidak ada akses internet",
-  "noApiData": "Tidak ada data restoran yang diterima"
+  "noApiData": "Tidak ada data restoran yang diterima",
+  "noDbData": "Tidak ada wishlist. Coba tambahkan beberapa."
 }
