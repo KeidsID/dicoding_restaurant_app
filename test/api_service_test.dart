@@ -1,12 +1,14 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart' as http;
 import 'package:mockito/mockito.dart';
-import 'package:restaurant_app_project/data/model/from_api/restaurant_detail.dart';
-import 'package:restaurant_app_project/data/model/from_api/search_restaurant.dart';
 
 import 'api_service_test.mocks.dart';
 import 'package:restaurant_app_project/data/api/api_service.dart';
 import 'package:restaurant_app_project/data/model/from_api/restaurant_list.dart';
+import 'package:restaurant_app_project/data/model/from_api/restaurant_detail.dart';
+import 'package:restaurant_app_project/data/model/from_api/search_restaurant.dart';
+
+import 'mock_client_responses.dart';
 
 void main() {
   group('getRestaurantList test:', () {
@@ -16,26 +18,7 @@ void main() {
       when(
         client.get(Uri.parse('${ApiService.baseUrl}/list')),
       ).thenAnswer((_) async {
-        return http.Response(
-          '''
-        {
-          "error": false,
-          "message": "success",
-          "count": 1,
-          "restaurants": [
-            {
-              "id": "rqdv5juczeskfw1e867",
-              "name": "Melting Pot",
-              "description": "Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. ...",
-              "pictureId": "14",
-              "city": "Medan",
-              "rating": 4.2
-            }
-          ]
-        }
-        ''',
-          200,
-        );
+        return http.Response(getRestaurantListResponse1, 200);
       });
 
       final response = await client.get(
@@ -64,41 +47,23 @@ void main() {
     });
 
     test(
-        'Return RestaurantList even if JSON Restaurant object contains null property value',
-        () async {
-      when(
-        client.get(Uri.parse('${ApiService.baseUrl}/list')),
-      ).thenAnswer((_) async {
-        return http.Response(
-          '''
-        {
-          "error": false,
-          "message": "success",
-          "count": 1,
-          "restaurants": [
-            {
-              "id": "rqdv5juczeskfw1e867",
-              "name": null,
-              "description": "Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. ...",
-              "pictureId": "14",
-              "city": "Medan",
-              "rating": null
-            }
-          ]
-        }
-        ''',
-          200,
-        );
-      });
+      'Return RestaurantList even if JSON Restaurant object contains null property value',
+      () async {
+        when(
+          client.get(Uri.parse('${ApiService.baseUrl}/list')),
+        ).thenAnswer((_) async {
+          return http.Response(getRestaurantListResponse2, 200);
+        });
 
-      final response = await client.get(
-        Uri.parse('${ApiService.baseUrl}/list'),
-      );
-      dynamic result = (response.statusCode == 200)
-          ? restaurantListFromJson(response.body)
-          : Exception('Failed');
-      expect(result, isA<RestaurantList>());
-    });
+        final response = await client.get(
+          Uri.parse('${ApiService.baseUrl}/list'),
+        );
+        dynamic result = (response.statusCode == 200)
+            ? restaurantListFromJson(response.body)
+            : Exception('Failed');
+        expect(result, isA<RestaurantList>());
+      },
+    );
   });
 
   group('getRestaurantDetail test:', () {
@@ -109,57 +74,7 @@ void main() {
       when(
         client.get(Uri.parse('${ApiService.baseUrl}/detail/$id')),
       ).thenAnswer((_) async {
-        return http.Response(
-          '''
-{
-    "error": false,
-    "message": "success",
-    "restaurant": {
-        "id": "$id",
-        "name": "Melting Pot",
-        "description": "Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. ...",
-        "city": "Medan",
-        "address": "Jln. Pandeglang no 19",
-        "pictureId": "14",
-        "categories": [
-            {
-                "name": "Italia"
-            },
-            {
-                "name": "Modern"
-            }
-        ],
-        "menus": {
-            "foods": [
-                {
-                    "name": "Paket rosemary"
-                },
-                {
-                    "name": "Toastie salmon"
-                }
-            ],
-            "drinks": [
-                {
-                    "name": "Es krim"
-                },
-                {
-                    "name": "Sirup"
-                }
-            ]
-        },
-        "rating": 4.2,
-        "customerReviews": [
-            {
-                "name": "Ahmad",
-                "review": "Tidak rekomendasi untuk pelajar!",
-                "date": "13 November 2019"
-            }
-        ]
-    }
-}
-        ''',
-          200,
-        );
+        return http.Response(getRestaurantDetailResponse, 200);
       });
 
       final response = await client.get(
@@ -188,12 +103,57 @@ void main() {
     });
   });
 
-  test('getSearchRestaurant test', () async {
-    const randomQuery = 'nucenoe1j';
+  group('getSearchRestaurant test:', () {
+    final client = MockClient();
 
-    expect(
-      await ApiService.getSearchRestaurant(randomQuery),
-      isA<SearchRestaurant>(),
-    );
+    test('Return SearchRestaurant if the HTTP call completes', () async {
+      when(
+        client.get(Uri.parse('${ApiService.baseUrl}/search?q=makan')),
+      ).thenAnswer((_) async {
+        return http.Response(getSearchRestaurantResponse1, 200);
+      });
+
+      final response = await client.get(
+        Uri.parse('${ApiService.baseUrl}/search?q=makan'),
+      );
+      dynamic result = (response.statusCode == 200)
+          ? searchRestaurantFromJson(response.body)
+          : Exception('Failed');
+      expect(result, isA<SearchRestaurant>());
+    });
+
+    test('Throw an error if the HTTP call fails', () async {
+      when(
+        client.get(Uri.parse('${ApiService.baseUrl}/search?q=makan')),
+      ).thenAnswer((_) async {
+        return http.Response('Not Found', 404);
+      });
+
+      final response = await client.get(
+        Uri.parse('${ApiService.baseUrl}/search?q=makan'),
+      );
+      dynamic result = (response.statusCode == 200)
+          ? searchRestaurantFromJson(response.body)
+          : Exception('Failed');
+      expect(result, isA<Exception>());
+    });
+
+    test(
+        'Return SearchRestaurant even if JSON Restaurant object contains null property value',
+        () async {
+      when(
+        client.get(Uri.parse('${ApiService.baseUrl}/search?q=makan')),
+      ).thenAnswer((_) async {
+        return http.Response(getSearchRestaurantResponse2, 200);
+      });
+
+      final response = await client.get(
+        Uri.parse('${ApiService.baseUrl}/search?q=makan'),
+      );
+      dynamic result = (response.statusCode == 200)
+          ? searchRestaurantFromJson(response.body)
+          : Exception('Failed');
+      expect(result, isA<SearchRestaurant>());
+    });
   });
 }

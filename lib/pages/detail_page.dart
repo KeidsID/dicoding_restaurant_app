@@ -53,7 +53,7 @@ Widget _foodAndDrinkWidget(String e, {TextStyle? style}) {
   );
 }
 
-List<Widget> _foodWidgets(Restaurant restaurant) {
+List<Widget> _foodWidgets(RestaurantDetailed restaurant) {
   return restaurant.menus.foods.map(
     (e) {
       return _foodAndDrinkWidget(
@@ -64,7 +64,7 @@ List<Widget> _foodWidgets(Restaurant restaurant) {
   ).toList();
 }
 
-List<Widget> _drinkWidgets(Restaurant restaurant) {
+List<Widget> _drinkWidgets(RestaurantDetailed restaurant) {
   return restaurant.menus.drinks.map(
     (e) {
       return _foodAndDrinkWidget(
@@ -103,28 +103,37 @@ class DetailPage extends StatelessWidget {
               // success widget
             } else if (restaurantDetailProvider.state == ResultState.noData) {
               // no data
-              return Center(
-                child: Text(
-                  AppLocalizations.of(context)!.noApiData,
-                  style: txtThemeH4?.copyWith(color: secondaryColor),
-                  textAlign: TextAlign.center,
+              return Container(
+                color: backgroundColor,
+                child: Center(
+                  child: Text(
+                    AppLocalizations.of(context)!.noApiData,
+                    style: txtThemeH4?.copyWith(color: secondaryColor),
+                    textAlign: TextAlign.center,
+                  ),
                 ),
               );
             } else if (restaurantDetailProvider.state == ResultState.error) {
               // error widget
-              return Center(
-                child: Text(
-                  AppLocalizations.of(context)!.noInternetAccess,
-                  style: txtThemeH4?.copyWith(color: secondaryColor),
-                  textAlign: TextAlign.center,
+              return Container(
+                color: backgroundColor,
+                child: Center(
+                  child: Text(
+                    AppLocalizations.of(context)!.noInternetAccess,
+                    style: txtThemeH4?.copyWith(color: secondaryColor),
+                    textAlign: TextAlign.center,
+                  ),
                 ),
               );
             } else {
-              return Center(
-                child: Text(
-                  restaurantDetailProvider.message,
-                  style: txtThemeH4?.copyWith(color: secondaryColor),
-                  textAlign: TextAlign.center,
+              return Container(
+                color: backgroundColor,
+                child: Center(
+                  child: Text(
+                    restaurantDetailProvider.message,
+                    style: txtThemeH4?.copyWith(color: secondaryColor),
+                    textAlign: TextAlign.center,
+                  ),
                 ),
               );
             }
@@ -148,7 +157,7 @@ class DetailPage extends StatelessWidget {
 }
 
 class _DetailPagePortrait extends StatefulWidget {
-  final Restaurant restaurant;
+  final RestaurantDetailed restaurant;
 
   const _DetailPagePortrait(this.restaurant, {Key? key}) : super(key: key);
 
@@ -395,7 +404,7 @@ class _DetailPagePortraitState extends State<_DetailPagePortrait> {
 }
 
 class _DetailPageLandscape extends StatefulWidget {
-  final Restaurant restaurant;
+  final RestaurantDetailed restaurant;
 
   const _DetailPageLandscape(
     this.restaurant, {

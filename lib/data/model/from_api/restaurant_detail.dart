@@ -15,13 +15,13 @@ class RestaurantDetail {
 
   final bool error;
   final String message;
-  final Restaurant restaurant;
+  final RestaurantDetailed restaurant;
 
   factory RestaurantDetail.fromJson(Map<String, dynamic> json) {
     return RestaurantDetail(
       error: json["error"],
       message: json["message"],
-      restaurant: Restaurant.fromJson(json["restaurant"]),
+      restaurant: RestaurantDetailed.fromJson(json["restaurant"]),
     );
   }
 
@@ -34,8 +34,8 @@ class RestaurantDetail {
   }
 }
 
-class Restaurant {
-  Restaurant({
+class RestaurantDetailed {
+  RestaurantDetailed({
     required this.id,
     required this.name,
     required this.description,
@@ -59,8 +59,8 @@ class Restaurant {
   final Menus menus;
   final List<CustomerReview> customerReviews;
 
-  factory Restaurant.fromJson(Map<String, dynamic> json) {
-    return Restaurant(
+  factory RestaurantDetailed.fromJson(Map<String, dynamic> json) {
+    return RestaurantDetailed(
       id: json["id"],
       name: json["name"],
       description: json["description"],

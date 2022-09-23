@@ -6,6 +6,7 @@ class RestaurantListTile extends StatelessWidget {
     required this.leading,
     required this.title,
     required this.subtitle,
+    required this.trailing,
     required this.onTap,
   }) : super(key: key);
 
@@ -24,6 +25,11 @@ class RestaurantListTile extends StatelessWidget {
   /// Typically a [Text] widget.
   final Widget subtitle;
 
+  /// A widget to display after the title
+  ///
+  /// Typically an [Icon] widget
+  final Widget trailing;
+
   /// Called when the user taps this list tile.
   final void Function() onTap;
 
@@ -33,6 +39,7 @@ class RestaurantListTile extends StatelessWidget {
       leading: leading,
       title: title,
       subtitle: subtitle,
+      trailing: trailing,
       isThreeLine: true,
       contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       onTap: onTap,

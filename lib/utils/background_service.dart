@@ -4,9 +4,11 @@ import 'dart:isolate';
 
 import 'package:flutter/cupertino.dart';
 
+import '../data/model/from_api/restaurant.dart';
 import '../main.dart';
-import '../utils/notification_helper.dart';
 import '../data/api/api_service.dart';
+import '../data/model/from_api/restaurant_list.dart';
+import '../utils/notification_helper.dart';
 
 final ReceivePort port = ReceivePort();
 
@@ -30,12 +32,12 @@ class BackgroundService {
 
   static Future<void> scheduledCallback() async {
     debugPrint('Alarm fired!');
-    final notificationHelper = NotificationHelper();
-    var getData = await ApiService.getRestaurantList();
-    var restaurants = getData.restaurants;
+    var notificationHelper = NotificationHelper();
+    RestaurantList getData = await ApiService.getRestaurantList();
+    List<Restaurant> restaurants = getData.restaurants;
 
-    var randomIndex = Random().nextInt(restaurants.length);
-    var randomizedRestaurant = restaurants[randomIndex];
+    int randomIndex = Random().nextInt(restaurants.length);
+    Restaurant randomizedRestaurant = restaurants[randomIndex];
 
     await notificationHelper.showNotification(
       localNotifPlugin,
@@ -48,9 +50,9 @@ class BackgroundService {
 
   static Future<void> notifTestCallback() async {
     debugPrint('Alarm fired!');
-    final notificationHelper = NotificationHelper();
-    var getData = await ApiService.getRestaurantList();
-    var restaurants = getData.restaurants;
+    var notificationHelper = NotificationHelper();
+    RestaurantList getData = await ApiService.getRestaurantList();
+    List<Restaurant> restaurants = getData.restaurants;
 
     await notificationHelper.showNotification(
       localNotifPlugin,

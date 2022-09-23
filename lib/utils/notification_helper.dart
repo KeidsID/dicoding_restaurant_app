@@ -4,7 +4,7 @@ import 'package:rxdart/rxdart.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter/material.dart';
 
-import '../data/model/from_api/restaurant_list.dart';
+import '../data/model/from_api/restaurant.dart';
 import '../common/navigation.dart';
 
 final selectNotificationSubject = BehaviorSubject<String>();
