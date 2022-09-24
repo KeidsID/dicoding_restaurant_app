@@ -30,7 +30,7 @@ class ReviewsPage extends StatelessWidget {
           children: [
             Flexible(
               child: Image.network(
-                ApiService.imageSmall(restaurant.pictureId),
+                ApiService.instance!.imageSmall(restaurant.pictureId),
               ),
             ),
             const Flexible(child: SizedBox(width: 8)),

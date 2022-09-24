@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:android_alarm_manager_plus/android_alarm_manager_plus.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:restaurant_app_project/data/api/api_service.dart';
+import 'package:http/http.dart' as http;
 
 import 'my_app.dart';
 import 'utils/background_service.dart';
@@ -17,6 +19,7 @@ Future<void> main() async {
   FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
 
   widgetsBinding;
+  ApiService(client: http.Client());
 
   final notifHelper = NotificationHelper();
   final bgService = BackgroundService();

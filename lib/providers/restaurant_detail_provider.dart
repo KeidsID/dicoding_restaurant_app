@@ -6,9 +6,10 @@ import '../data/model/from_api/restaurant_detail.dart';
 enum ResultState { loading, noData, hasData, error }
 
 class RestaurantDetailProvider extends ChangeNotifier {
-  final String _id;
+  final String id;
+  final ApiService apiService;
 
-  RestaurantDetailProvider(this._id) {
+  RestaurantDetailProvider({required this.id,  required this.apiService}) {
     _fetchRestaurantDetail();
   }
 
@@ -24,7 +25,7 @@ class RestaurantDetailProvider extends ChangeNotifier {
     try {
       _state = ResultState.loading;
       notifyListeners();
-      final restaurantDetail = await ApiService.getRestaurantDetail(_id);
+      final restaurantDetail = await apiService.getRestaurantDetail(id);
       if (restaurantDetail.error == true) {
         _state = ResultState.noData;
         notifyListeners();

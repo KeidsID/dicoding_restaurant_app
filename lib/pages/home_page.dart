@@ -187,16 +187,16 @@ class _HomePageState extends State<HomePage> {
               onPressed: () {
                 Navigator.pushNamed(context, WishlistPage.routeName);
               },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: primaryColorBrightest,
+                foregroundColor: secondaryColor,
+              ),
               child: Row(
                 children: const [
                   Icon(Icons.bookmark_added_outlined),
                   SizedBox(width: 8),
                   Text('Wishlist'),
                 ],
-              ),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: primaryColorBrightest,
-                foregroundColor: secondaryColor,
               ),
             ),
             Row(

@@ -33,7 +33,7 @@ class RestaurantsGridView extends StatelessWidget {
       return Hero(
         tag: restaurant.id,
         child: Image.network(
-          ApiService.imageLarge(restaurant.pictureId),
+          ApiService.instance!.imageLarge(restaurant.pictureId),
           fit: BoxFit.fill,
           errorBuilder: (_, __, ___) {
             return Image.asset(
@@ -141,7 +141,7 @@ class RestaurantsGridView extends StatelessWidget {
                         ],
                       ),
                     ),
-                    SizedBox(height: 8),
+                    const SizedBox(height: 8),
                     // name
                     Text(
                       restaurant.name,

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:restaurant_app_project/data/api/api_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'common/common.dart';
@@ -39,7 +40,9 @@ class MyApp extends StatelessWidget {
 
   final List<ChangeNotifierProvider> _providerList = [
     ChangeNotifierProvider<RestaurantListProvider>(
-      create: (context) => RestaurantListProvider(),
+      create: (context) => RestaurantListProvider(
+        apiService: ApiService.instance!,
+      ),
     ),
     ChangeNotifierProvider<NotificationsProvider>(
       create: (context) => NotificationsProvider(),

@@ -84,7 +84,10 @@ class DetailPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
-      create: (context) => RestaurantDetailProvider(restaurantId),
+      create: (context) => RestaurantDetailProvider(
+        id: restaurantId,
+        apiService: ApiService.instance!,
+      ),
       child: Consumer<RestaurantDetailProvider>(
         builder: (_, restaurantDetailProvider, __) {
           if (restaurantDetailProvider.state == ResultState.loading) {
@@ -340,7 +343,7 @@ class _DetailPagePortraitState extends State<_DetailPagePortrait> {
       return Hero(
         tag: widget.restaurant.id,
         child: Image.network(
-          ApiService.imageMedium(widget.restaurant.pictureId),
+          ApiService.instance!.imageMedium(widget.restaurant.pictureId),
           fit: BoxFit.fill,
           errorBuilder: (_, __, ___) {
             return Image.asset(
@@ -536,7 +539,7 @@ class _DetailPageLandscapeState extends State<_DetailPageLandscape> {
               child: Hero(
                 tag: widget.restaurant.id,
                 child: Image.network(
-                  ApiService.imageMedium(
+                  ApiService.instance!.imageMedium(
                     widget.restaurant.pictureId,
                   ),
                   fit: BoxFit.cover,

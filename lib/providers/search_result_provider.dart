@@ -6,9 +6,10 @@ import '../data/model/from_api/search_restaurant.dart';
 enum ResultState { loading, noData, hasData, error }
 
 class SearchResultProvider extends ChangeNotifier {
-  final String _query;
+  final String query;
+  final ApiService apiService;
 
-  SearchResultProvider(this._query) {
+  SearchResultProvider({required this.query, required this.apiService}) {
     _fetchAllRestaurants();
   }
 
@@ -24,7 +25,7 @@ class SearchResultProvider extends ChangeNotifier {
     try {
       _state = ResultState.loading;
       notifyListeners();
-      final searchRestaurant = await ApiService.getSearchRestaurant(_query);
+      final searchRestaurant = await apiService.getSearchRestaurant(query);
       if (searchRestaurant.error == true) {
         _state = ResultState.noData;
         notifyListeners();

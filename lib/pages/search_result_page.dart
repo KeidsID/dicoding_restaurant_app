@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:restaurant_app_project/data/api/api_service.dart';
 
 import '../data/model/from_api/restaurant.dart';
 import '../widgets/for_restaurant_list_page/restaurant_grid_view.dart';
@@ -37,7 +38,10 @@ class _SearchResultPageState extends State<SearchResultPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: ChangeNotifierProvider(
-        create: (context) => SearchResultProvider(widget.query),
+        create: (context) => SearchResultProvider(
+          query: widget.query,
+          apiService: ApiService.instance!,
+        ),
         child: Consumer<SearchResultProvider>(
           builder: (context, searchResultProvider, _) {
             if (searchResultProvider.state == ResultState.loading) {

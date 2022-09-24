@@ -21,7 +21,9 @@ class BackgroundService {
     _instance = this;
   }
 
-  factory BackgroundService() => _instance ?? BackgroundService._internal();
+  factory BackgroundService() {
+    return _instance ?? BackgroundService._internal();
+  }
 
   void initializeIsolate() {
     IsolateNameServer.registerPortWithName(
@@ -33,7 +35,7 @@ class BackgroundService {
   static Future<void> scheduledCallback() async {
     debugPrint('Alarm fired!');
     var notificationHelper = NotificationHelper();
-    RestaurantList getData = await ApiService.getRestaurantList();
+    RestaurantList getData = await ApiService.instance!.getRestaurantList();
     List<Restaurant> restaurants = getData.restaurants;
 
     int randomIndex = Random().nextInt(restaurants.length);
@@ -51,7 +53,7 @@ class BackgroundService {
   static Future<void> notifTestCallback() async {
     debugPrint('Alarm fired!');
     var notificationHelper = NotificationHelper();
-    RestaurantList getData = await ApiService.getRestaurantList();
+    RestaurantList getData = await ApiService.instance!.getRestaurantList();
     List<Restaurant> restaurants = getData.restaurants;
 
     await notificationHelper.showNotification(

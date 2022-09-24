@@ -31,7 +31,7 @@ class RestaurantsListView extends StatelessWidget {
       return Hero(
         tag: restaurant.id,
         child: Image.network(
-          ApiService.imageSmall(restaurant.pictureId),
+          ApiService.instance!.imageSmall(restaurant.pictureId),
           width: 100,
           fit: BoxFit.fill,
           errorBuilder: (_, __, ___) {

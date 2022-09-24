@@ -11,63 +11,56 @@ import 'package:restaurant_app_project/data/model/from_api/search_restaurant.dar
 import 'mock_client_responses.dart';
 
 void main() {
-  group('getRestaurantList test:', () {
-    final client = MockClient();
-
-    test('Return RestaurantList if the HTTP call completes', () async {
-      when(
-        client.get(Uri.parse('${ApiService.baseUrl}/list')),
-      ).thenAnswer((_) async {
-        return http.Response(getRestaurantListResponse1, 200);
-      });
-
-      final response = await client.get(
-        Uri.parse('${ApiService.baseUrl}/list'),
-      );
-      dynamic result = (response.statusCode == 200)
-          ? restaurantListFromJson(response.body)
-          : Exception('Failed');
-      expect(result, isA<RestaurantList>());
-    });
-
-    test('Throw an error if the HTTP call fails', () async {
-      when(
-        client.get(Uri.parse('${ApiService.baseUrl}/list')),
-      ).thenAnswer((_) async {
-        return http.Response('Not Found', 404);
-      });
-
-      final response = await client.get(
-        Uri.parse('${ApiService.baseUrl}/list'),
-      );
-      dynamic result = (response.statusCode == 200)
-          ? restaurantListFromJson(response.body)
-          : Exception('Failed');
-      expect(result, isA<Exception>());
-    });
-
-    test(
-      'Return RestaurantList even if JSON Restaurant object contains null property value',
-      () async {
+  final client = MockClient();
+  setUp(() => ApiService(client: client));
+  group(
+    'getRestaurantList test:',
+    () {
+      test('Return RestaurantList if the HTTP call completes', () async {
         when(
           client.get(Uri.parse('${ApiService.baseUrl}/list')),
         ).thenAnswer((_) async {
-          return http.Response(getRestaurantListResponse2, 200);
+          return http.Response(getRestaurantListResponse1, 200);
         });
 
-        final response = await client.get(
-          Uri.parse('${ApiService.baseUrl}/list'),
+        expect(
+          await ApiService.instance!.getRestaurantList(),
+          isA<RestaurantList>(),
         );
-        dynamic result = (response.statusCode == 200)
-            ? restaurantListFromJson(response.body)
-            : Exception('Failed');
-        expect(result, isA<RestaurantList>());
-      },
-    );
-  });
+      });
+
+      test('Throw an error if the HTTP call fails', () {
+        when(
+          client.get(Uri.parse('${ApiService.baseUrl}/list')),
+        ).thenAnswer((_) async {
+          return http.Response('Not Found', 404);
+        });
+
+        expect(
+          ApiService.instance!.getRestaurantList(),
+          throwsException,
+        );
+      });
+
+      test(
+        'Return RestaurantList even if JSON Restaurant object contains null property value',
+        () async {
+          when(
+            client.get(Uri.parse('${ApiService.baseUrl}/list')),
+          ).thenAnswer((_) async {
+            return http.Response(getRestaurantListResponse2, 200);
+          });
+
+          expect(
+            await ApiService.instance!.getRestaurantList(),
+            isA<RestaurantList>(),
+          );
+        },
+      );
+    },
+  );
 
   group('getRestaurantDetail test:', () {
-    final client = MockClient();
     const id = 'rqdv5juczeskfw1e867';
 
     test('Return RestaurantDetail if the HTTP call completes', () async {
@@ -77,83 +70,69 @@ void main() {
         return http.Response(getRestaurantDetailResponse, 200);
       });
 
-      final response = await client.get(
-        Uri.parse('${ApiService.baseUrl}/detail/$id'),
+      expect(
+        await ApiService.instance!.getRestaurantDetail(id),
+        isA<RestaurantDetail>(),
       );
-      dynamic result = (response.statusCode == 200)
-          ? restaurantDetailFromJson(response.body)
-          : Exception('Failed');
-      expect(result, isA<RestaurantDetail>());
     });
 
-    test('Throw an error if the HTTP call fails', () async {
+    test('Throw an error if the HTTP call fails', () {
       when(
         client.get(Uri.parse('${ApiService.baseUrl}/detail/$id')),
       ).thenAnswer((_) async {
         return http.Response('Not Found', 404);
       });
 
-      final response = await client.get(
-        Uri.parse('${ApiService.baseUrl}/detail/$id'),
+      expect(
+        ApiService.instance!.getRestaurantDetail(id),
+        throwsException,
       );
-      dynamic result = (response.statusCode == 200)
-          ? restaurantListFromJson(response.body)
-          : Exception('Failed');
-      expect(result, isA<Exception>());
     });
   });
 
   group('getSearchRestaurant test:', () {
-    final client = MockClient();
+    const String query = 'makan';
 
     test('Return SearchRestaurant if the HTTP call completes', () async {
       when(
-        client.get(Uri.parse('${ApiService.baseUrl}/search?q=makan')),
+        client.get(Uri.parse('${ApiService.baseUrl}/search?q=$query')),
       ).thenAnswer((_) async {
         return http.Response(getSearchRestaurantResponse1, 200);
       });
 
-      final response = await client.get(
-        Uri.parse('${ApiService.baseUrl}/search?q=makan'),
+      expect(
+        await ApiService.instance!.getSearchRestaurant(query),
+        isA<SearchRestaurant>(),
       );
-      dynamic result = (response.statusCode == 200)
-          ? searchRestaurantFromJson(response.body)
-          : Exception('Failed');
-      expect(result, isA<SearchRestaurant>());
     });
 
-    test('Throw an error if the HTTP call fails', () async {
+    test('Throw an error if the HTTP call fails', () {
       when(
-        client.get(Uri.parse('${ApiService.baseUrl}/search?q=makan')),
+        client.get(Uri.parse('${ApiService.baseUrl}/search?q=$query')),
       ).thenAnswer((_) async {
         return http.Response('Not Found', 404);
       });
 
-      final response = await client.get(
-        Uri.parse('${ApiService.baseUrl}/search?q=makan'),
+      expect(
+        ApiService.instance!.getSearchRestaurant(query),
+        throwsException,
       );
-      dynamic result = (response.statusCode == 200)
-          ? searchRestaurantFromJson(response.body)
-          : Exception('Failed');
-      expect(result, isA<Exception>());
     });
 
     test(
-        'Return SearchRestaurant even if JSON Restaurant object contains null property value',
-        () async {
-      when(
-        client.get(Uri.parse('${ApiService.baseUrl}/search?q=makan')),
-      ).thenAnswer((_) async {
-        return http.Response(getSearchRestaurantResponse2, 200);
-      });
+      'Return SearchRestaurant even if JSON Restaurant object contains null property value',
+      () async {
+        when(
+          client.get(Uri.parse('${ApiService.baseUrl}/search?q=$query')),
+        ).thenAnswer((_) async {
+          return http.Response(getSearchRestaurantResponse2, 200);
+        });
 
-      final response = await client.get(
-        Uri.parse('${ApiService.baseUrl}/search?q=makan'),
-      );
-      dynamic result = (response.statusCode == 200)
-          ? searchRestaurantFromJson(response.body)
-          : Exception('Failed');
-      expect(result, isA<SearchRestaurant>());
-    });
+        expect(
+          await ApiService.instance!.getSearchRestaurant(query),
+          isA<SearchRestaurant>(),
+        );
+      },
+    );
   });
 }
