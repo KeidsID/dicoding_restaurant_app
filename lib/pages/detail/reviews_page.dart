@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 
-import '../common/common.dart';
-import '../data/api/api_service.dart';
-import '../data/model/from_api/restaurant_detail.dart';
-import '../widgets/review_container.dart';
+import '../../common/common.dart';
+import '../../common/image_network_builder.dart';
+import '../../data/api/api_service.dart';
+import '../../data/model/from_api/restaurant_detail.dart';
+import '../../widgets/review_container.dart';
 
 class ReviewsPage extends StatelessWidget {
   static const routeName = '/reviews_page';
@@ -31,6 +32,8 @@ class ReviewsPage extends StatelessWidget {
             Flexible(
               child: Image.network(
                 ApiService.instance!.imageSmall(restaurant.pictureId),
+                fit: BoxFit.fill,
+                errorBuilder: errorBuilder,
               ),
             ),
             const Flexible(child: SizedBox(width: 8)),
@@ -47,8 +50,9 @@ class ReviewsPage extends StatelessWidget {
                         ?.copyWith(color: secondaryColor),
                   ),
                   Text(
-                    AppLocalizations.of(context)!
-                        .reviewHeading(restaurant.customerReviews.length),
+                    AppLocalizations.of(context)!.reviewHeading(
+                      restaurant.customerReviews.length,
+                    ),
                     style: txtThemeCaption?.copyWith(
                       color: primaryColorBrighter,
                     ),
@@ -65,7 +69,7 @@ class ReviewsPage extends StatelessWidget {
   SingleChildScrollView _body(double mainHMargin) {
     return SingleChildScrollView(
       child: Padding(
-        padding: const EdgeInsets.only(top: 8),
+        padding: const EdgeInsets.symmetric(vertical: 8),
         child: Column(
           children: restaurant.customerReviews
               .map(

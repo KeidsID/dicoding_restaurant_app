@@ -1,3 +1,6 @@
+import 'dart:convert';
+
+import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
 import '../model/from_api/restaurant_list.dart';
@@ -42,6 +45,28 @@ class ApiService {
       return searchRestaurantFromJson(response.body);
     } else {
       throw Exception('Failed to Get Restaurant Data');
+    }
+  }
+
+  Future<void> postReview({
+    required String restaurantId,
+    required String name,
+    required String review,
+  }) async {
+    final response = await client.post(
+      Uri.parse('$baseUrl/review'),
+      headers: <String, String>{"Content-Type": 'application/json'},
+      body: jsonEncode(<String, String>{
+        "id": restaurantId,
+        "name": name,
+        "review": review,
+      }),
+    );
+
+    if (response.statusCode == 201) {
+      debugPrint('Review posted!');
+    } else {
+      throw Exception('Failed to post review');
     }
   }
 

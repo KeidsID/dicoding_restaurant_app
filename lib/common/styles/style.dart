@@ -23,6 +23,8 @@ final myTheme = ThemeData(
   textButtonTheme: textButtonThemeData,
   iconTheme: iconThemeData,
   chipTheme: chipThemeData,
+  snackBarTheme: snackBarThemeData,
+  dialogBackgroundColor: backgroundColor,
 );
 
 final textTheme = TextTheme(

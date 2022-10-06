@@ -2,9 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../common/common.dart';
+import '../../common/image_network_builder.dart';
+
 import '../../data/api/api_service.dart';
 import '../../data/model/from_api/restaurant.dart';
-import '../../pages/detail_page.dart';
+import '../../pages/detail/detail_page.dart';
 import '../../providers/db_provider.dart';
 import 'restaurant_list_tile.dart';
 
@@ -34,13 +36,7 @@ class RestaurantsListView extends StatelessWidget {
           ApiService.instance!.imageSmall(restaurant.pictureId),
           width: 100,
           fit: BoxFit.fill,
-          errorBuilder: (_, __, ___) {
-            return Image.asset(
-              'assets/images/photo_error_icon.png',
-              width: 100,
-              fit: BoxFit.fill,
-            );
-          },
+          errorBuilder: errorBuilder,
         ),
       );
     }

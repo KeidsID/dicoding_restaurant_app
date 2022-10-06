@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../common/common.dart';
-import '../pages/search_result_page.dart';
+import '../pages/home/search_result_page.dart';
 
 class SearchTextField extends StatelessWidget {
   final TextEditingController? controller;
@@ -16,7 +16,7 @@ class SearchTextField extends StatelessWidget {
       decoration: InputDecoration(
         filled: true,
         fillColor: primaryColorBrightest.withOpacity(0.25),
-        hintText: AppLocalizations.of(context)!.searchTextFieldHintText,
+        hintText: AppLocalizations.of(context)!.searchTxtFieldHint,
         enabledBorder: const OutlineInputBorder(
           borderSide: BorderSide(color: primaryColor),
         ),

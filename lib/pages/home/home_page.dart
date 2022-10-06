@@ -1,27 +1,28 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:provider/provider.dart';
 
-import '../common/common.dart';
-import '../data/model/from_api/restaurant.dart';
-import 'detail_page.dart';
+import '../../common/common.dart';
+import '../../data/model/from_api/restaurant.dart';
+
+import '../detail/detail_page.dart';
 import 'search_result_page.dart';
 import 'wishlist_page.dart';
-import '../providers/notifications_provider.dart';
-import '../providers/preferences_provider.dart';
-import '../providers/restaurant_list_provider.dart';
-import '../utils/background_service.dart';
-import '../utils/notification_helper.dart';
-import '../widgets/custom_dialog.dart';
-import '../widgets/search_text_field.dart';
-import '../widgets/for_restaurant_list_page/restaurant_grid_view.dart';
-import '../widgets/for_restaurant_list_page/restaurant_list_view.dart';
+
+import '../../providers/notifications_provider.dart';
+import '../../providers/preferences_provider.dart';
+import '../../providers/restaurant_list_provider.dart';
+import '../../utils/background_service.dart';
+import '../../utils/notification_helper.dart';
+import '../../utils/auth_service.dart';
+
+import '../../widgets/custom_dialog.dart';
+import '../../widgets/search_text_field.dart';
+import '../../widgets/list_pages/restaurant_grid_view.dart';
+import '../../widgets/list_pages/restaurant_list_view.dart';
 
 class HomePage extends StatefulWidget {
-  static const routeName = '/';
-
   const HomePage({super.key});
 
   @override
@@ -32,24 +33,14 @@ class _HomePageState extends State<HomePage> {
   late bool _isSearchMode;
   late TextEditingController _searchTextFieldCtrler;
 
-  final _notifHelper = NotificationHelper();
-
   @override
   void initState() {
     super.initState();
-    initialization();
-  }
 
-  void initialization() async {
-    // This is where you can initialize the resources needed by your app while
-    // the splash screen is displayed.
+    NotificationHelper.instance!.configureNotifResponse(DetailPage.routeName);
 
-    _notifHelper.configureSelectNotificationSubject(DetailPage.routeName);
     _isSearchMode = false;
     _searchTextFieldCtrler = TextEditingController();
-    await Future.delayed(const Duration(seconds: 1));
-
-    FlutterNativeSplash.remove();
   }
 
   @override
@@ -81,6 +72,13 @@ class _HomePageState extends State<HomePage> {
                   ),
                 ),
                 ListTile(
+                  title: const Text('Sign Out'),
+                  onTap: () async {
+                    await AuthService.signOut();
+                  },
+                ),
+                const Divider(color: secondaryColor),
+                ListTile(
                   title: Text(AppLocalizations.of(context)!.dailyReminder),
                   trailing: Consumer<NotificationsProvider>(
                     builder: (_, notificationsProv, __) {
@@ -107,6 +105,16 @@ class _HomePageState extends State<HomePage> {
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                   ),
+                  trailing: (preferencesProv.isNotifTestInProgress)
+                      ? Text(
+                          AppLocalizations.of(context)!.inProgress,
+                          style: txtThemeSub1?.copyWith(color: secondaryColor),
+                        )
+                      : Text(
+                          AppLocalizations.of(context)!.available,
+                          style: txtThemeSub1?.copyWith(
+                              color: primaryColorBrighter),
+                        ),
                   onTap: () async {
                     if (!Platform.isAndroid) {
                       customDialog(context);
@@ -121,16 +129,6 @@ class _HomePageState extends State<HomePage> {
                       }
                     }
                   },
-                  trailing: (preferencesProv.isNotifTestInProgress)
-                      ? Text(
-                          AppLocalizations.of(context)!.inProgress,
-                          style: txtThemeSub1?.copyWith(color: secondaryColor),
-                        )
-                      : Text(
-                          AppLocalizations.of(context)!.available,
-                          style: txtThemeSub1?.copyWith(
-                              color: primaryColorBrighter),
-                        ),
                 ),
               ],
             );
@@ -188,14 +186,15 @@ class _HomePageState extends State<HomePage> {
                 Navigator.pushNamed(context, WishlistPage.routeName);
               },
               style: ElevatedButton.styleFrom(
-                backgroundColor: primaryColorBrightest,
+                backgroundColor: primaryColor,
                 foregroundColor: secondaryColor,
+                shadowColor: primaryColorBrightest,
               ),
               child: Row(
                 children: const [
                   Icon(Icons.bookmark_added_outlined),
                   SizedBox(width: 8),
-                  Text('Wishlist'),
+                  Text('WISHLIST'),
                 ],
               ),
             ),

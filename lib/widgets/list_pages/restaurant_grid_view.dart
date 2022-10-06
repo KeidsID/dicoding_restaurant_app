@@ -3,9 +3,11 @@ import 'package:provider/provider.dart';
 import 'package:restaurant_app_project/providers/db_provider.dart';
 
 import '../../common/common.dart';
+import '../../common/image_network_builder.dart';
+
 import '../../data/model/from_api/restaurant.dart';
 import '../../data/api/api_service.dart';
-import '../../pages/detail_page.dart';
+import '../../pages/detail/detail_page.dart';
 import 'grid_view_container.dart';
 
 class RestaurantsGridView extends StatelessWidget {
@@ -35,12 +37,7 @@ class RestaurantsGridView extends StatelessWidget {
         child: Image.network(
           ApiService.instance!.imageLarge(restaurant.pictureId),
           fit: BoxFit.fill,
-          errorBuilder: (_, __, ___) {
-            return Image.asset(
-              'assets/images/photo_error_icon.png',
-              fit: BoxFit.fill,
-            );
-          },
+          errorBuilder: errorBuilder,
         ),
       );
     }

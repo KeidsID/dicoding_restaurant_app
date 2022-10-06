@@ -10,13 +10,13 @@ import '../common/navigation.dart';
 final selectNotificationSubject = BehaviorSubject<String>();
 
 class NotificationHelper {
-  static NotificationHelper? _instance;
+  static NotificationHelper? instance;
 
   NotificationHelper._internal() {
-    _instance = this;
+    instance = this;
   }
 
-  factory NotificationHelper() => _instance ?? NotificationHelper._internal();
+  factory NotificationHelper() => instance ?? NotificationHelper._internal();
 
   Future<void> initNotifications(FlutterLocalNotificationsPlugin plugin) async {
     var initializationSettingsAndroid =
@@ -79,7 +79,7 @@ class NotificationHelper {
     );
   }
 
-  void configureSelectNotificationSubject(String route) {
+  void configureNotifResponse(String route) {
     selectNotificationSubject.stream.listen(
       (String payload) async {
         var data = Restaurant.fromJson(json.decode(payload));

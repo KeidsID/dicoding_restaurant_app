@@ -13,7 +13,7 @@ class ReviewContainer extends StatelessWidget {
   const ReviewContainer({
     Key? key,
     required this.customerReviews,
-    this.maxLinesReview = 10,
+    this.maxLinesReview = 50,
   }) : super(key: key);
 
   @override
@@ -35,7 +35,7 @@ class ReviewContainer extends StatelessWidget {
                 backgroundColor: primaryColorBrightest,
                 foregroundColor: primaryColor,
                 child: Text(
-                  customerReviews.name.substring(0, 1),
+                  customerReviews.name.substring(0, 1).toUpperCase(),
                 ),
               ),
               const SizedBox(width: 8),

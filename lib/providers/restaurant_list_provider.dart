@@ -6,9 +6,7 @@ import '../data/model/from_api/restaurant_list.dart';
 enum ResultState { loading, noData, hasData, error }
 
 class RestaurantListProvider extends ChangeNotifier {
-  final ApiService apiService;
-
-  RestaurantListProvider({required this.apiService}) {
+  RestaurantListProvider() {
     _fetchAllRestaurants();
   }
 
@@ -24,7 +22,7 @@ class RestaurantListProvider extends ChangeNotifier {
     try {
       _state = ResultState.loading;
       notifyListeners();
-      final restaurants = await apiService.getRestaurantList();
+      final restaurants = await ApiService.instance!.getRestaurantList();
       if (restaurants.restaurants.isEmpty) {
         _state = ResultState.noData;
         notifyListeners();

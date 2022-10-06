@@ -27,19 +27,15 @@ final tabBarTheme = TabBarTheme(
 
 final elevatedButtonThemeData = ElevatedButtonThemeData(
   style: ElevatedButton.styleFrom(
-    backgroundColor: primaryColorBrightest,
-    foregroundColor: primaryColor,
-    textStyle: textTheme.button?.copyWith(color: primaryColor),
+    backgroundColor: primaryColor,
+    foregroundColor: backgroundColor,
   ),
 );
 
 final textButtonThemeData = TextButtonThemeData(
   style: TextButton.styleFrom(
     foregroundColor: primaryColorBrighter,
-    textStyle: textTheme.button?.copyWith(
-      color: primaryColorBrighter,
-      decoration: TextDecoration.underline,
-    ),
+    textStyle: textTheme.button,
   ),
 );
 
@@ -50,4 +46,8 @@ final chipThemeData = ChipThemeData(
   labelStyle: textTheme.bodyText1?.copyWith(
     color: primaryColor,
   ),
+);
+
+final snackBarThemeData = SnackBarThemeData(
+  contentTextStyle: textTheme.subtitle2?.copyWith(color: secondaryColor),
 );

@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:restaurant_app_project/providers/db_provider.dart';
 
-import '../common/common.dart';
-import '../widgets/for_restaurant_list_page/restaurant_grid_view.dart';
-import '../widgets/for_restaurant_list_page/restaurant_list_view.dart';
+import '../../common/common.dart';
+import '../../providers/db_provider.dart';
+import '../../widgets/list_pages/restaurant_grid_view.dart';
+import '../../widgets/list_pages/restaurant_list_view.dart';
 
 class WishlistPage extends StatelessWidget {
   static String routeName = '/wishlist_page';

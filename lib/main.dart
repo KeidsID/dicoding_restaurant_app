@@ -4,10 +4,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:android_alarm_manager_plus/android_alarm_manager_plus.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:restaurant_app_project/data/api/api_service.dart';
 import 'package:http/http.dart' as http;
+import 'package:firebase_core/firebase_core.dart';
 
 import 'my_app.dart';
+import 'firebase_options.dart';
+import 'data/api/api_service.dart';
 import 'utils/background_service.dart';
 import 'utils/notification_helper.dart';
 
@@ -18,8 +20,8 @@ Future<void> main() async {
 
   FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
 
-  widgetsBinding;
   ApiService(client: http.Client());
+  widgetsBinding;
 
   final notifHelper = NotificationHelper();
   final bgService = BackgroundService();
@@ -30,6 +32,10 @@ Future<void> main() async {
   }
 
   await notifHelper.initNotifications(localNotifPlugin);
+
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
 
   runApp(MyApp());
 }

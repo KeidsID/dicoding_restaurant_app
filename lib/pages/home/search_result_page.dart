@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:restaurant_app_project/data/api/api_service.dart';
 
-import '../data/model/from_api/restaurant.dart';
-import '../widgets/for_restaurant_list_page/restaurant_grid_view.dart';
-import '../widgets/for_restaurant_list_page/restaurant_list_view.dart';
-import '../common/common.dart';
-import '../providers/search_result_provider.dart';
-import '../widgets/fade_on_scroll.dart';
+import '../../common/common.dart';
+import '../../data/api/api_service.dart';
+import '../../data/model/from_api/restaurant.dart';
+import '../../providers/search_result_provider.dart';
+import '../../widgets/list_pages/restaurant_grid_view.dart';
+import '../../widgets/list_pages/restaurant_list_view.dart';
+import '../../widgets/fade_on_scroll.dart';
 
 class SearchResultPage extends StatefulWidget {
   static const routeName = '/search_result_page';

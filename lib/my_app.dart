@@ -1,22 +1,27 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:restaurant_app_project/data/api/api_service.dart';
+import 'package:restaurant_app_project/pages/auth/wrapper.dart';
+import 'package:restaurant_app_project/pages/detail/post_review_page.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:provider/single_child_widget.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 import 'common/common.dart';
 import 'common/navigation.dart';
 import 'data/db/database_helper.dart';
 import 'data/model/from_api/restaurant_detail.dart';
 import 'data/preferences/preferences_helper.dart';
-import 'pages/home_page.dart';
-import 'pages/detail_page.dart';
-import 'pages/search_result_page.dart';
-import 'pages/reviews_page.dart';
-import 'pages/wishlist_page.dart';
+
+import 'pages/detail/detail_page.dart';
+import 'pages/home/search_result_page.dart';
+import 'pages/detail/reviews_page.dart';
+import 'pages/home/wishlist_page.dart';
+
 import 'providers/notifications_provider.dart';
 import 'providers/preferences_provider.dart';
 import 'providers/restaurant_list_provider.dart';
 import 'providers/db_provider.dart';
+import 'utils/auth_service.dart';
 
 class MyApp extends StatelessWidget {
   MyApp({super.key});
@@ -30,7 +35,7 @@ class MyApp extends StatelessWidget {
         title: appName,
         debugShowCheckedModeBanner: false,
         theme: myTheme,
-        initialRoute: HomePage.routeName,
+        initialRoute: Wrapper.routeName,
         routes: _routes,
         localizationsDelegates: AppLocalizations.localizationsDelegates,
         supportedLocales: AppLocalizations.supportedLocales,
@@ -38,11 +43,9 @@ class MyApp extends StatelessWidget {
     );
   }
 
-  final List<ChangeNotifierProvider> _providerList = [
+  final List<SingleChildWidget> _providerList = [
     ChangeNotifierProvider<RestaurantListProvider>(
-      create: (context) => RestaurantListProvider(
-        apiService: ApiService.instance!,
-      ),
+      create: (context) => RestaurantListProvider(),
     ),
     ChangeNotifierProvider<NotificationsProvider>(
       create: (context) => NotificationsProvider(),
@@ -59,12 +62,14 @@ class MyApp extends StatelessWidget {
         databaseHelper: DatabaseHelper(),
       ),
     ),
+    StreamProvider<User?>.value(
+      value: AuthService.firebaseUserStream,
+      initialData: null,
+    ),
   ];
 
   final Map<String, WidgetBuilder> _routes = {
-    HomePage.routeName: (context) {
-      return const HomePage();
-    },
+    Wrapper.routeName: (context) => const Wrapper(),
     DetailPage.routeName: (context) {
       return DetailPage(
         restaurantId: ModalRoute.of(context)?.settings.arguments as String,
@@ -76,13 +81,17 @@ class MyApp extends StatelessWidget {
             ModalRoute.of(context)?.settings.arguments as RestaurantDetailed,
       );
     },
+    PostReviewPage.routeName: (context) {
+      return PostReviewPage(
+        restaurant:
+            ModalRoute.of(context)?.settings.arguments as RestaurantDetailed,
+      );
+    },
     SearchResultPage.routeName: (context) {
       return SearchResultPage(
         query: ModalRoute.of(context)?.settings.arguments as String,
       );
     },
-    WishlistPage.routeName: (context) {
-      return const WishlistPage();
-    }
+    WishlistPage.routeName: (context) => const WishlistPage()
   };
 }

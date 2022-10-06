@@ -1,13 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:restaurant_app_project/pages/detail/post_review_page.dart';
 
+import '../../common/common.dart';
+import '../../common/image_network_builder.dart';
+
+import '../../data/api/api_service.dart';
+import '../../data/model/from_api/restaurant_detail.dart';
 import 'reviews_page.dart';
-import '../common/common.dart';
-import '../data/api/api_service.dart';
-import '../data/model/from_api/restaurant_detail.dart';
-import '../providers/restaurant_detail_provider.dart';
-import '../widgets/fade_on_scroll.dart';
-import '../widgets/review_container.dart';
+import '../../providers/restaurant_detail_provider.dart';
+
+import '../../widgets/fade_on_scroll.dart';
+import '../../widgets/review_container.dart';
 
 Widget _descriptionContainer({EdgeInsetsGeometry? margin, Widget? child}) {
   return Container(
@@ -270,7 +274,7 @@ class _DetailPagePortraitState extends State<_DetailPagePortrait> {
                     textAlign: TextAlign.center,
                   ),
                 ),
-                // review, and ReviewPage button
+                // review, ReviewPage button, and PostReviewPage button
                 Container(
                   margin: mainHMargin,
                   child: ReviewContainer(
@@ -289,6 +293,18 @@ class _DetailPagePortraitState extends State<_DetailPagePortrait> {
                   },
                   child: Text(
                     AppLocalizations.of(context)!.reviewsCheck.toUpperCase(),
+                  ),
+                ),
+                TextButton(
+                  onPressed: () {
+                    Navigator.pushNamed(
+                      context,
+                      PostReviewPage.routeName,
+                      arguments: widget.restaurant,
+                    );
+                  },
+                  child: Text(
+                    AppLocalizations.of(context)!.leaveAReview.toUpperCase(),
                   ),
                 ),
 
@@ -311,7 +327,7 @@ class _DetailPagePortraitState extends State<_DetailPagePortrait> {
                         },
                         child: Text(
                           AppLocalizations.of(context)!
-                              .detailPagePopNavigationButton,
+                              .detailPagePopNavigationBtn,
                           style:
                               txtThemeButton?.copyWith(color: secondaryColor),
                         ),
@@ -345,12 +361,7 @@ class _DetailPagePortraitState extends State<_DetailPagePortrait> {
         child: Image.network(
           ApiService.instance!.imageMedium(widget.restaurant.pictureId),
           fit: BoxFit.fill,
-          errorBuilder: (_, __, ___) {
-            return Image.asset(
-              'assets/images/photo_error_icon.png',
-              fit: BoxFit.fill,
-            );
-          },
+          errorBuilder: errorBuilder,
         ),
       );
     }
@@ -543,12 +554,7 @@ class _DetailPageLandscapeState extends State<_DetailPageLandscape> {
                     widget.restaurant.pictureId,
                   ),
                   fit: BoxFit.cover,
-                  errorBuilder: (_, __, ___) {
-                    return Image.asset(
-                      'assets/images/photo_error_icon.png',
-                      fit: BoxFit.cover,
-                    );
-                  },
+                  errorBuilder: errorBuilder,
                 ),
               ),
             ),
@@ -633,6 +639,18 @@ class _DetailPageLandscapeState extends State<_DetailPageLandscape> {
                 AppLocalizations.of(context)!.reviewsCheck.toUpperCase(),
               ),
             ),
+            TextButton(
+              onPressed: () {
+                Navigator.pushNamed(
+                  context,
+                  PostReviewPage.routeName,
+                  arguments: widget.restaurant,
+                );
+              },
+              child: Text(
+                AppLocalizations.of(context)!.leaveAReview.toUpperCase(),
+              ),
+            ),
           ],
         ),
       );
@@ -691,7 +709,7 @@ class _DetailPageLandscapeState extends State<_DetailPageLandscape> {
                         },
                         child: Text(
                           AppLocalizations.of(context)!
-                              .detailPagePopNavigationButton,
+                              .detailPagePopNavigationBtn,
                           style:
                               txtThemeButton?.copyWith(color: secondaryColor),
                         ),

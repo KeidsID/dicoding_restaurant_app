@@ -1,10 +1,13 @@
 {
+  "anonymousLogin": "LOGIN AS ANONYMOUS?",
+  "anonymousLoginDisabled": "Anonymous login is not available",
+  "signOut": "Log Out",
   "dailyReminder": "Daily reminder",
   "notificationsTest": "Notifications test",
   "available": "Available",
   "inProgress": "In progress",
-  "detailPagePopNavigationButton": "GO BACK",
-  "searchTextFieldHintText": "Search restaurant name",
+  "detailPagePopNavigationBtn": "GO BACK",
+  "searchTxtFieldHint": "Search restaurant name",
   "searchResultFounded": "{count, plural, =0{No restaurants found} =1{A restaurant found} other{{count} restaurants found}",
   "@searchResultFounded": {
     "placeholders": {
@@ -33,6 +36,12 @@
       }
     }
   },
+  "leaveAReview": "Review this restaurant",
+  "discardDraft": "Discard draft?",
+  "cancelBtn": "CANCEL",
+  "discardBtn": "DISCARD",
+  "postReviewInfo": "Review are public and include your name.",
+  "reviewTxtFieldHint": "Describe your experience",
   "noInternetAccess": "No internet access",
   "noApiData": "No restaurant data received",
   "noDbData": "No wishlist. Try add to some."
