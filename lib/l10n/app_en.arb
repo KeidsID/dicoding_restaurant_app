@@ -37,6 +37,7 @@
     }
   },
   "leaveAReview": "Review this restaurant",
+  "reviewCantEmpty": "Review can't be empty",
   "discardDraft": "Discard draft?",
   "cancelBtn": "CANCEL",
   "discardBtn": "DISCARD",

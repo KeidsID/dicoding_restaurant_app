@@ -35,7 +35,7 @@ class NotificationHelper {
 
     await plugin.initialize(
       initializationSettings,
-      onDidReceiveNotificationResponse: (notifResponse) async {
+      onDidReceiveNotificationResponse: (notifResponse) {
         if (notifResponse.payload != null) {
           debugPrint('notification payload: ${notifResponse.payload}');
         }

@@ -15,6 +15,7 @@
   "reviewsCheck": "Cek lebih banyak ulasan",
   "reviewDate": "{date}",
   "leaveAReview": "Tinjau restoran ini",
+  "reviewCantEmpty": "Ulasan tidak boleh kosong",
   "discardDraft": "Buang draf?",
   "cancelBtn": "BATAL",
   "discardBtn": "BUANG",

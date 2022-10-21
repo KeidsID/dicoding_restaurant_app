@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../common/common.dart';
+import '../common/styles/input_decoration.dart';
 import '../pages/home/search_result_page.dart';
 
 class SearchTextField extends StatelessWidget {
@@ -13,19 +14,8 @@ class SearchTextField extends StatelessWidget {
     return TextField(
       controller: controller,
       cursorColor: secondaryColor,
-      decoration: InputDecoration(
-        filled: true,
-        fillColor: primaryColorBrightest.withOpacity(0.25),
+      decoration: inputDeco(
         hintText: AppLocalizations.of(context)!.searchTxtFieldHint,
-        enabledBorder: const OutlineInputBorder(
-          borderSide: BorderSide(color: primaryColor),
-        ),
-        focusedBorder: const OutlineInputBorder(
-          borderSide: BorderSide(
-            color: secondaryColor,
-            width: 2,
-          ),
-        ),
       ),
       onSubmitted: (value) {
         if (value != '') {

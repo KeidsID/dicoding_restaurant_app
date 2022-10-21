@@ -18,6 +18,14 @@ class ReviewContainer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    late String reviewerName;
+
+    if (customerReviews.name.length > 15) {
+      reviewerName = customerReviews.name.substring(0, 16).padRight(4, '.');
+    } else {
+      reviewerName = customerReviews.name;
+    }
+
     return Container(
       padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
@@ -43,7 +51,7 @@ class ReviewContainer extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    customerReviews.name,
+                    reviewerName,
                     style: txtThemeH6?.copyWith(color: secondaryColor),
                   ),
                   Text(

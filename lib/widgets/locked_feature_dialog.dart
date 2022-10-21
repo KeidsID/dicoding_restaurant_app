@@ -5,7 +5,7 @@ import 'package:flutter/cupertino.dart';
 
 import '../common/navigation.dart';
 
-customDialog(BuildContext context) {
+lockedFeatureDialog(BuildContext context) {
   if (Platform.isIOS) {
     showCupertinoDialog(
       context: context,

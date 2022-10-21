@@ -17,7 +17,7 @@ import '../../utils/background_service.dart';
 import '../../utils/notification_helper.dart';
 import '../../utils/auth_service.dart';
 
-import '../../widgets/custom_dialog.dart';
+import '../../widgets/locked_feature_dialog.dart';
 import '../../widgets/search_text_field.dart';
 import '../../widgets/list_pages/restaurant_grid_view.dart';
 import '../../widgets/list_pages/restaurant_list_view.dart';
@@ -86,7 +86,7 @@ class _HomePageState extends State<HomePage> {
                         value: preferencesProv.isDailyReminderActive,
                         onChanged: (value) {
                           if (!Platform.isAndroid) {
-                            customDialog(context);
+                            lockedFeatureDialog(context);
                           } else {
                             notificationsProv.scheduled(value);
                             preferencesProv.enableDailyReminder(value);
@@ -117,7 +117,7 @@ class _HomePageState extends State<HomePage> {
                         ),
                   onTap: () async {
                     if (!Platform.isAndroid) {
-                      customDialog(context);
+                      lockedFeatureDialog(context);
                     } else {
                       if (preferencesProv.isNotifTestInProgress) {
                         // do nothing

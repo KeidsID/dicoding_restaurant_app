@@ -1,6 +1,11 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:restaurant_app_project/common/styles/input_decoration.dart';
+import 'package:restaurant_app_project/pages/auth/wrapper.dart';
+import 'package:restaurant_app_project/pages/home/home_page.dart';
 
 import '../../common/common.dart';
 import '../../common/image_network_builder.dart';
@@ -8,23 +13,51 @@ import '../../data/api/api_service.dart';
 import '../../data/model/from_api/restaurant_detail.dart';
 import 'detail_page.dart';
 
-class PostReviewPage extends StatelessWidget {
+class PostReviewPage extends StatefulWidget {
   static String routeName = '/post_review_page';
   final RestaurantDetailed restaurant;
 
   const PostReviewPage({super.key, required this.restaurant});
 
   @override
+  State<PostReviewPage> createState() => _PostReviewPageState();
+}
+
+class _PostReviewPageState extends State<PostReviewPage> {
+  late TextEditingController _postTxtCtrler;
+
+  @override
+  void initState() {
+    _postTxtCtrler = TextEditingController();
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _postTxtCtrler.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final User? firebaseUser = Provider.of<User?>(context);
 
+    var bodyPadding = (screenSize(context).width <= 750)
+        ? EdgeInsets.zero
+        : EdgeInsets.symmetric(horizontal: 24);
+
     return Scaffold(
-      appBar: _appBar(context),
-      body: _body(context, firebaseUser: firebaseUser),
+      appBar: _appBar(context, firebaseUser: firebaseUser),
+      body: Padding(
+        padding: bodyPadding,
+        child: _body(context, firebaseUser: firebaseUser),
+      ),
     );
   }
 
-  AppBar _appBar(BuildContext context) {
+  AppBar _appBar(BuildContext context, {User? firebaseUser}) {
+    final String displayName = firebaseUser!.displayName ?? 'Anonymous';
+
     Widget leading = IconButton(
       icon: Icon(Icons.close),
       onPressed: () {
@@ -65,7 +98,7 @@ class PostReviewPage extends StatelessWidget {
         children: [
           Flexible(
             child: Image.network(
-              ApiService.instance!.imageSmall(restaurant.pictureId),
+              ApiService.instance!.imageSmall(widget.restaurant.pictureId),
               fit: BoxFit.fill,
               errorBuilder: errorBuilder,
             ),
@@ -77,7 +110,7 @@ class PostReviewPage extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  restaurant.name,
+                  widget.restaurant.name,
                   overflow: TextOverflow.ellipsis,
                   style: AppBarTheme.of(context)
                       .titleTextStyle
@@ -98,7 +131,32 @@ class PostReviewPage extends StatelessWidget {
 
     List<Widget> actions = [
       TextButton(
-        onPressed: () {},
+        onPressed: () {
+          try {
+            if (_postTxtCtrler.text != '') {
+              ApiService.instance!.postReview(
+                restaurantId: widget.restaurant.id,
+                name: displayName,
+                review: _postTxtCtrler.text,
+              );
+
+              Navigator.popUntil(
+                context,
+                ModalRoute.withName(Wrapper.routeName),
+              );
+            } else {
+              ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                content: Text(
+                  AppLocalizations.of(context)!.reviewCantEmpty,
+                ),
+              ));
+            }
+          } catch (e) {
+            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+              content: Text("$e"),
+            ));
+          }
+        },
         child: Text('POST'),
       ),
     ];
@@ -154,24 +212,14 @@ class PostReviewPage extends StatelessWidget {
             ),
             SizedBox(height: 40),
             TextField(
+              controller: _postTxtCtrler,
               maxLength: 500,
               keyboardType: TextInputType.multiline,
               maxLines: null,
               style: textTheme.bodyText1?.copyWith(color: primaryColor),
               cursorColor: secondaryColor,
-              decoration: InputDecoration(
-                filled: true,
-                fillColor: primaryColorBrightest.withOpacity(0.25),
+              decoration: inputDeco(
                 hintText: AppLocalizations.of(context)!.reviewTxtFieldHint,
-                enabledBorder: const OutlineInputBorder(
-                  borderSide: BorderSide(color: primaryColor),
-                ),
-                focusedBorder: const OutlineInputBorder(
-                  borderSide: BorderSide(
-                    color: secondaryColor,
-                    width: 2,
-                  ),
-                ),
               ),
             )
           ],
