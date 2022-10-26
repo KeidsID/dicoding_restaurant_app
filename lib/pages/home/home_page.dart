@@ -2,10 +2,12 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 import '../../common/common.dart';
 import '../../data/model/from_api/restaurant.dart';
 
+import '../auth/user_first_setup.dart';
 import '../detail/detail_page.dart';
 import 'search_result_page.dart';
 import 'wishlist_page.dart';
@@ -30,111 +32,32 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  late bool _isSearchMode;
   late TextEditingController _searchTextFieldCtrler;
+
+  bool _isSearchMode = false;
 
   @override
   void initState() {
-    super.initState();
-
     NotificationHelper.instance!.configureNotifResponse(DetailPage.routeName);
 
-    _isSearchMode = false;
     _searchTextFieldCtrler = TextEditingController();
+    super.initState();
   }
 
   @override
   void dispose() {
-    super.dispose();
     _searchTextFieldCtrler.dispose();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
+    final User? firebaseUser = Provider.of<User?>(context);
+
     return Scaffold(
       appBar: _appBar(screenSize: screenSize(context), appName: appName),
       body: _buildList(context),
-      drawer: Drawer(
-        child: Consumer<PreferencesProvider>(
-          builder: (context, preferencesProv, _) {
-            return ListView(
-              children: [
-                Container(
-                  decoration: const BoxDecoration(
-                    border: Border(bottom: BorderSide(color: secondaryColor)),
-                  ),
-                  height: 55,
-                  child: Center(
-                    child: Text(
-                      appName,
-                      style: txtThemeH6?.copyWith(color: primaryColor),
-                    ),
-                  ),
-                ),
-                ListTile(
-                  title: const Text('Sign Out'),
-                  onTap: () async {
-                    await AuthService.signOut();
-                  },
-                ),
-                const Divider(color: secondaryColor),
-                ListTile(
-                  title: Text(AppLocalizations.of(context)!.dailyReminder),
-                  trailing: Consumer<NotificationsProvider>(
-                    builder: (_, notificationsProv, __) {
-                      return Switch.adaptive(
-                        value: preferencesProv.isDailyReminderActive,
-                        onChanged: (value) {
-                          if (!Platform.isAndroid) {
-                            lockedFeatureDialog(context);
-                          } else {
-                            notificationsProv.scheduled(value);
-                            preferencesProv.enableDailyReminder(value);
-                          }
-                        },
-                        thumbColor: MaterialStateProperty.all(primaryColor),
-                        inactiveTrackColor: primaryColorBrightest,
-                        activeColor: secondaryColor,
-                      );
-                    },
-                  ),
-                ),
-                ListTile(
-                  title: Text(
-                    AppLocalizations.of(context)!.notificationsTest,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                  trailing: (preferencesProv.isNotifTestInProgress)
-                      ? Text(
-                          AppLocalizations.of(context)!.inProgress,
-                          style: txtThemeSub1?.copyWith(color: secondaryColor),
-                        )
-                      : Text(
-                          AppLocalizations.of(context)!.available,
-                          style: txtThemeSub1?.copyWith(
-                              color: primaryColorBrighter),
-                        ),
-                  onTap: () async {
-                    if (!Platform.isAndroid) {
-                      lockedFeatureDialog(context);
-                    } else {
-                      if (preferencesProv.isNotifTestInProgress) {
-                        // do nothing
-                      } else {
-                        preferencesProv.enableNotifTest(true);
-                        await Future.delayed(const Duration(seconds: 5));
-                        await BackgroundService.notifTestCallback();
-                        preferencesProv.enableNotifTest(false);
-                      }
-                    }
-                  },
-                ),
-              ],
-            );
-          },
-        ),
-      ),
+      drawer: _drawer(firebaseUser: firebaseUser),
     );
   }
 
@@ -149,7 +72,7 @@ class _HomePageState extends State<HomePage> {
             icon: const Icon(Icons.arrow_back),
           ),
           title: Row(
-            children: _appBarSearchTextField(10),
+            children: _mobileAppBar(10),
           ),
         );
       } else {
@@ -225,7 +148,7 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
-  List<Widget> _appBarSearchTextField([int flex = 1]) {
+  List<Widget> _mobileAppBar([int flex = 1]) {
     return [
       Expanded(
         flex: flex,
@@ -251,8 +174,8 @@ class _HomePageState extends State<HomePage> {
 
   Widget _buildList(BuildContext context) {
     return Consumer<RestaurantListProvider>(
-      builder: (context, restaurantListProvider, _) {
-        if (restaurantListProvider.state == ResultState.loading) {
+      builder: (context, restaurantListProv, _) {
+        if (restaurantListProv.state == ResultState.loading) {
           // loading widget
           return Container(
             color: backgroundColor,
@@ -264,9 +187,9 @@ class _HomePageState extends State<HomePage> {
             ),
           );
         } else {
-          if (restaurantListProvider.state == ResultState.hasData) {
+          if (restaurantListProv.state == ResultState.hasData) {
             // success widget
-          } else if (restaurantListProvider.state == ResultState.noData) {
+          } else if (restaurantListProv.state == ResultState.noData) {
             // no data
             return Center(
               child: Text(
@@ -275,19 +198,29 @@ class _HomePageState extends State<HomePage> {
                 textAlign: TextAlign.center,
               ),
             );
-          } else if (restaurantListProvider.state == ResultState.error) {
+          } else if (restaurantListProv.state == ResultState.error) {
             // error widget
-            return Center(
-              child: Text(
-                AppLocalizations.of(context)!.noInternetAccess,
-                style: txtThemeH4?.copyWith(color: secondaryColor),
-                textAlign: TextAlign.center,
-              ),
+            return Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  AppLocalizations.of(context)!.noInternetAccess,
+                  style: txtThemeH4?.copyWith(color: secondaryColor),
+                  textAlign: TextAlign.center,
+                ),
+                ElevatedButton.icon(
+                  onPressed: () {
+                    setState(() {});
+                  },
+                  icon: Icon(Icons.restart_alt),
+                  label: Text('Refresh'),
+                )
+              ],
             );
           } else {
             return Center(
               child: Text(
-                restaurantListProvider.message,
+                restaurantListProv.message,
                 style: txtThemeH4?.copyWith(color: secondaryColor),
                 textAlign: TextAlign.center,
               ),
@@ -296,7 +229,7 @@ class _HomePageState extends State<HomePage> {
         }
 
         final List<Restaurant> restaurants =
-            restaurantListProvider.result.restaurants;
+            restaurantListProv.result.restaurants;
 
         return LayoutBuilder(
           builder: (_, constraints) {
@@ -323,6 +256,116 @@ class _HomePageState extends State<HomePage> {
           },
         );
       },
+    );
+  }
+
+  Drawer _drawer({User? firebaseUser}) {
+    final String displayName = firebaseUser!.displayName ?? 'Anonymous';
+    final String email =
+        firebaseUser.email ?? AppLocalizations.of(context)!.emailNotAvailable;
+
+    return Drawer(
+      child: Consumer<PreferencesProvider>(
+        builder: (context, preferencesProv, _) {
+          return ListView(
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  children: [
+                    CircleAvatar(
+                      backgroundColor: primaryColorBrightest,
+                      foregroundColor: primaryColor,
+                      radius: 24,
+                      child: Text(
+                        displayName[0].toUpperCase(),
+                        style: textTheme.headline6,
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    Text(
+                      displayName,
+                      style: txtThemeH6!.copyWith(color: secondaryColor),
+                      overflow: TextOverflow.ellipsis,
+                      maxLines: 1,
+                    ),
+                    Text(
+                      email,
+                      style: txtThemeSub1!.copyWith(
+                        color: primaryColor.withOpacity(0.75),
+                      ),
+                      overflow: TextOverflow.ellipsis,
+                      maxLines: 1,
+                    ),
+                  ],
+                ),
+              ),
+              const Divider(color: secondaryColor),
+              ListTile(
+                title: const Text('Sign Out'),
+                onTap: () async {
+                  if (!firebaseUser.isAnonymous) {
+                    await AuthService.signOut();
+                  } else {
+                    await firebaseUser.delete();
+                  }
+                },
+              ),
+              const Divider(color: secondaryColor),
+              ListTile(
+                title: Text(AppLocalizations.of(context)!.dailyReminder),
+                trailing: Consumer<NotificationsProvider>(
+                  builder: (_, notificationsProv, __) {
+                    return Switch.adaptive(
+                      value: preferencesProv.isDailyReminderActive,
+                      onChanged: (value) {
+                        if (!Platform.isAndroid) {
+                          lockedFeatureDialog(context);
+                        } else {
+                          notificationsProv.scheduled(value);
+                          preferencesProv.enableDailyReminder(value);
+                        }
+                      },
+                      thumbColor: MaterialStateProperty.all(primaryColor),
+                      inactiveTrackColor: primaryColorBrightest,
+                      activeColor: secondaryColor,
+                    );
+                  },
+                ),
+              ),
+              ListTile(
+                title: Text(
+                  AppLocalizations.of(context)!.notificationsTest,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+                trailing: (preferencesProv.isNotifTestInProgress)
+                    ? Text(
+                        AppLocalizations.of(context)!.inProgress,
+                        style: txtThemeSub1?.copyWith(color: secondaryColor),
+                      )
+                    : Text(
+                        AppLocalizations.of(context)!.available,
+                        style:
+                            txtThemeSub1?.copyWith(color: primaryColorBrighter),
+                      ),
+                onTap: () async {
+                  if (!Platform.isAndroid) {
+                    lockedFeatureDialog(context);
+                  } else {
+                    if (!preferencesProv.isNotifTestInProgress) {
+                      preferencesProv.enableNotifTest(true);
+                      await Future.delayed(const Duration(seconds: 5));
+                      await BackgroundService.notifTestCallback();
+                      preferencesProv.enableNotifTest(false);
+                    }
+                  }
+                },
+              ),
+            ],
+          );
+        },
+      ),
     );
   }
 }

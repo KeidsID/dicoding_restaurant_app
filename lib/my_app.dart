@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:restaurant_app_project/pages/auth/sign_up_page.dart';
+import 'package:restaurant_app_project/pages/auth/user_first_setup.dart';
 import 'package:restaurant_app_project/pages/auth/wrapper.dart';
 import 'package:restaurant_app_project/pages/detail/post_review_page.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -70,6 +72,7 @@ class MyApp extends StatelessWidget {
 
   final Map<String, WidgetBuilder> _routes = {
     Wrapper.routeName: (context) => const Wrapper(),
+    SignUpPage.routeName: (context) => const SignUpPage(),
     DetailPage.routeName: (context) {
       return DetailPage(
         restaurantId: ModalRoute.of(context)?.settings.arguments as String,

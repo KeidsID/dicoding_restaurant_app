@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import 'common.dart';
+
 Widget errorBuilder(
   BuildContext context,
   Object error,
@@ -16,7 +18,12 @@ Widget loadingBuilder(
   Widget child,
   ImageChunkEvent? loadingProgress,
 ) {
-  return Center(
-    child: CircularProgressIndicator(),
+  if (loadingProgress == null) return child;
+
+  return const Center(
+    child: CircularProgressIndicator(
+      backgroundColor: primaryColorBrightest,
+      color: primaryColor,
+    ),
   );
 }

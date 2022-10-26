@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
 import '../common/common.dart';
-import '../common/styles/input_decoration.dart';
 import '../pages/home/search_result_page.dart';
 
 class SearchTextField extends StatelessWidget {
@@ -13,10 +12,10 @@ class SearchTextField extends StatelessWidget {
   Widget build(BuildContext context) {
     return TextField(
       controller: controller,
-      cursorColor: secondaryColor,
       decoration: inputDeco(
         hintText: AppLocalizations.of(context)!.searchTxtFieldHint,
       ),
+      style: textTheme.bodyText1?.copyWith(color: primaryColor),
       onSubmitted: (value) {
         if (value != '') {
           Navigator.pushNamed(
@@ -26,6 +25,7 @@ class SearchTextField extends StatelessWidget {
           );
         }
       },
+      cursorColor: secondaryColor,
     );
   }
 }

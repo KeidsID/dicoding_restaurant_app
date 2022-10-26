@@ -3,13 +3,10 @@ import 'package:provider/provider.dart';
 import 'package:restaurant_app_project/pages/detail/post_review_page.dart';
 
 import '../../common/common.dart';
-import '../../common/image_network_builder.dart';
-
 import '../../data/api/api_service.dart';
 import '../../data/model/from_api/restaurant_detail.dart';
 import 'reviews_page.dart';
 import '../../providers/restaurant_detail_provider.dart';
-
 import '../../widgets/fade_on_scroll.dart';
 import '../../widgets/review_container.dart';
 
@@ -326,10 +323,8 @@ class _DetailPagePortraitState extends State<_DetailPagePortrait> {
                           Navigator.pop(context);
                         },
                         child: Text(
-                          AppLocalizations.of(context)!
-                              .detailPagePopNavigationBtn,
-                          style:
-                              txtThemeButton?.copyWith(color: secondaryColor),
+                          AppLocalizations.of(context)!.goBackBtn,
+                          style: txtThemeBtn?.copyWith(color: secondaryColor),
                         ),
                       ),
                     ],
@@ -708,10 +703,8 @@ class _DetailPageLandscapeState extends State<_DetailPageLandscape> {
                           Navigator.pop(context);
                         },
                         child: Text(
-                          AppLocalizations.of(context)!
-                              .detailPagePopNavigationBtn,
-                          style:
-                              txtThemeButton?.copyWith(color: secondaryColor),
+                          AppLocalizations.of(context)!.goBackBtn,
+                          style: txtThemeBtn?.copyWith(color: secondaryColor),
                         ),
                       ),
                     ),

@@ -1,12 +1,21 @@
 {
-  "anonymousLogin": "LOGIN AS ANONYMOUS?",
-  "anonymousLoginDisabled": "Anonymous login is not available",
+  "loginBtn": "LOG IN",
+  "setUsernamePageHeading": "How do we call your name?",
+  "confirmBtn": "CONFIRM",
+  "toSignUpPageBtn": "DON'T HAVE AN ACCOUNT YET? REGISTER HERE",
+  "name": "Name",
+  "nameTxtFieldHint": "Will be used as username",
+  "password": "Password",
+  "signUpBtn": "SIGN UP",
+  "anonymousLogin": "LOG IN AS ANONYMOUS",
+  "emailNotAvailable": "Email not available",
+  "anonymousLoginDisabled": "Anonymous log in is not available",
   "signOut": "Log Out",
   "dailyReminder": "Daily reminder",
   "notificationsTest": "Notifications test",
   "available": "Available",
   "inProgress": "In progress",
-  "detailPagePopNavigationBtn": "GO BACK",
+  "goBackBtn": "GO BACK",
   "searchTxtFieldHint": "Search restaurant name",
   "searchResultFounded": "{count, plural, =0{No restaurants found} =1{A restaurant found} other{{count} restaurants found}",
   "@searchResultFounded": {
@@ -45,5 +54,12 @@
   "reviewTxtFieldHint": "Describe your experience",
   "noInternetAccess": "No internet access",
   "noApiData": "No restaurant data received",
-  "noDbData": "No wishlist. Try add to some."
+  "noDbData": "No wishlist. Try add to some.",
+  "invalidEmail": "Invalid email address",
+  "userDisabled": "Account disabled by admin",
+  "userNotFound": "Account not found, try to create a new account",
+  "wrongPassword": "Wrong password",
+  "emailAlreadyInUse": "This email was already used to create a user",
+  "operationNotAllowed": "Currently the app is not accepting new users",
+  "weakPassword": "The password you are using is weak. Try to use at least 1 number, uppercase, lowercase, and symbols."
 }

@@ -43,7 +43,7 @@ class ReviewContainer extends StatelessWidget {
                 backgroundColor: primaryColorBrightest,
                 foregroundColor: primaryColor,
                 child: Text(
-                  customerReviews.name.substring(0, 1).toUpperCase(),
+                  customerReviews.name[0].toUpperCase(),
                 ),
               ),
               const SizedBox(width: 8),
@@ -57,7 +57,7 @@ class ReviewContainer extends StatelessWidget {
                   Text(
                     AppLocalizations.of(context)!
                         .reviewDate(customerReviews.date),
-                    style: txtThemeCaption?.copyWith(
+                    style: txtThemeCap?.copyWith(
                       color: primaryColorBrighter,
                     ),
                   ),

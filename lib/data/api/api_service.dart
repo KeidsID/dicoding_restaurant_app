@@ -53,19 +53,23 @@ class ApiService {
     required String name,
     required String review,
   }) async {
-    final response = await client.post(
-      Uri.parse('$baseUrl/review'),
-      headers: <String, String>{"Content-Type": 'application/json'},
-      body: jsonEncode(<String, String>{
-        "id": restaurantId,
-        "name": name,
-        "review": review,
-      }),
-    );
+    try {
+      final response = await client.post(
+        Uri.parse('$baseUrl/review'),
+        headers: <String, String>{"Content-Type": 'application/json'},
+        body: jsonEncode(<String, String>{
+          "id": restaurantId,
+          "name": name,
+          "review": review,
+        }),
+      );
 
-    if (response.statusCode == 201) {
-      debugPrint('Review posted!');
-    } else {
+      if (response.statusCode == 201) {
+        debugPrint('Review posted!');
+      } else {
+        throw Exception('Failed to post review');
+      }
+    } catch (e) {
       throw Exception('Failed to post review');
     }
   }

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:provider/provider.dart';
+import 'package:restaurant_app_project/pages/auth/user_first_setup.dart';
 
 import 'login_page.dart';
 import '../home/home_page.dart';
@@ -34,6 +35,10 @@ class _WrapperState extends State<Wrapper> {
   Widget build(BuildContext context) {
     final User? firebaseUser = Provider.of<User?>(context);
 
-    return (firebaseUser == null) ? const LoginPage() : const HomePage();
+    return (firebaseUser == null)
+        ? const LoginPage()
+        : (!firebaseUser.isAnonymous && firebaseUser.displayName == null)
+            ? const UserFirstSetup()
+            : const HomePage();
   }
 }

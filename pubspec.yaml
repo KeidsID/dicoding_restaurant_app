@@ -46,6 +46,7 @@ dependencies:
 
   shared_preferences: ^2.0.15
   sqflite: ^2.1.0
+  
   firebase_core: ^1.24.0
   firebase_auth: ^3.11.1
 

@@ -1,14 +1,10 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:restaurant_app_project/common/styles/input_decoration.dart';
-import 'package:restaurant_app_project/pages/auth/wrapper.dart';
-import 'package:restaurant_app_project/pages/home/home_page.dart';
+import 'package:restaurant_app_project/common/navigation.dart';
 
 import '../../common/common.dart';
-import '../../common/image_network_builder.dart';
+import '../auth/wrapper.dart';
 import '../../data/api/api_service.dart';
 import '../../data/model/from_api/restaurant_detail.dart';
 import 'detail_page.dart';
@@ -44,7 +40,7 @@ class _PostReviewPageState extends State<PostReviewPage> {
 
     var bodyPadding = (screenSize(context).width <= 750)
         ? EdgeInsets.zero
-        : EdgeInsets.symmetric(horizontal: 24);
+        : const EdgeInsets.symmetric(horizontal: 24);
 
     return Scaffold(
       appBar: _appBar(context, firebaseUser: firebaseUser),
@@ -59,7 +55,7 @@ class _PostReviewPageState extends State<PostReviewPage> {
     final String displayName = firebaseUser!.displayName ?? 'Anonymous';
 
     Widget leading = IconButton(
-      icon: Icon(Icons.close),
+      icon: const Icon(Icons.close),
       onPressed: () {
         showDialog(
           context: context,
@@ -118,7 +114,7 @@ class _PostReviewPageState extends State<PostReviewPage> {
                 ),
                 Text(
                   AppLocalizations.of(context)!.leaveAReview,
-                  style: txtThemeCaption?.copyWith(
+                  style: txtThemeCap?.copyWith(
                     color: primaryColorBrighter,
                   ),
                 ),
@@ -131,19 +127,16 @@ class _PostReviewPageState extends State<PostReviewPage> {
 
     List<Widget> actions = [
       TextButton(
-        onPressed: () {
+        onPressed: () async {
           try {
             if (_postTxtCtrler.text != '') {
-              ApiService.instance!.postReview(
+              await ApiService.instance!.postReview(
                 restaurantId: widget.restaurant.id,
                 name: displayName,
                 review: _postTxtCtrler.text,
               );
 
-              Navigator.popUntil(
-                context,
-                ModalRoute.withName(Wrapper.routeName),
-              );
+              Navigation.popUntil(Wrapper.routeName);
             } else {
               ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                 content: Text(
@@ -152,12 +145,13 @@ class _PostReviewPageState extends State<PostReviewPage> {
               ));
             }
           } catch (e) {
+            debugPrint('$e');
             ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-              content: Text("$e"),
+              content: Text(AppLocalizations.of(context)!.noInternetAccess),
             ));
           }
         },
-        child: Text('POST'),
+        child: const Text('POST'),
       ),
     ];
 
@@ -176,51 +170,49 @@ class _PostReviewPageState extends State<PostReviewPage> {
         padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
         child: Column(
           children: [
-            Container(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    children: [
-                      CircleAvatar(
-                        backgroundColor: primaryColorBrightest,
-                        foregroundColor: primaryColor,
-                        radius: 24,
-                        child: Text(
-                          displayName.substring(0, 1).toUpperCase(),
-                          style: textTheme.headline6,
-                        ),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    CircleAvatar(
+                      backgroundColor: primaryColorBrightest,
+                      foregroundColor: primaryColor,
+                      radius: 24,
+                      child: Text(
+                        displayName[0].toUpperCase(),
+                        style: textTheme.headline6,
                       ),
-                      const SizedBox(width: 8),
-                      Text(
-                        displayName,
-                        style: textTheme.headline6?.copyWith(
-                          color: primaryColor,
-                        ),
-                      ),
-                    ],
-                  ),
-                  SizedBox(height: 16),
-                  Text(
-                    AppLocalizations.of(context)!.postReviewInfo,
-                    style: textTheme.subtitle1?.copyWith(
-                      color: primaryColor,
                     ),
+                    const SizedBox(width: 8),
+                    Text(
+                      displayName,
+                      style: textTheme.headline6?.copyWith(
+                        color: secondaryColor,
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 16),
+                Text(
+                  AppLocalizations.of(context)!.postReviewInfo,
+                  style: textTheme.subtitle1?.copyWith(
+                    color: primaryColor,
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
-            SizedBox(height: 40),
+            const SizedBox(height: 40),
             TextField(
               controller: _postTxtCtrler,
-              maxLength: 500,
-              keyboardType: TextInputType.multiline,
-              maxLines: null,
-              style: textTheme.bodyText1?.copyWith(color: primaryColor),
-              cursorColor: secondaryColor,
               decoration: inputDeco(
                 hintText: AppLocalizations.of(context)!.reviewTxtFieldHint,
               ),
+              keyboardType: TextInputType.multiline,
+              style: textTheme.bodyText1?.copyWith(color: primaryColor),
+              maxLines: null,
+              maxLength: 500,
+              cursorColor: secondaryColor,
             )
           ],
         ),

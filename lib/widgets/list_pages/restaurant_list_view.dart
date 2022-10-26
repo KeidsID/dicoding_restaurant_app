@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../common/common.dart';
-import '../../common/image_network_builder.dart';
-
 import '../../data/api/api_service.dart';
 import '../../data/model/from_api/restaurant.dart';
 import '../../pages/detail/detail_page.dart';

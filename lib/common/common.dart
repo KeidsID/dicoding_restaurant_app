@@ -1,6 +1,8 @@
 export 'package:flutter_gen/gen_l10n/app_localizations.dart';
 export 'package:flutter_localizations/flutter_localizations.dart';
 export 'styles/style.dart';
+export 'styles/input_decoration.dart';
+export 'image_network_builder.dart';
 
 import 'package:flutter/material.dart';
 
@@ -47,10 +49,10 @@ TextStyle? txtThemeBody1 = textTheme.bodyText1;
 TextStyle? txtThemeBody2 = textTheme.bodyText2;
 
 /// Used for text on [ElevatedButton], [TextButton] and [OutlinedButton].
-TextStyle? txtThemeButton = textTheme.button;
+TextStyle? txtThemeBtn = textTheme.button;
 
 /// Used for auxiliary text associated with images.
-TextStyle? txtThemeCaption = textTheme.caption;
+TextStyle? txtThemeCap = textTheme.caption;
 
 /// The smallest style.
 ///

@@ -3,6 +3,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 class AuthService {
   static final FirebaseAuth _auth = FirebaseAuth.instance;
 
+  /// Asynchronously creates and becomes an anonymous user.
+  ///
   /// A [FirebaseAuthException] maybe thrown with the following error code:
   /// - **operation-not-allowed**:
   ///  - Thrown if anonymous accounts are not enabled. Enable anonymous accounts
@@ -11,6 +13,8 @@ class AuthService {
     await _auth.signInAnonymously();
   }
 
+  /// Attempts to sign in a user with the given email address and password.
+  ///
   /// A [FirebaseAuthException] maybe thrown with the following error code:
   /// - **invalid-email**:
   ///  - Thrown if the email address is not valid.
@@ -21,7 +25,7 @@ class AuthService {
   /// - **wrong-password**:
   ///  - Thrown if the password is invalid for the given email, or the account
   ///    corresponding to the email does not have a password set.
-  static Future<void> signInWithEmailAndPassword({
+  static Future<void> signInWithEmail({
     required String email,
     required String password,
   }) async {
@@ -31,6 +35,9 @@ class AuthService {
     );
   }
 
+  /// Tries to create a new user account with the given email address and
+  /// password.
+  ///
   /// A [FirebaseAuthException] maybe thrown with the following error code:
   /// - **email-already-in-use**:
   ///  - Thrown if there already exists an account with the given email address.
@@ -51,9 +58,10 @@ class AuthService {
     );
   }
 
+  /// Signs out the current User
   static Future<void> signOut() async {
     await _auth.signOut();
   }
 
-  static Stream<User?> get firebaseUserStream => _auth.authStateChanges();
+  static Stream<User?> get firebaseUserStream => _auth.userChanges();
 }
