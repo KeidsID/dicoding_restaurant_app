@@ -4,10 +4,11 @@ import 'package:provider/provider.dart';
 import '../../common/common.dart';
 import '../../data/api/api_service.dart';
 import '../../data/model/from_api/restaurant.dart';
+
 import '../../providers/search_result_provider.dart';
+import '../../widgets/fade_on_scroll.dart';
 import '../../widgets/list_pages/restaurant_grid_view.dart';
 import '../../widgets/list_pages/restaurant_list_view.dart';
-import '../../widgets/fade_on_scroll.dart';
 
 class SearchResultPage extends StatefulWidget {
   static const routeName = '/search_result_page';
@@ -90,14 +91,12 @@ class _SearchResultPageState extends State<SearchResultPage> {
             final founded = searchResultProvider.result.founded;
             final restaurants = searchResultProvider.result.restaurants;
 
-            return SafeArea(
-              child: NestedScrollView(
-                controller: scrollController,
-                headerSliverBuilder: (context, isScrolled) {
-                  return _sliverAppBar(context, founded);
-                },
-                body: _buildResultList(restaurants),
-              ),
+            return NestedScrollView(
+              controller: scrollController,
+              headerSliverBuilder: (context, isScrolled) {
+                return _sliverAppBar(context, founded);
+              },
+              body: _buildResultList(restaurants),
             );
           },
         ),

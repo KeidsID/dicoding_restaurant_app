@@ -8,6 +8,7 @@ import '../../pages/detail/detail_page.dart';
 import '../../providers/db_provider.dart';
 import 'restaurant_list_tile.dart';
 
+/// Potrait layout for restaurant list
 class RestaurantsListView extends StatelessWidget {
   final List<Restaurant> listItem;
   final bool isPushReplacement;
@@ -32,9 +33,9 @@ class RestaurantsListView extends StatelessWidget {
         tag: restaurant.id,
         child: Image.network(
           ApiService.instance!.imageSmall(restaurant.pictureId),
+          errorBuilder: errorBuilder,
           width: 100,
           fit: BoxFit.fill,
-          errorBuilder: errorBuilder,
         ),
       );
     }

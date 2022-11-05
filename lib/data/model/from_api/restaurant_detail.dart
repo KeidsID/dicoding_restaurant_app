@@ -65,7 +65,7 @@ class RestaurantDetailed {
     );
 
     // sort to newest review
-    customerReviews.sort((a, b) => b.date.compareTo(a.date));
+    var reviewsReversed = customerReviews.reversed.toList();
 
     return RestaurantDetailed(
       id: json["id"],
@@ -79,7 +79,7 @@ class RestaurantDetailed {
         json["categories"].map((x) => Category.fromJson(x)),
       ),
       menus: Menus.fromJson(json["menus"]),
-      customerReviews: customerReviews,
+      customerReviews: reviewsReversed,
     );
   }
 

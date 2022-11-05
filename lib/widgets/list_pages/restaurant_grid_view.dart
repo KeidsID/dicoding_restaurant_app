@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:restaurant_app_project/providers/db_provider.dart';
 
 import '../../common/common.dart';
-import '../../data/model/from_api/restaurant.dart';
 import '../../data/api/api_service.dart';
-
+import '../../data/model/from_api/restaurant.dart';
 import '../../pages/detail/detail_page.dart';
+import '../../providers/db_provider.dart';
 import 'grid_view_container.dart';
 
 class RestaurantsGridView extends StatelessWidget {

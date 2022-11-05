@@ -38,7 +38,7 @@ class _LoginPageState extends State<LoginPage> {
       resizeToAvoidBottomInset: false,
       body: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16.0),
+          padding: const EdgeInsets.symmetric(horizontal: 16),
           child: (_isLoading)
               ? const Center(
                   child: CircularProgressIndicator(
@@ -46,7 +46,10 @@ class _LoginPageState extends State<LoginPage> {
                     color: primaryColor,
                   ),
                 )
-              : _body(context),
+              : SizedBox(
+                  width: screenSize(context).width,
+                  child: _body(context),
+                ),
         ),
       ),
     );
@@ -61,29 +64,36 @@ class _LoginPageState extends State<LoginPage> {
           style: txtThemeH4!.copyWith(color: primaryColor),
         ),
         const SizedBox(height: 16),
-        TextField(
-          controller: _emailTxtFieldCtrler,
-          decoration: inputDeco(
-            label: const Text('Email'),
-            hintText: "example@example.com",
+        SizedBox(
+          width: 500,
+          child: TextField(
+            controller: _emailTxtFieldCtrler,
+            decoration: inputDeco(
+              label: const Text('Email'),
+              hintText: "example@example.com",
+            ),
+            keyboardType: TextInputType.emailAddress,
+            textInputAction: TextInputAction.next,
+            style: textTheme.bodyText1?.copyWith(color: primaryColor),
+            maxLines: 1,
+            cursorColor: secondaryColor,
           ),
-          keyboardType: TextInputType.emailAddress,
-          style: textTheme.bodyText1?.copyWith(color: primaryColor),
-          maxLines: 1,
-          cursorColor: secondaryColor,
         ),
         const SizedBox(height: 16),
-        TextField(
-          controller: _passwordTxtFieldCtrler,
-          decoration: inputDeco(
-            label: Text(
-              AppLocalizations.of(context)!.password,
+        SizedBox(
+          width: 500,
+          child: TextField(
+            controller: _passwordTxtFieldCtrler,
+            decoration: inputDeco(
+              label: Text(
+                AppLocalizations.of(context)!.password,
+              ),
             ),
+            style: textTheme.bodyText1?.copyWith(color: primaryColor),
+            obscureText: true,
+            maxLines: 1,
+            cursorColor: secondaryColor,
           ),
-          style: textTheme.bodyText1?.copyWith(color: primaryColor),
-          obscureText: true,
-          maxLines: 1,
-          cursorColor: secondaryColor,
         ),
         const SizedBox(height: 8),
         ElevatedButton(
@@ -182,7 +192,7 @@ class _LoginPageState extends State<LoginPage> {
               }
             }
           },
-          child: Text(AppLocalizations.of(context)!.anonymousLogin),
+          child: Text(AppLocalizations.of(context)!.anonymousLoginBtn),
         )
       ],
     );

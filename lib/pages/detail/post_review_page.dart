@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:restaurant_app_project/common/navigation.dart';
 
 import '../../common/common.dart';
-import '../auth/wrapper.dart';
 import '../../data/api/api_service.dart';
 import '../../data/model/from_api/restaurant_detail.dart';
+import '../auth/wrapper.dart';
 import 'detail_page.dart';
 
 class PostReviewPage extends StatefulWidget {
@@ -36,22 +35,21 @@ class _PostReviewPageState extends State<PostReviewPage> {
 
   @override
   Widget build(BuildContext context) {
-    final User? firebaseUser = Provider.of<User?>(context);
-
     var bodyPadding = (screenSize(context).width <= 750)
         ? EdgeInsets.zero
         : const EdgeInsets.symmetric(horizontal: 24);
 
     return Scaffold(
-      appBar: _appBar(context, firebaseUser: firebaseUser),
+      appBar: _appBar(context),
       body: Padding(
         padding: bodyPadding,
-        child: _body(context, firebaseUser: firebaseUser),
+        child: _body(context),
       ),
     );
   }
 
-  AppBar _appBar(BuildContext context, {User? firebaseUser}) {
+  AppBar _appBar(BuildContext context) {
+    final User? firebaseUser = Provider.of<User?>(context);
     final String displayName = firebaseUser!.displayName ?? 'Anonymous';
 
     Widget leading = IconButton(
@@ -162,7 +160,8 @@ class _PostReviewPageState extends State<PostReviewPage> {
     );
   }
 
-  Widget _body(BuildContext context, {User? firebaseUser}) {
+  Widget _body(BuildContext context) {
+    final User? firebaseUser = Provider.of<User?>(context);
     final String displayName = firebaseUser!.displayName ?? 'Anonymous';
 
     return SingleChildScrollView(

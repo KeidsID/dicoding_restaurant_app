@@ -4,9 +4,9 @@ import 'dart:isolate';
 
 import 'package:flutter/cupertino.dart';
 
-import '../data/model/from_api/restaurant.dart';
 import '../main.dart';
 import '../data/api/api_service.dart';
+import '../data/model/from_api/restaurant.dart';
 import '../data/model/from_api/restaurant_list.dart';
 import '../utils/notification_helper.dart';
 

@@ -1,22 +1,24 @@
 {
+  "@_AUTH": {},
   "loginBtn": "LOG IN",
-  "setUsernamePageHeading": "How do we call your name?",
+  "setUsernamePageHeading": "How do we call you?",
   "confirmBtn": "CONFIRM",
   "toSignUpPageBtn": "DON'T HAVE AN ACCOUNT YET? REGISTER HERE",
   "name": "Name",
-  "nameTxtFieldHint": "Will be used as username",
+  "nameTxtFieldHint": "Pseudonym allowed",
   "password": "Password",
   "signUpBtn": "SIGN UP",
-  "anonymousLogin": "LOG IN AS ANONYMOUS",
+  "anonymousLoginBtn": "LOG IN AS ANONYMOUS",
   "emailNotAvailable": "Email not available",
-  "anonymousLoginDisabled": "Anonymous log in is not available",
-  "signOut": "Log Out",
+  "@_HOME_PAGE": {},
+  "signOut": "Sign Out",
   "dailyReminder": "Daily reminder",
   "notificationsTest": "Notifications test",
   "available": "Available",
   "inProgress": "In progress",
-  "goBackBtn": "GO BACK",
   "searchTxtFieldHint": "Search restaurant name",
+  "appInfo": "App Info",
+  "@_SEARCH_RESULT_PAGE": {},
   "searchResultFounded": "{count, plural, =0{No restaurants found} =1{A restaurant found} other{{count} restaurants found}",
   "@searchResultFounded": {
     "placeholders": {
@@ -25,6 +27,12 @@
       }
     }
   },
+  "@_ABOUT": {},
+  "aboutApp": "This app is a project assignment from dicoding.com intermediate Flutter class. \n\nIt is hoped that with this assignment, students can create Flutter applications by implementing common features such as data retrieval from the internet, local storage, notifications, and testing.",
+  "version": "Version",
+  "appGithubRepo": "App GitHub Repo",
+  "@_DETAIL_PAGE": {},
+  "goBackBtn": "GO BACK",
   "foodsTab": "FOODS",
   "drinksTab": "DRINKS",
   "reviewHeading": "{count, plural, =1{Review} other{Reviews}}",
@@ -36,6 +44,8 @@
     }
   },
   "reviewsCheck": "Check more reviews",
+  "leaveAReview": "Review this restaurant",
+  "@_REVIEWS_PAGE": {},
   "reviewDate": "{date}",
   "@reviewDate": {
     "placeholders": {
@@ -45,16 +55,19 @@
       }
     }
   },
-  "leaveAReview": "Review this restaurant",
+  "@_POST_REVIEW_PAGE": {},
   "reviewCantEmpty": "Review can't be empty",
   "discardDraft": "Discard draft?",
   "cancelBtn": "CANCEL",
   "discardBtn": "DISCARD",
   "postReviewInfo": "Review are public and include your name.",
   "reviewTxtFieldHint": "Describe your experience",
+  "@_ERROR_MSG": {},
   "noInternetAccess": "No internet access",
   "noApiData": "No restaurant data received",
   "noDbData": "No wishlist. Try add to some.",
+  "@_FIREBASE_AUTH_ERROR_MSG": {},
+  "anonymousLoginDisabled": "Anonymous log in is not available",
   "invalidEmail": "Invalid email address",
   "userDisabled": "Account disabled by admin",
   "userNotFound": "Account not found, try to create a new account",

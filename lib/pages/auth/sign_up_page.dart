@@ -1,9 +1,8 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:restaurant_app_project/common/navigation.dart';
-import 'package:restaurant_app_project/utils/auth_service.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 import '../../common/common.dart';
+import '../../utils/auth_service.dart';
 
 class SignUpPage extends StatefulWidget {
   static const routeName = '/sign_up_page';
@@ -35,11 +34,15 @@ class _SignUpPageState extends State<SignUpPage> {
 
   @override
   Widget build(BuildContext context) {
+    var mainPadding = (screenSize(context).width <= 750)
+        ? const EdgeInsets.symmetric(horizontal: 16)
+        : const EdgeInsets.symmetric(horizontal: 32);
+
     return Scaffold(
       resizeToAvoidBottomInset: false,
       body: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16),
+          padding: mainPadding,
           child: (_isLoading)
               ? const Center(
                   child: CircularProgressIndicator(
@@ -47,7 +50,10 @@ class _SignUpPageState extends State<SignUpPage> {
                     color: primaryColor,
                   ),
                 )
-              : _body(context),
+              : SizedBox(
+                  width: screenSize(context).width,
+                  child: _body(context),
+                ),
         ),
       ),
     );
@@ -62,29 +68,36 @@ class _SignUpPageState extends State<SignUpPage> {
           style: txtThemeH4!.copyWith(color: primaryColor),
         ),
         const SizedBox(height: 16),
-        TextField(
-          controller: _emailTxtFieldCtrler,
-          decoration: inputDeco(
-            label: const Text('Email'),
-            hintText: "example@example.com",
+        SizedBox(
+          width: 500,
+          child: TextField(
+            controller: _emailTxtFieldCtrler,
+            decoration: inputDeco(
+              label: const Text('Email'),
+              hintText: "example@gmail.com",
+            ),
+            keyboardType: TextInputType.emailAddress,
+            textInputAction: TextInputAction.next,
+            style: textTheme.bodyText1?.copyWith(color: primaryColor),
+            maxLines: 1,
+            cursorColor: secondaryColor,
           ),
-          keyboardType: TextInputType.emailAddress,
-          style: textTheme.bodyText1?.copyWith(color: primaryColor),
-          maxLines: 1,
-          cursorColor: secondaryColor,
         ),
         const SizedBox(height: 16),
-        TextField(
-          controller: _passwordTxtFieldCtrler,
-          decoration: inputDeco(
-            label: Text(
-              AppLocalizations.of(context)!.password,
+        SizedBox(
+          width: 500,
+          child: TextField(
+            controller: _passwordTxtFieldCtrler,
+            decoration: inputDeco(
+              label: Text(
+                AppLocalizations.of(context)!.password,
+              ),
             ),
+            style: textTheme.bodyText1?.copyWith(color: primaryColor),
+            obscureText: true,
+            maxLines: 1,
+            cursorColor: secondaryColor,
           ),
-          style: textTheme.bodyText1?.copyWith(color: primaryColor),
-          obscureText: true,
-          maxLines: 1,
-          cursorColor: secondaryColor,
         ),
         const SizedBox(height: 8),
         Row(

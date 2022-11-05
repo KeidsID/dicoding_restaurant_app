@@ -6,6 +6,8 @@
 
 Submission project task from [dicoding.com Intermediate Flutter class][dicodingclass].
 
+It is hoped that with this assignment, students can create Flutter applications by implementing common features such as retrieving data from the internet, local storage, notifications, and testing.
+
 Run these commands before build:
 
 ```

@@ -3,9 +3,9 @@ import 'package:flutter/material.dart';
 import '../data/preferences/preferences_helper.dart';
 
 class PreferencesProvider extends ChangeNotifier {
-  PreferencesHelper preferencesHelper;
+  PreferencesHelper prefHelper;
 
-  PreferencesProvider({required this.preferencesHelper}) {
+  PreferencesProvider({required this.prefHelper}) {
     _getDailyReminderPref();
     _getNotifTestPref();
   }
@@ -17,22 +17,22 @@ class PreferencesProvider extends ChangeNotifier {
   bool get isNotifTestInProgress => _isNotifTestInProgress;
 
   void _getDailyReminderPref() async {
-    _isDailyReminderActive = await preferencesHelper.isDailyReminderActive;
+    _isDailyReminderActive = await prefHelper.isDailyReminderActive;
     notifyListeners();
   }
 
   void _getNotifTestPref() async {
-    _isNotifTestInProgress = await preferencesHelper.isNotifTestActive;
+    _isNotifTestInProgress = await prefHelper.isNotifTestActive;
     notifyListeners();
   }
 
   void enableDailyReminder(bool value) {
-    preferencesHelper.setDailyReminder(value);
+    prefHelper.setDailyReminder(value);
     _getDailyReminderPref();
   }
 
   void enableNotifTest(bool value) {
-    preferencesHelper.setNotificationsTest(value);
+    prefHelper.setNotificationsTest(value);
     _getNotifTestPref();
   }
 }

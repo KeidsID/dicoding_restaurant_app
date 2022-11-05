@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:restaurant_app_project/pages/detail/post_review_page.dart';
 
 import '../../common/common.dart';
 import '../../data/api/api_service.dart';
 import '../../data/model/from_api/restaurant_detail.dart';
+
+import '../auth/wrapper.dart';
+import 'post_review_page.dart';
 import 'reviews_page.dart';
+
 import '../../providers/restaurant_detail_provider.dart';
 import '../../widgets/fade_on_scroll.dart';
 import '../../widgets/review_container.dart';
@@ -206,6 +209,7 @@ class _DetailPagePortraitState extends State<_DetailPagePortrait> {
     }
 
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       body: SafeArea(
         child: NestedScrollView(
           controller: scrollController,
@@ -320,7 +324,7 @@ class _DetailPagePortraitState extends State<_DetailPagePortrait> {
                       ),
                       ElevatedButton(
                         onPressed: () {
-                          Navigator.pop(context);
+                          Navigation.popUntil(Wrapper.routeName);
                         },
                         child: Text(
                           AppLocalizations.of(context)!.goBackBtn,
@@ -456,6 +460,7 @@ class _DetailPageLandscapeState extends State<_DetailPageLandscape> {
         : const EdgeInsets.symmetric(horizontal: 48);
 
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       body: SafeArea(
         child: DefaultTabController(
           length: 2,
@@ -700,7 +705,7 @@ class _DetailPageLandscapeState extends State<_DetailPageLandscape> {
                     child: Center(
                       child: ElevatedButton(
                         onPressed: () {
-                          Navigator.pop(context);
+                          Navigation.popUntil(Wrapper.routeName);
                         },
                         child: Text(
                           AppLocalizations.of(context)!.goBackBtn,

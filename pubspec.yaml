@@ -35,11 +35,12 @@ dependencies:
   cupertino_icons: ^1.0.2
   flutter_native_splash: ^2.2.7
   google_fonts: ^3.0.1
+  intl: ^0.17.0
 
   http: ^0.13.5
+  url_launcher: ^6.1.6
   provider: ^6.0.3
 
-  intl: ^0.17.0
   rxdart: ^0.27.5
   flutter_local_notifications: ^11.0.0
   android_alarm_manager_plus: ^2.0.7

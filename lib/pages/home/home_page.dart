@@ -7,17 +7,16 @@ import 'package:firebase_auth/firebase_auth.dart';
 import '../../common/common.dart';
 import '../../data/model/from_api/restaurant.dart';
 
-import '../auth/user_first_setup.dart';
 import '../detail/detail_page.dart';
-import 'search_result_page.dart';
+import 'about_app_page.dart';
 import 'wishlist_page.dart';
 
 import '../../providers/notifications_provider.dart';
 import '../../providers/preferences_provider.dart';
 import '../../providers/restaurant_list_provider.dart';
+import '../../utils/auth_service.dart';
 import '../../utils/background_service.dart';
 import '../../utils/notification_helper.dart';
-import '../../utils/auth_service.dart';
 
 import '../../widgets/locked_feature_dialog.dart';
 import '../../widgets/search_text_field.dart';
@@ -52,12 +51,10 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    final User? firebaseUser = Provider.of<User?>(context);
-
     return Scaffold(
       appBar: _appBar(screenSize: screenSize(context), appName: appName),
-      body: _buildList(context),
-      drawer: _drawer(firebaseUser: firebaseUser),
+      body: _body(context),
+      drawer: _drawer(context),
     );
   }
 
@@ -71,14 +68,14 @@ class _HomePageState extends State<HomePage> {
             }),
             icon: const Icon(Icons.arrow_back),
           ),
-          title: Row(
-            children: _mobileAppBar(10),
+          title: SizedBox(
+            height: kToolbarHeight,
+            child: SearchTextField(controller: _searchTextFieldCtrler),
           ),
         );
       } else {
         return AppBar(
           title: Text(appName),
-          centerTitle: true,
           actions: [
             IconButton(
               onPressed: () => setState(() {
@@ -121,61 +118,21 @@ class _HomePageState extends State<HomePage> {
                 ],
               ),
             ),
-            Row(
-              children: [
-                SizedBox(
-                  width: 250,
-                  child: SearchTextField(controller: _searchTextFieldCtrler),
-                ),
-                const SizedBox(width: 16),
-                IconButton(
-                  onPressed: () {
-                    if (_searchTextFieldCtrler.text != '') {
-                      Navigator.pushNamed(
-                        context,
-                        SearchResultPage.routeName,
-                        arguments: _searchTextFieldCtrler.text,
-                      );
-                    }
-                  },
-                  icon: const Icon(Icons.search),
-                ),
-              ],
-            )
+            SizedBox(
+              width: 350,
+              height: kToolbarHeight,
+              child: SearchTextField(controller: _searchTextFieldCtrler),
+            ),
           ],
         ),
       );
     }
   }
 
-  List<Widget> _mobileAppBar([int flex = 1]) {
-    return [
-      Expanded(
-        flex: flex,
-        child: SearchTextField(controller: _searchTextFieldCtrler),
-      ),
-      const Flexible(child: SizedBox(width: 16)),
-      Flexible(
-        child: IconButton(
-          onPressed: () {
-            if (_searchTextFieldCtrler.text != '') {
-              Navigator.pushNamed(
-                context,
-                SearchResultPage.routeName,
-                arguments: _searchTextFieldCtrler.text,
-              );
-            }
-          },
-          icon: const Icon(Icons.search),
-        ),
-      ),
-    ];
-  }
-
-  Widget _buildList(BuildContext context) {
+  Widget _body(BuildContext context) {
     return Consumer<RestaurantListProvider>(
-      builder: (context, restaurantListProv, _) {
-        if (restaurantListProv.state == ResultState.loading) {
+      builder: (context, rListProv, _) {
+        if (rListProv.state == ResultState.loading) {
           // loading widget
           return Container(
             color: backgroundColor,
@@ -187,9 +144,9 @@ class _HomePageState extends State<HomePage> {
             ),
           );
         } else {
-          if (restaurantListProv.state == ResultState.hasData) {
+          if (rListProv.state == ResultState.hasData) {
             // success widget
-          } else if (restaurantListProv.state == ResultState.noData) {
+          } else if (rListProv.state == ResultState.noData) {
             // no data
             return Center(
               child: Text(
@@ -198,7 +155,7 @@ class _HomePageState extends State<HomePage> {
                 textAlign: TextAlign.center,
               ),
             );
-          } else if (restaurantListProv.state == ResultState.error) {
+          } else if (rListProv.state == ResultState.error) {
             // error widget
             return Column(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -212,15 +169,15 @@ class _HomePageState extends State<HomePage> {
                   onPressed: () {
                     setState(() {});
                   },
-                  icon: Icon(Icons.restart_alt),
-                  label: Text('Refresh'),
+                  icon: const Icon(Icons.restart_alt),
+                  label: const Text('Refresh'),
                 )
               ],
             );
           } else {
             return Center(
               child: Text(
-                restaurantListProv.message,
+                rListProv.message,
                 style: txtThemeH4?.copyWith(color: secondaryColor),
                 textAlign: TextAlign.center,
               ),
@@ -228,8 +185,7 @@ class _HomePageState extends State<HomePage> {
           }
         }
 
-        final List<Restaurant> restaurants =
-            restaurantListProv.result.restaurants;
+        final List<Restaurant> restaurants = rListProv.result.restaurants;
 
         return LayoutBuilder(
           builder: (_, constraints) {
@@ -259,7 +215,8 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  Drawer _drawer({User? firebaseUser}) {
+  Drawer _drawer(BuildContext context) {
+    final User? firebaseUser = Provider.of<User?>(context);
     final String displayName = firebaseUser!.displayName ?? 'Anonymous';
     final String email =
         firebaseUser.email ?? AppLocalizations.of(context)!.emailNotAvailable;
@@ -302,6 +259,7 @@ class _HomePageState extends State<HomePage> {
               ),
               const Divider(color: secondaryColor),
               ListTile(
+                leading: const Icon(Icons.logout_outlined),
                 title: const Text('Sign Out'),
                 onTap: () async {
                   if (!firebaseUser.isAnonymous) {
@@ -360,6 +318,14 @@ class _HomePageState extends State<HomePage> {
                       preferencesProv.enableNotifTest(false);
                     }
                   }
+                },
+              ),
+              const Divider(color: secondaryColor),
+              ListTile(
+                leading: const Icon(Icons.info_outline),
+                title: Text(AppLocalizations.of(context)!.appInfo),
+                onTap: () {
+                  Navigation.pushNamed(AboutAppPage.routeName);
                 },
               ),
             ],

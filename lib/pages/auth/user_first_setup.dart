@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:restaurant_app_project/common/navigation.dart';
-import 'package:restaurant_app_project/pages/auth/wrapper.dart';
 
 import '../../common/common.dart';
 
