@@ -47,6 +47,7 @@
   "noInternetAccess": "Tidak ada akses internet",
   "noApiData": "Tidak ada data restoran yang diterima",
   "noDbData": "Tidak ada wishlist. Coba tambahkan beberapa.",
+  "emptyTxtField": "Masih ada masukan yang kosong. Harap isi semua masukan",
   "passNotSame": "Kata sandi perlu konfirmasi. Pastikan kata sandi telah dimasukkan kembali",
   "@_FIREBASE_AUTH_ERROR_MSG": {},
   "anonymousLoginDisabled": "Masuk anonim tidak tersedia",

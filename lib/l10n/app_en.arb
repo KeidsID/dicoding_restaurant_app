@@ -69,6 +69,7 @@
   "noInternetAccess": "No internet access",
   "noApiData": "No restaurant data received",
   "noDbData": "No wishlist. Try add to some.",
+  "emptyTxtField": "There are still empty entries. Please fill in all entries",
   "passNotSame": "The password needs confirmation. Make sure the password has been re-entered",
   "@_FIREBASE_AUTH_ERROR_MSG": {},
   "anonymousLoginDisabled": "Anonymous log in is not available",

@@ -115,62 +115,55 @@ class _LoginPageState extends State<LoginPage> {
         const SizedBox(height: 8),
         ElevatedButton(
           onPressed: () async {
+            String emailInput = _emailTxtFieldCtrler.text;
+            String passwordInput = _passwordTxtFieldCtrler.text;
+
+            if (emailInput == '' && passwordInput == '') {
+              ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                content: Text(AppLocalizations.of(context)!.emptyTxtField),
+              ));
+              return;
+            }
+
             if (!_isLoading) {
               setState(() {
                 _isLoading = true;
               });
               try {
                 await AuthService.signInWithEmail(
-                  email: _emailTxtFieldCtrler.text,
-                  password: _passwordTxtFieldCtrler.text,
+                  email: emailInput,
+                  password: passwordInput,
                 );
               } on FirebaseAuthException catch (e) {
-                debugPrint(e.code);
                 switch (e.code) {
                   case 'invalid-email':
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Text(
-                          AppLocalizations.of(context)!.invalidEmail,
-                        ),
-                      ),
-                    );
+                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                      content: Text(AppLocalizations.of(context)!.invalidEmail),
+                    ));
                     break;
                   case 'user-disabled':
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Text(
-                          AppLocalizations.of(context)!.userDisabled,
-                        ),
-                      ),
-                    );
+                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                      content: Text(AppLocalizations.of(context)!.userDisabled),
+                    ));
                     break;
                   case 'user-not-found':
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Text(
-                          AppLocalizations.of(context)!.userNotFound,
-                        ),
-                      ),
-                    );
+                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                      content: Text(AppLocalizations.of(context)!.userNotFound),
+                    ));
                     break;
                   case 'wrong-password':
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Text(
-                          AppLocalizations.of(context)!.wrongPassword,
-                        ),
+                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                      content: Text(
+                        AppLocalizations.of(context)!.wrongPassword,
                       ),
-                    );
+                    ));
                     break;
                   default:
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Text(
-                          AppLocalizations.of(context)!.noInternetAccess,
-                        ),
+                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                      content: Text(
+                        AppLocalizations.of(context)!.noInternetAccess,
                       ),
-                    );
+                    ));
                 }
               } finally {
                 setState(() {
@@ -201,7 +194,6 @@ class _LoginPageState extends State<LoginPage> {
               try {
                 await AuthService.signInAnonymously();
               } on FirebaseAuthException catch (e) {
-                debugPrint(e.code);
                 switch (e.code) {
                   case 'operation-not-allowed':
                     ScaffoldMessenger.of(context).showSnackBar(
@@ -216,7 +208,7 @@ class _LoginPageState extends State<LoginPage> {
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(
                         content: Text(
-                          AppLocalizations.of(context)!.noInternetAccess,
+                          '${AppLocalizations.of(context)!.noInternetAccess} / ${AppLocalizations.of(context)!.anonymousLoginDisabled}',
                         ),
                       ),
                     );

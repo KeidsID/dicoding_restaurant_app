@@ -21,6 +21,8 @@ class PostReviewPage extends StatefulWidget {
 class _PostReviewPageState extends State<PostReviewPage> {
   late TextEditingController _postTxtCtrler;
 
+  bool _isLoading = false;
+
   @override
   void initState() {
     _postTxtCtrler = TextEditingController();
@@ -43,7 +45,14 @@ class _PostReviewPageState extends State<PostReviewPage> {
       appBar: _appBar(context),
       body: Padding(
         padding: bodyPadding,
-        child: _body(context),
+        child: (_isLoading)
+            ? const Center(
+                child: CircularProgressIndicator(
+                  backgroundColor: primaryColorBrightest,
+                  color: primaryColor,
+                ),
+              )
+            : _body(context),
       ),
     );
   }
@@ -129,8 +138,18 @@ class _PostReviewPageState extends State<PostReviewPage> {
     List<Widget> actions = [
       TextButton(
         onPressed: () async {
-          try {
-            if (_postTxtCtrler.text != '') {
+          if (_postTxtCtrler.text == '') {
+            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+              content: Text(AppLocalizations.of(context)!.reviewCantEmpty),
+            ));
+            return;
+          }
+
+          if (!_isLoading) {
+            setState(() {
+              _isLoading = true;
+            });
+            try {
               await ApiService.instance!.postReview(
                 restaurantId: widget.restaurant.id,
                 name: displayName,
@@ -142,18 +161,16 @@ class _PostReviewPageState extends State<PostReviewPage> {
                 DetailPage.routeName,
                 arguments: widget.restaurant.id,
               );
-            } else {
+            } catch (e) {
+              debugPrint('$e');
               ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                content: Text(
-                  AppLocalizations.of(context)!.reviewCantEmpty,
-                ),
+                content: Text(AppLocalizations.of(context)!.noInternetAccess),
               ));
+            } finally {
+              setState(() {
+                _isLoading = false;
+              });
             }
-          } catch (e) {
-            debugPrint('$e');
-            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-              content: Text(AppLocalizations.of(context)!.noInternetAccess),
-            ));
           }
         },
         child: const Text('POST'),

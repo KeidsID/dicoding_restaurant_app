@@ -115,7 +115,7 @@ class _SignUpPageState extends State<SignUpPage> {
               ),
             ),
             style: textTheme.bodyText1?.copyWith(color: primaryColor),
-            obscureText: true,
+            obscureText: _isHidePass,
             maxLines: 1,
             cursorColor: secondaryColor,
           ),
@@ -148,7 +148,7 @@ class _SignUpPageState extends State<SignUpPage> {
               ),
             ),
             style: textTheme.bodyText1?.copyWith(color: primaryColor),
-            obscureText: true,
+            obscureText: _isHidePass2,
             maxLines: 1,
             cursorColor: secondaryColor,
           ),
@@ -159,8 +159,24 @@ class _SignUpPageState extends State<SignUpPage> {
           children: [
             ElevatedButton(
               onPressed: () async {
-                bool isPassSame =
-                    _passTxtFieldCtrler.text == _passTxtFieldCtrler2.text;
+                String emailInput = _emailTxtFieldCtrler.text;
+                String passInput = _passTxtFieldCtrler.text;
+                String confirmPassInput = _passTxtFieldCtrler2.text;
+
+                bool isPassSame = passInput == confirmPassInput;
+
+                if (emailInput == '' ||
+                    passInput == '' ||
+                    confirmPassInput == '') {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text(
+                        AppLocalizations.of(context)!.emptyTxtField,
+                      ),
+                    ),
+                  );
+                  return;
+                }
 
                 if (!_isLoading && isPassSame) {
                   setState(() {
@@ -168,8 +184,8 @@ class _SignUpPageState extends State<SignUpPage> {
                   });
                   try {
                     await AuthService.signUpWithEmail(
-                      email: _emailTxtFieldCtrler.text,
-                      password: _passTxtFieldCtrler.text,
+                      email: emailInput,
+                      password: passInput,
                     );
 
                     Navigation.pop();
