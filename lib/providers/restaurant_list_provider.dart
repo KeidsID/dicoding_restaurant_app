@@ -7,7 +7,7 @@ enum ResultState { loading, noData, hasData, error }
 
 class RestaurantListProvider extends ChangeNotifier {
   RestaurantListProvider() {
-    _fetchAllRestaurants();
+    fetchAllRestaurants();
   }
 
   late RestaurantList _restaurantList;
@@ -18,24 +18,32 @@ class RestaurantListProvider extends ChangeNotifier {
   ResultState get state => _state;
   String get message => _message;
 
-  Future<dynamic> _fetchAllRestaurants() async {
+  /// Fetching [RestaurantList] data from API and stored on provider
+  /// as [result]
+  Future<void> fetchAllRestaurants() async {
     try {
       _state = ResultState.loading;
       notifyListeners();
+
       final restaurants = await ApiService.instance!.getRestaurantList();
+
       if (restaurants.restaurants.isEmpty) {
         _state = ResultState.noData;
+        _message = restaurants.message;
         notifyListeners();
-        return _message = restaurants.message;
-      } else {
-        _state = ResultState.hasData;
-        notifyListeners();
-        return _restaurantList = restaurants;
+        return;
       }
+
+      _state = ResultState.hasData;
+      _message = 'Fetch data success';
+      _restaurantList = restaurants;
+      notifyListeners();
+      return;
     } catch (e) {
       _state = ResultState.error;
+      _message = '$e';
       notifyListeners();
-      return _message = '$e';
+      return;
     }
   }
 }

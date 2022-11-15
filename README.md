@@ -1,6 +1,7 @@
 [dicodingclass]: https://www.dicoding.com/academies/195
 [jsonassets]: https://github.com/dicodingacademy/assets/blob/main/flutter_fundamental_academy/local_restaurant.json
-[api]: https://restaurant-api.dicoding.dev/
+[apilink]: https://restaurant-api.dicoding.dev/
+[apppreview]: https://raw.githubusercontent.com/KeidsID/KeidsID/main/assets/other/flutter-repo/RESTAURantS_App_Preview.gif
 
 # **restaurant_app_project**
 
@@ -15,12 +16,14 @@ flutter pub get
 flutter pub run flutter_native_splash:create
 ```
 
-Note:  
-**# Web build is not possible for now.**
+### **Note:**
+
+- Web build is not possible for now.
+- Never test IOS build yet, because owner is Android and Windows user.
 
 ## **App Preview**
 
-![App Preview Gif](https://github.com/KeidsID/KeidsID/blob/main/app_preview/RESTAURantS_App_Preview.gif?raw=true)
+![App Preview Gif][apppreview]
 
 ## **1st Submission Task**
 

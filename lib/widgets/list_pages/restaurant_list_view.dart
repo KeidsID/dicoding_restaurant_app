@@ -31,11 +31,12 @@ class RestaurantsListView extends StatelessWidget {
     Hero leading(Restaurant restaurant) {
       return Hero(
         tag: restaurant.id,
-        child: Image.network(
-          ApiService.instance!.imageSmall(restaurant.pictureId),
-          errorBuilder: errorBuilder,
+        child: FadeInImage.assetNetwork(
+          placeholder: 'assets/images/photo_error_icon.png',
+          image: ApiService.instance!.imageSmall(restaurant.pictureId),
           width: 100,
           fit: BoxFit.fill,
+          placeholderFit: BoxFit.contain,
         ),
       );
     }

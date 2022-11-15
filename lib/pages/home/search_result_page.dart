@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../common/common.dart';
-import '../../data/api/api_service.dart';
 import '../../data/model/from_api/restaurant.dart';
 
 import '../../providers/search_result_provider.dart';
@@ -41,13 +40,13 @@ class _SearchResultPageState extends State<SearchResultPage> {
       body: ChangeNotifierProvider(
         create: (context) => SearchResultProvider(
           query: widget.query,
-          apiService: ApiService.instance!,
         ),
         child: Consumer<SearchResultProvider>(
-          builder: (context, searchResultProvider, _) {
-            if (searchResultProvider.state == ResultState.loading) {
-              // loading widget
+          builder: (context, searchProv, _) {
+            if (searchProv.state == ResultState.loading) {
               return Container(
+                width: screenSize(context).width,
+                height: screenSize(context).height,
                 color: backgroundColor,
                 child: const Center(
                   child: CircularProgressIndicator(
@@ -56,40 +55,54 @@ class _SearchResultPageState extends State<SearchResultPage> {
                   ),
                 ),
               );
-            } else {
-              if (searchResultProvider.state == ResultState.hasData) {
-                // success widget
-              } else if (searchResultProvider.state == ResultState.noData) {
-                // no data
-                return Center(
-                  child: Text(
-                    AppLocalizations.of(context)!.noApiData,
-                    style: txtThemeH4?.copyWith(color: secondaryColor),
-                    textAlign: TextAlign.center,
-                  ),
-                );
-              } else if (searchResultProvider.state == ResultState.error) {
-                // error widget
-                return Center(
-                  child: Text(
-                    AppLocalizations.of(context)!.noInternetAccess,
-                    style: txtThemeH4?.copyWith(color: secondaryColor),
-                    textAlign: TextAlign.center,
-                  ),
-                );
-              } else {
-                return Center(
-                  child: Text(
-                    searchResultProvider.message,
-                    style: txtThemeH4?.copyWith(color: secondaryColor),
-                    textAlign: TextAlign.center,
-                  ),
-                );
-              }
             }
 
-            final founded = searchResultProvider.result.founded;
-            final restaurants = searchResultProvider.result.restaurants;
+            if (searchProv.state == ResultState.noData) {
+              return SizedBox.expand(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      AppLocalizations.of(context)!.noApiData,
+                      style: txtThemeH4?.copyWith(color: secondaryColor),
+                      textAlign: TextAlign.center,
+                    ),
+                    ElevatedButton.icon(
+                      onPressed: () {
+                        searchProv.fetchSearchResult();
+                      },
+                      icon: const Icon(Icons.restart_alt),
+                      label: const Text('Refresh'),
+                    ),
+                  ],
+                ),
+              );
+            }
+
+            if (searchProv.state == ResultState.error) {
+              return SizedBox.expand(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      AppLocalizations.of(context)!.noInternetAccess,
+                      style: txtThemeH4?.copyWith(color: secondaryColor),
+                      textAlign: TextAlign.center,
+                    ),
+                    ElevatedButton.icon(
+                      onPressed: () {
+                        searchProv.fetchSearchResult();
+                      },
+                      icon: const Icon(Icons.restart_alt),
+                      label: const Text('Refresh'),
+                    ),
+                  ],
+                ),
+              );
+            }
+
+            final founded = searchProv.result.founded;
+            final restaurants = searchProv.result.restaurants;
 
             return NestedScrollView(
               controller: scrollController,

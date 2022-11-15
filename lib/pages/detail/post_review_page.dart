@@ -91,10 +91,13 @@ class _PostReviewPageState extends State<PostReviewPage> {
       child: Row(
         children: [
           Flexible(
-            child: Image.network(
-              ApiService.instance!.imageSmall(widget.restaurant.pictureId),
+            child: FadeInImage.assetNetwork(
+              placeholder: 'assets/images/photo_error_icon.png',
+              image: ApiService.instance!.imageSmall(
+                widget.restaurant.pictureId,
+              ),
               fit: BoxFit.fill,
-              errorBuilder: errorBuilder,
+              placeholderFit: BoxFit.contain,
             ),
           ),
           const Flexible(child: SizedBox(width: 8)),
@@ -135,6 +138,10 @@ class _PostReviewPageState extends State<PostReviewPage> {
               );
 
               Navigation.popUntil(Wrapper.routeName);
+              Navigation.pushNamed(
+                DetailPage.routeName,
+                arguments: widget.restaurant.id,
+              );
             } else {
               ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                 content: Text(

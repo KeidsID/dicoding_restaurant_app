@@ -25,4 +25,10 @@ abstract class Navigation {
   static popUntil(String routeName) {
     navigatorKey.currentState?.popUntil(ModalRoute.withName(routeName));
   }
+
+  /// Pop the current route off the navigator and push a named route in its
+  /// place.
+  static popAndPushNamed(String routeName) {
+    navigatorKey.currentState?.popAndPushNamed(routeName);
+  }
 }

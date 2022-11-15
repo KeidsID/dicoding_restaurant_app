@@ -7,7 +7,7 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import '../common/navigation.dart';
 import '../data/model/from_api/restaurant.dart';
 
-final selectNotificationSubject = BehaviorSubject<String>();
+final selectNotifSubject = BehaviorSubject<String>();
 
 class NotificationHelper {
   static NotificationHelper? instance;
@@ -39,7 +39,7 @@ class NotificationHelper {
         if (notifResponse.payload != null) {
           debugPrint('notification payload: ${notifResponse.payload}');
         }
-        selectNotificationSubject.add(notifResponse.payload ?? 'empty payload');
+        selectNotifSubject.add(notifResponse.payload ?? 'empty payload');
       },
     );
   }
@@ -80,12 +80,13 @@ class NotificationHelper {
   }
 
   void configureNotifResponse(String route) {
-    selectNotificationSubject.stream.listen(
+    selectNotifSubject.stream.listen(
       (String payload) async {
         var data = Restaurant.fromJson(json.decode(payload));
         var restaurantId = data.id;
         Navigation.pushNamed(route, arguments: restaurantId);
       },
+      onDone: () => selectNotifSubject.add('Empty'),
     );
   }
 }

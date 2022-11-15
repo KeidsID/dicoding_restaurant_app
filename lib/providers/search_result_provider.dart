@@ -7,10 +7,9 @@ enum ResultState { loading, noData, hasData, error }
 
 class SearchResultProvider extends ChangeNotifier {
   final String query;
-  final ApiService apiService;
 
-  SearchResultProvider({required this.query, required this.apiService}) {
-    _fetchAllRestaurants();
+  SearchResultProvider({required this.query}) {
+    fetchSearchResult();
   }
 
   late SearchRestaurant _searchRestaurant;
@@ -21,24 +20,31 @@ class SearchResultProvider extends ChangeNotifier {
   ResultState get state => _state;
   String get message => _message;
 
-  Future<dynamic> _fetchAllRestaurants() async {
+  Future<void> fetchSearchResult() async {
+    _state = ResultState.loading;
+    notifyListeners();
+
     try {
-      _state = ResultState.loading;
-      notifyListeners();
-      final searchRestaurant = await apiService.getSearchRestaurant(query);
-      if (searchRestaurant.error == true) {
+      final searchRestaurant =
+          await ApiService.instance!.getSearchRestaurant(query);
+
+      if (searchRestaurant.error) {
         _state = ResultState.noData;
+        _message = 'Error no Data';
         notifyListeners();
-        return _message = 'Error: No restaurant data';
-      } else {
-        _state = ResultState.hasData;
-        notifyListeners();
-        return _searchRestaurant = searchRestaurant;
+        return;
       }
+
+      _state = ResultState.hasData;
+      _message = 'Success';
+      _searchRestaurant = searchRestaurant;
+      notifyListeners();
+      return;
     } catch (e) {
       _state = ResultState.error;
+      _message = '$e';
       notifyListeners();
-      return _message = '$e';
+      return;
     }
   }
 }

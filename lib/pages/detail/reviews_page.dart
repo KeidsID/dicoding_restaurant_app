@@ -29,10 +29,11 @@ class ReviewsPage extends StatelessWidget {
         child: Row(
           children: [
             Flexible(
-              child: Image.network(
-                ApiService.instance!.imageSmall(restaurant.pictureId),
+              child: FadeInImage.assetNetwork(
+                placeholder: 'assets/images/photo_error_icon.png',
+                image: ApiService.instance!.imageSmall(restaurant.pictureId),
                 fit: BoxFit.fill,
-                errorBuilder: errorBuilder,
+                placeholderFit: BoxFit.contain,
               ),
             ),
             const Flexible(child: SizedBox(width: 8)),

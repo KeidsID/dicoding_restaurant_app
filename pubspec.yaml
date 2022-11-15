@@ -1,5 +1,5 @@
 name: restaurant_app_project
-description: A new Flutter project.
+description: Submission project task from dicoding.com Intermediate Flutter class
 
 # The following line prevents the package from being accidentally published to
 # pub.dev using `flutter pub publish`. This is preferred for private packages.
@@ -20,12 +20,10 @@ version: 1.0.0+1
 environment:
   sdk: ">=2.18.1 <=3.3.2"
 
-# Dependencies specify other packages that your package needs in order to work.
-# To automatically upgrade your package dependencies to the latest versions
-# consider running `flutter pub upgrade --major-versions`. Alternatively,
-# dependencies can be manually updated by changing the version numbers below to
-# the latest version available on pub.dev. To see which dependencies have newer
-# versions available, run `flutter pub outdated`.
+# Run `flutter pub upgrade --major-versions` for auto upgrade dependencies
+# to latest versions.
+# Run`flutter pub outdated` to see which dependencies have newer
+# versions available.
 dependencies:
   flutter:
     sdk: flutter
@@ -33,23 +31,23 @@ dependencies:
     sdk: flutter
 
   cupertino_icons: ^1.0.2
-  flutter_native_splash: ^2.2.7
   google_fonts: ^3.0.1
   intl: ^0.17.0
+  flutter_native_splash: ^2.2.7
 
   http: ^0.13.5
   url_launcher: ^6.1.6
   provider: ^6.0.3
 
   rxdart: ^0.27.5
-  flutter_local_notifications: ^11.0.0
+  flutter_local_notifications: ^12.0.3
   android_alarm_manager_plus: ^2.0.7
 
   shared_preferences: ^2.0.15
   sqflite: ^2.1.0
-  
-  firebase_core: ^1.24.0
-  firebase_auth: ^3.11.1
+
+  firebase_core: ^2.2.0
+  firebase_auth: ^4.1.2
 
 dev_dependencies:
   flutter_test:

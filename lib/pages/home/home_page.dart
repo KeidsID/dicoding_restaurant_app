@@ -133,8 +133,9 @@ class _HomePageState extends State<HomePage> {
     return Consumer<RestaurantListProvider>(
       builder: (context, rListProv, _) {
         if (rListProv.state == ResultState.loading) {
-          // loading widget
           return Container(
+            width: screenSize(context).width,
+            height: screenSize(context).height,
             color: backgroundColor,
             child: const Center(
               child: CircularProgressIndicator(
@@ -143,21 +144,33 @@ class _HomePageState extends State<HomePage> {
               ),
             ),
           );
-        } else {
-          if (rListProv.state == ResultState.hasData) {
-            // success widget
-          } else if (rListProv.state == ResultState.noData) {
-            // no data
-            return Center(
-              child: Text(
-                AppLocalizations.of(context)!.noApiData,
-                style: txtThemeH4?.copyWith(color: secondaryColor),
-                textAlign: TextAlign.center,
-              ),
-            );
-          } else if (rListProv.state == ResultState.error) {
-            // error widget
-            return Column(
+        }
+
+        if (rListProv.state == ResultState.noData) {
+          return SizedBox.expand(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  AppLocalizations.of(context)!.noApiData,
+                  style: txtThemeH4?.copyWith(color: secondaryColor),
+                  textAlign: TextAlign.center,
+                ),
+                ElevatedButton.icon(
+                  onPressed: () {
+                    rListProv.fetchAllRestaurants();
+                  },
+                  icon: const Icon(Icons.restart_alt),
+                  label: const Text('Refresh'),
+                ),
+              ],
+            ),
+          );
+        }
+
+        if (rListProv.state == ResultState.error) {
+          return SizedBox.expand(
+            child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Text(
@@ -167,22 +180,14 @@ class _HomePageState extends State<HomePage> {
                 ),
                 ElevatedButton.icon(
                   onPressed: () {
-                    setState(() {});
+                    rListProv.fetchAllRestaurants();
                   },
                   icon: const Icon(Icons.restart_alt),
                   label: const Text('Refresh'),
-                )
+                ),
               ],
-            );
-          } else {
-            return Center(
-              child: Text(
-                rListProv.message,
-                style: txtThemeH4?.copyWith(color: secondaryColor),
-                textAlign: TextAlign.center,
-              ),
-            );
-          }
+            ),
+          );
         }
 
         final List<Restaurant> restaurants = rListProv.result.restaurants;

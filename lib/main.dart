@@ -4,8 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:android_alarm_manager_plus/android_alarm_manager_plus.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:http/http.dart' as http;
 import 'package:firebase_core/firebase_core.dart';
+import 'package:http/http.dart' as http;
 
 import 'my_app.dart';
 import 'firebase_options.dart';
@@ -37,5 +37,7 @@ Future<void> main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
 
-  runApp(MyApp());
+  runApp(
+    MyApp(),
+  );
 }

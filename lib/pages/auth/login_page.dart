@@ -17,6 +17,7 @@ class _LoginPageState extends State<LoginPage> {
   late TextEditingController _passwordTxtFieldCtrler;
 
   bool _isLoading = false;
+  bool _isHidePass = true;
 
   @override
   void initState() {
@@ -88,9 +89,25 @@ class _LoginPageState extends State<LoginPage> {
               label: Text(
                 AppLocalizations.of(context)!.password,
               ),
+              suffixIcon: IconButton(
+                onPressed: () {
+                  if (_isHidePass) {
+                    setState(() {
+                      _isHidePass = false;
+                    });
+                    return;
+                  }
+                  setState(() {
+                    _isHidePass = true;
+                  });
+                },
+                icon: Icon(
+                  (_isHidePass) ? Icons.visibility : Icons.visibility_off,
+                ),
+              ),
             ),
             style: textTheme.bodyText1?.copyWith(color: primaryColor),
-            obscureText: true,
+            obscureText: _isHidePass,
             maxLines: 1,
             cursorColor: secondaryColor,
           ),
@@ -147,6 +164,13 @@ class _LoginPageState extends State<LoginPage> {
                     );
                     break;
                   default:
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text(
+                          AppLocalizations.of(context)!.noInternetAccess,
+                        ),
+                      ),
+                    );
                 }
               } finally {
                 setState(() {
@@ -178,13 +202,25 @@ class _LoginPageState extends State<LoginPage> {
                 await AuthService.signInAnonymously();
               } on FirebaseAuthException catch (e) {
                 debugPrint(e.code);
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text(
-                      AppLocalizations.of(context)!.anonymousLoginDisabled,
-                    ),
-                  ),
-                );
+                switch (e.code) {
+                  case 'operation-not-allowed':
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text(
+                          AppLocalizations.of(context)!.anonymousLoginDisabled,
+                        ),
+                      ),
+                    );
+                    break;
+                  default:
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text(
+                          AppLocalizations.of(context)!.noInternetAccess,
+                        ),
+                      ),
+                    );
+                }
               } finally {
                 setState(() {
                   _isLoading = false;

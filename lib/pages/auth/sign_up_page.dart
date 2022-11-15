@@ -14,21 +14,26 @@ class SignUpPage extends StatefulWidget {
 
 class _SignUpPageState extends State<SignUpPage> {
   late TextEditingController _emailTxtFieldCtrler;
-  late TextEditingController _passwordTxtFieldCtrler;
+  late TextEditingController _passTxtFieldCtrler;
+  late TextEditingController _passTxtFieldCtrler2;
 
   bool _isLoading = false;
+  bool _isHidePass = true;
+  bool _isHidePass2 = true;
 
   @override
   void initState() {
     _emailTxtFieldCtrler = TextEditingController();
-    _passwordTxtFieldCtrler = TextEditingController();
+    _passTxtFieldCtrler = TextEditingController();
+    _passTxtFieldCtrler2 = TextEditingController();
     super.initState();
   }
 
   @override
   void dispose() {
     _emailTxtFieldCtrler.dispose();
-    _passwordTxtFieldCtrler.dispose();
+    _passTxtFieldCtrler.dispose();
+    _passTxtFieldCtrler2.dispose();
     super.dispose();
   }
 
@@ -64,7 +69,7 @@ class _SignUpPageState extends State<SignUpPage> {
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Text(
-          appName,
+          AppLocalizations.of(context)!.signUpPageHeader,
           style: txtThemeH4!.copyWith(color: primaryColor),
         ),
         const SizedBox(height: 16),
@@ -87,10 +92,59 @@ class _SignUpPageState extends State<SignUpPage> {
         SizedBox(
           width: 500,
           child: TextField(
-            controller: _passwordTxtFieldCtrler,
+            controller: _passTxtFieldCtrler,
             decoration: inputDeco(
               label: Text(
                 AppLocalizations.of(context)!.password,
+              ),
+              suffixIcon: IconButton(
+                onPressed: () {
+                  if (_isHidePass) {
+                    setState(() {
+                      _isHidePass = false;
+                    });
+                    return;
+                  }
+                  setState(() {
+                    _isHidePass = true;
+                  });
+                },
+                icon: Icon(
+                  (_isHidePass) ? Icons.visibility : Icons.visibility_off,
+                ),
+              ),
+            ),
+            style: textTheme.bodyText1?.copyWith(color: primaryColor),
+            obscureText: true,
+            maxLines: 1,
+            cursorColor: secondaryColor,
+          ),
+        ),
+        const SizedBox(height: 16),
+        SizedBox(
+          width: 500,
+          child: TextField(
+            controller: _passTxtFieldCtrler2,
+            decoration: inputDeco(
+              hintText: AppLocalizations.of(context)!.passConfirmHint,
+              label: Text(
+                AppLocalizations.of(context)!.passConfirm,
+              ),
+              suffixIcon: IconButton(
+                onPressed: () {
+                  if (_isHidePass2) {
+                    setState(() {
+                      _isHidePass2 = false;
+                    });
+                    return;
+                  }
+                  setState(() {
+                    _isHidePass2 = true;
+                  });
+                },
+                icon: Icon(
+                  (_isHidePass2) ? Icons.visibility : Icons.visibility_off,
+                ),
               ),
             ),
             style: textTheme.bodyText1?.copyWith(color: primaryColor),
@@ -105,14 +159,17 @@ class _SignUpPageState extends State<SignUpPage> {
           children: [
             ElevatedButton(
               onPressed: () async {
-                if (!_isLoading) {
+                bool isPassSame =
+                    _passTxtFieldCtrler.text == _passTxtFieldCtrler2.text;
+
+                if (!_isLoading && isPassSame) {
                   setState(() {
                     _isLoading = true;
                   });
                   try {
                     await AuthService.signUpWithEmail(
                       email: _emailTxtFieldCtrler.text,
-                      password: _passwordTxtFieldCtrler.text,
+                      password: _passTxtFieldCtrler.text,
                     );
 
                     Navigation.pop();
@@ -156,13 +213,29 @@ class _SignUpPageState extends State<SignUpPage> {
                         );
                         break;
                       default:
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text(
+                              AppLocalizations.of(context)!.noInternetAccess,
+                            ),
+                          ),
+                        );
                     }
                   } finally {
                     setState(() {
                       _isLoading = false;
                     });
                   }
+                  return;
                 }
+
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text(
+                      AppLocalizations.of(context)!.passNotSame,
+                    ),
+                  ),
+                );
               },
               child: Text(AppLocalizations.of(context)!.signUpBtn),
             ),

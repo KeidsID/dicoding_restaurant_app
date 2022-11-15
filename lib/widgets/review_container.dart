@@ -20,10 +20,14 @@ class ReviewContainer extends StatelessWidget {
   Widget build(BuildContext context) {
     late String reviewerName;
 
-    if (customerReviews.name.length > 15) {
-      reviewerName = customerReviews.name.substring(0, 16).padRight(4, '.');
+    if (customerReviews.name != '') {
+      if (customerReviews.name.length > 15) {
+        reviewerName = customerReviews.name.substring(0, 16).padRight(4, '.');
+      } else {
+        reviewerName = customerReviews.name;
+      }
     } else {
-      reviewerName = customerReviews.name;
+      reviewerName = 'Anonymous';
     }
 
     return Container(

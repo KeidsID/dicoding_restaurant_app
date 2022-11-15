@@ -32,10 +32,11 @@ class RestaurantsGridView extends StatelessWidget {
     Hero image(Restaurant restaurant) {
       return Hero(
         tag: restaurant.id,
-        child: Image.network(
-          ApiService.instance!.imageLarge(restaurant.pictureId),
+        child: FadeInImage.assetNetwork(
+          placeholder: 'assets/images/photo_error_icon.png',
+          image: ApiService.instance!.imageSmall(restaurant.pictureId),
           fit: BoxFit.fill,
-          errorBuilder: errorBuilder,
+          placeholderFit: BoxFit.contain,
         ),
       );
     }

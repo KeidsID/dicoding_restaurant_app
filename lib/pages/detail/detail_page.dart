@@ -90,13 +90,13 @@ class DetailPage extends StatelessWidget {
     return ChangeNotifierProvider(
       create: (context) => RestaurantDetailProvider(
         id: restaurantId,
-        apiService: ApiService.instance!,
       ),
       child: Consumer<RestaurantDetailProvider>(
-        builder: (_, restaurantDetailProvider, __) {
-          if (restaurantDetailProvider.state == ResultState.loading) {
-            // loading widget
+        builder: (_, rDetailProv, __) {
+          if (rDetailProv.state == ResultState.loading) {
             return Container(
+              width: screenSize(context).width,
+              height: screenSize(context).height,
               color: backgroundColor,
               child: const Center(
                 child: CircularProgressIndicator(
@@ -105,56 +105,66 @@ class DetailPage extends StatelessWidget {
                 ),
               ),
             );
-          } else {
-            if (restaurantDetailProvider.state == ResultState.hasData) {
-              // success widget
-            } else if (restaurantDetailProvider.state == ResultState.noData) {
-              // no data
-              return Container(
-                color: backgroundColor,
-                child: Center(
-                  child: Text(
+          }
+
+          if (rDetailProv.state == ResultState.noData) {
+            return Container(
+              width: screenSize(context).width,
+              height: screenSize(context).height,
+              color: backgroundColor,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
                     AppLocalizations.of(context)!.noApiData,
                     style: txtThemeH4?.copyWith(color: secondaryColor),
                     textAlign: TextAlign.center,
                   ),
-                ),
-              );
-            } else if (restaurantDetailProvider.state == ResultState.error) {
-              // error widget
-              return Container(
-                color: backgroundColor,
-                child: Center(
-                  child: Text(
+                  ElevatedButton.icon(
+                    onPressed: () {
+                      rDetailProv.fetchRestaurantDetail();
+                    },
+                    icon: const Icon(Icons.restart_alt),
+                    label: const Text('Refresh'),
+                  ),
+                ],
+              ),
+            );
+          }
+
+          if (rDetailProv.state == ResultState.error) {
+            return Container(
+              width: screenSize(context).width,
+              height: screenSize(context).height,
+              color: backgroundColor,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
                     AppLocalizations.of(context)!.noInternetAccess,
                     style: txtThemeH4?.copyWith(color: secondaryColor),
                     textAlign: TextAlign.center,
                   ),
-                ),
-              );
-            } else {
-              return Container(
-                color: backgroundColor,
-                child: Center(
-                  child: Text(
-                    restaurantDetailProvider.message,
-                    style: txtThemeH4?.copyWith(color: secondaryColor),
-                    textAlign: TextAlign.center,
+                  ElevatedButton.icon(
+                    onPressed: () {
+                      rDetailProv.fetchRestaurantDetail();
+                    },
+                    icon: const Icon(Icons.restart_alt),
+                    label: const Text('Refresh'),
                   ),
-                ),
-              );
-            }
+                ],
+              ),
+            );
           }
 
-          final restaurant = restaurantDetailProvider.result.restaurant;
+          final restaurant = rDetailProv.result.restaurant;
 
           return LayoutBuilder(
             builder: (context, constraints) {
               if (constraints.maxWidth <= 750) {
                 return _DetailPagePortrait(restaurant);
-              } else {
-                return _DetailPageLandscape(restaurant);
               }
+              return _DetailPageLandscape(restaurant);
             },
           );
         },
@@ -265,8 +275,7 @@ class _DetailPagePortraitState extends State<_DetailPagePortrait> {
                       .toList(),
                 ),
 
-                // reviews
-                // header
+                // review, ReviewPage button, and PostReviewPage button
                 Container(
                   padding: const EdgeInsets.symmetric(vertical: 16),
                   child: Text(
@@ -275,7 +284,7 @@ class _DetailPagePortraitState extends State<_DetailPagePortrait> {
                     textAlign: TextAlign.center,
                   ),
                 ),
-                // review, ReviewPage button, and PostReviewPage button
+
                 Container(
                   margin: mainHMargin,
                   child: ReviewContainer(
@@ -357,10 +366,11 @@ class _DetailPagePortraitState extends State<_DetailPagePortrait> {
     Widget flexibleSpaceBackground() {
       return Hero(
         tag: widget.restaurant.id,
-        child: Image.network(
-          ApiService.instance!.imageMedium(widget.restaurant.pictureId),
+        child: FadeInImage.assetNetwork(
+          placeholder: 'assets/images/photo_error_icon.png',
+          image: ApiService.instance!.imageMedium(widget.restaurant.pictureId),
           fit: BoxFit.fill,
-          errorBuilder: errorBuilder,
+          placeholderFit: BoxFit.contain,
         ),
       );
     }
@@ -549,12 +559,14 @@ class _DetailPageLandscapeState extends State<_DetailPageLandscape> {
               ),
               child: Hero(
                 tag: widget.restaurant.id,
-                child: Image.network(
-                  ApiService.instance!.imageMedium(
+                child: FadeInImage.assetNetwork(
+                  placeholder: 'assets/images/photo_error_icon.png',
+                  image: ApiService.instance!.imageMedium(
                     widget.restaurant.pictureId,
                   ),
+                  height: 225,
                   fit: BoxFit.cover,
-                  errorBuilder: errorBuilder,
+                  placeholderFit: BoxFit.contain,
                 ),
               ),
             ),
