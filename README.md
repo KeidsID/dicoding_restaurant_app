@@ -9,6 +9,8 @@ Submission project task from [dicoding.com Intermediate Flutter class][dicodingc
 
 It is hoped that with this assignment, students can create Flutter applications by implementing common features such as retrieving data from the internet, local storage, notifications, and testing.
 
+Design based on [Basil Material Studies](https://m2.material.io/design/material-studies/basil.html)
+
 Run these commands before build:
 
 ```

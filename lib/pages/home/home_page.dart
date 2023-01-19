@@ -1,27 +1,24 @@
 import 'dart:io';
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 
 import '../../common/common.dart';
 import '../../data/model/from_api/restaurant.dart';
-
-import '../detail/detail_page.dart';
-import 'about_app_page.dart';
-import 'wishlist_page.dart';
-
-import '../../providers/notifications_provider.dart';
-import '../../providers/preferences_provider.dart';
-import '../../providers/restaurant_list_provider.dart';
+import '../../providers/api/restaurant_list_provider.dart';
+import '../../providers/data/notifications_provider.dart';
+import '../../providers/data/preferences_provider.dart';
 import '../../utils/auth_service.dart';
 import '../../utils/background_service.dart';
 import '../../utils/notification_helper.dart';
-
-import '../../widgets/locked_feature_dialog.dart';
-import '../../widgets/search_text_field.dart';
 import '../../widgets/list_pages/restaurant_grid_view.dart';
 import '../../widgets/list_pages/restaurant_list_view.dart';
+import '../../widgets/locked_feature_dialog.dart';
+import '../../widgets/search_text_field.dart';
+import '../detail/detail_page.dart';
+import 'about_app_page.dart';
+import 'wishlist_page.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});

@@ -5,7 +5,7 @@ import '../../common/common.dart';
 import '../../data/api/api_service.dart';
 import '../../data/model/from_api/restaurant.dart';
 import '../../pages/detail/detail_page.dart';
-import '../../providers/db_provider.dart';
+import '../../providers/data/db_provider.dart';
 import 'grid_view_container.dart';
 
 class RestaurantsGridView extends StatelessWidget {

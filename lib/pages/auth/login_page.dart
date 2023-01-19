@@ -1,9 +1,9 @@
-import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
 
 import '../../common/common.dart';
-import 'sign_up_page.dart';
 import '../../utils/auth_service.dart';
+import 'sign_up_page.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -193,26 +193,27 @@ class _LoginPageState extends State<LoginPage> {
               });
               try {
                 await AuthService.signInAnonymously();
-              } on FirebaseAuthException catch (e) {
-                switch (e.code) {
-                  case 'operation-not-allowed':
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Text(
-                          AppLocalizations.of(context)!.anonymousLoginDisabled,
-                        ),
+              } catch (e) {
+                const faeCode = 'operation-not-allowed';
+
+                if (e is FirebaseAuthException && e.code == faeCode) {
+                  debugPrint(e.code);
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text(
+                        AppLocalizations.of(context)!.anonymousLoginDisabled,
                       ),
-                    );
-                    break;
-                  default:
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Text(
-                          '${AppLocalizations.of(context)!.noInternetAccess} / ${AppLocalizations.of(context)!.anonymousLoginDisabled}',
-                        ),
-                      ),
-                    );
+                    ),
+                  );
+                  return;
                 }
+
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content:
+                        Text(AppLocalizations.of(context)!.noInternetAccess),
+                  ),
+                );
               } finally {
                 setState(() {
                   _isLoading = false;

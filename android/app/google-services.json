@@ -29,6 +29,13 @@
             {
               "client_id": "648676889704-i1alf3tm5ocl6skfl5c0jmkrgbu66b2c.apps.googleusercontent.com",
               "client_type": 3
+            },
+            {
+              "client_id": "648676889704-e1bv44vhg5g9l33b5rblstjtm4j13s4c.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.restaurantAppProject"
+              }
             }
           ]
         }

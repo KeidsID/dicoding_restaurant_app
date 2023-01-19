@@ -3,8 +3,7 @@ import 'package:provider/provider.dart';
 
 import '../../common/common.dart';
 import '../../data/model/from_api/restaurant.dart';
-
-import '../../providers/search_result_provider.dart';
+import '../../providers/api/search_result_provider.dart';
 import '../../widgets/fade_on_scroll.dart';
 import '../../widgets/list_pages/restaurant_grid_view.dart';
 import '../../widgets/list_pages/restaurant_list_view.dart';

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-import '../data/db/database_helper.dart';
-import '../data/model/from_api/restaurant.dart';
+import '../../data/db/database_helper.dart';
+import '../../data/model/from_api/restaurant.dart';
 
 enum DbState { loading, noData, hasData, error }
 

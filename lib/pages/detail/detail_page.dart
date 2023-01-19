@@ -4,14 +4,12 @@ import 'package:provider/provider.dart';
 import '../../common/common.dart';
 import '../../data/api/api_service.dart';
 import '../../data/model/from_api/restaurant_detail.dart';
-
+import '../../providers/api/restaurant_detail_provider.dart';
+import '../../widgets/fade_on_scroll.dart';
+import '../../widgets/review_container.dart';
 import '../auth/wrapper.dart';
 import 'post_review_page.dart';
 import 'reviews_page.dart';
-
-import '../../providers/restaurant_detail_provider.dart';
-import '../../widgets/fade_on_scroll.dart';
-import '../../widgets/review_container.dart';
 
 Widget _descriptionContainer({EdgeInsetsGeometry? margin, Widget? child}) {
   return Container(
