@@ -5,6 +5,8 @@
 
 # **restaurant_app_project**
 
+![Codemagic build status](https://api.codemagic.io/apps/639026c19c76e3f6e4cc106a/639026c19c76e3f6e4cc1069/status_badge.svg)
+
 Submission project task from [dicoding.com Intermediate Flutter class][dicodingclass].
 
 It is hoped that with this assignment, students can create Flutter applications by implementing common features such as retrieving data from the internet, local storage, notifications, and testing.
